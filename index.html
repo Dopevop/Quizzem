@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 <head>
 	<title>Devon J O'Connor</title>	
 	<link rel="stylesheet" href="mystyle.css">	
@@ -8,7 +8,7 @@
 	<meta name="description" content="Devon J O'Connor's Personal Website">
 	<meta name="keywords" content="Computer Science, Projects, Research">
 	<meta name="author" content="Devon J O'Connor">
-	<meta http-equiv="refresh" content="1">
+	<!-- <meta http-equiv="refresh" content="1"> -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -16,21 +16,21 @@
 		<h1>Welcome to Devon's Den!</h1>
 	</div>	
 
-	<div class="sidebar">
-		<ul>
-			<li>Main</li>			
-			<li>Bio</li>			
-			<li>CS490</li>			
-			<li>Resume</li>			
-		</ul>		
+	<div class="left">
+		<nav>
+			<button id="nav1">Main</button>			
+			<button id="nav2">About Me</button>			
+			<button id="nav3">Resume</button>			
+			<button id="nav4">CS490</button>			
+		</nav>		
 	</div>	
 
-	<div class="main">
+	<div class="center main">
 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus rutrum neque at enim porttitor bibendum. Sed condimentum lacinia felis, ut posuere felis faucibus tincidunt. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Maecenas lacinia mi quis sem faucibus, in sagittis libero accumsan. Vivamus lobortis in augue sit amet porta. Mauris aliquam, elit eu maximus bibendum, augue felis sodales diam, eu malesuada ante tellus non justo. Aenean vel elit ac neque consectetur pretium. Maecenas sed elit quis felis fringilla commodo sit amet a enim. Etiam suscipit fringilla arcu, a congue felis egestas vel. Etiam feugiat massa quis pharetra posuere. Phasellus ut ligula feugiat, porttitor metus at, tincidunt purus. Etiam vitae sem nulla. Praesent in eros vel dui dictum condimentum in a erat.</p>
 	</div>
 
 	<div class="footer">
-		<footer>
+		<footer class="center">
 			<ul>
 				<li>Main</li>
 				<li>About</li>
@@ -41,6 +41,22 @@
 		</footer>
 	</div>	
 
+	<script>
+		var nav1 = document.getElementById("nav1");
+		var nav2 = document.getElementById("nav2");
+		var nav3 = document.getElementById("nav3");
+		var nav4 = document.getElementById("nav4");
+		nav1.addEventListener("mouseover", function() {floatLeft(nav1)} );
+		nav1.addEventListener("mouseout", function() {floatRight(nav1)} );
+		nav2.addEventListener("mouseover", function() {floatLeft(nav2)} );
+		nav2.addEventListener("mouseout", function() {floatRight(nav2)} );
+		nav3.addEventListener("mouseover", function() {floatLeft(nav3)} );
+		nav3.addEventListener("mouseout", function() {floatRight(nav3)} );
+		nav4.addEventListener("mouseover", function() {floatLeft(nav4)} );
+		nav4.addEventListener("mouseout", function() {floatRight(nav4)} );
+		function floatLeft(elem) { elem.style.float = "left"; }
+		function floatRight(elem) { elem.style.float = "right"; }
+	</script>	
 </body>
 </html>
 
