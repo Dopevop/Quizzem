@@ -18,10 +18,10 @@
 
 	<div class="left">
 		<nav>
-			<button id="nav1">Main</button>			
-			<button id="nav2">About Me</button>			
+			<button id="nav1">Home</button>			
+			<button id="nav2">About</button>			
 			<button id="nav3">Resume</button>			
-			<button id="nav4">CS490</button>			
+			<a href="login.html"><button id="nav4">CS490</button></a>			
 		</nav>		
 	</div>	
 
@@ -54,8 +54,14 @@
 		nav3.addEventListener("mouseout", function() {floatRight(nav3)} );
 		nav4.addEventListener("mouseover", function() {floatLeft(nav4)} );
 		nav4.addEventListener("mouseout", function() {floatRight(nav4)} );
-		function floatLeft(elem) { elem.style.float = "left"; }
-		function floatRight(elem) { elem.style.float = "right"; }
+		function floatLeft(elem) {
+			elem.style.float = "left"; 
+			elem.style.width = "100px";
+		}
+		function floatRight(elem) {
+			elem.style.float = "right"; 
+			elem.style.width = "70px";
+		}
 	</script>	
 </body>
 </html>

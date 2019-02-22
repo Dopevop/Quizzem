@@ -5,6 +5,7 @@ body {
 	background-color: aliceblue;
 	font-family: Verdana;
 	outline: 1px solid red;
+	z-index: 0;
 }
 
 .header {
@@ -36,17 +37,21 @@ h1 {
 }
 
 nav {
-	outline: 1px solid orange;
-	width: 130px;
+	/* outline: 1px solid orange; */
+	width: 100px;
 	position: absolute;
-	z-index: -1;
 }
 
 button {
-	width: 100px;
+	width: 70px;
 	height: 30px;
 	text-align: left;
 	float: right;
+	border: 2px groove aliceblue;
+	border-right: none;
+	box-shadow: 2px 0px 1px lightgrey;
+	border-radius: 10px 0px 0px 10px;
+	background-color: ghostwhite;
 }
 
 .center {
