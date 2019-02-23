@@ -12,57 +12,35 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-	<div class="header">
-		<h1>Welcome to Devon's Den!</h1>
-	</div>	
+	<header> <!-- Holds the navigation buttons -->
+		<div>
+			<nav class="center">
+				<button id="nav1">Home</button>			
+				<button id="nav2">About</button>			
+				<button id="nav3">Resume</button>			
+				<a href="login.html"><button id="nav4">CS490</button></a>			
+			</nav>		
+		</div>	
+	</header>	
 
-	<div class="left">
-		<nav>
-			<button id="nav1">Home</button>			
-			<button id="nav2">About</button>			
-			<button id="nav3">Resume</button>			
-			<a href="login.html"><button id="nav4">CS490</button></a>			
-		</nav>		
-	</div>	
-
-	<div class="center main">
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus rutrum neque at enim porttitor bibendum. Sed condimentum lacinia felis, ut posuere felis faucibus tincidunt. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Maecenas lacinia mi quis sem faucibus, in sagittis libero accumsan. Vivamus lobortis in augue sit amet porta. Mauris aliquam, elit eu maximus bibendum, augue felis sodales diam, eu malesuada ante tellus non justo. Aenean vel elit ac neque consectetur pretium. Maecenas sed elit quis felis fringilla commodo sit amet a enim. Etiam suscipit fringilla arcu, a congue felis egestas vel. Etiam feugiat massa quis pharetra posuere. Phasellus ut ligula feugiat, porttitor metus at, tincidunt purus. Etiam vitae sem nulla. Praesent in eros vel dui dictum condimentum in a erat.</p>
+	<div class="main"> <!-- Consists of everything from below header to above footer -->
+		<div class="center"> <!-- Consists of main content that will be on page -->
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean vel elit ac neque consectetur pretium. Maecenas sed elit quis felis fringilla commodo sit amet a enim. Etiam suscipit fringilla arcu, a congue felis egestas vel. Etiam feugiat massa quis pharetra posuere. Phasellus ut ligula feugiat, porttitor metus at, tincidunt purus. Etiam vitae sem nulla. Praesent in eros vel dui dictum condimentum in a erat.
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean vel elit ac neque consectetur pretium. Maecenas sed elit quis felis fringilla commodo sit amet a enim. Etiam suscipit fringilla arcu, a congue felis egestas vel. Etiam feugiat massa quis pharetra posuere. Phasellus ut ligula feugiat, porttitor metus at, tincidunt purus. Etiam vitae sem nulla. Praesent in eros vel dui dictum condimentum in a erat.
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean vel elit ac neque consectetur pretium. Maecenas sed elit quis felis fringilla commodo sit amet a enim. Etiam suscipit fringilla arcu, a congue felis egestas vel. Etiam feugiat massa quis pharetra posuere. Phasellus ut ligula feugiat, porttitor metus at, tincidunt purus. Etiam vitae sem nulla. Praesent in eros vel dui dictum condimentum in a erat.
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean vel elit ac neque consectetur pretium. Maecenas sed elit quis felis fringilla commodo sit amet a enim. Etiam suscipit fringilla arcu, a congue felis egestas vel. Etiam feugiat massa quis pharetra posuere. Phasellus ut ligula feugiat, porttitor metus at, tincidunt purus. Etiam vitae sem nulla. Praesent in eros vel dui dictum condimentum in a erat.
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean vel elit ac neque consectetur pretium. Maecenas sed elit quis felis fringilla commodo sit amet a enim. Etiam suscipit fringilla arcu, a congue felis egestas vel. Etiam feugiat massa quis pharetra posuere. Phasellus ut ligula feugiat, porttitor metus at, tincidunt purus. Etiam vitae sem nulla. Praesent in eros vel dui dictum condimentum in a erat.
+			</p>
+		</div>
 	</div>
 
-	<div class="footer">
-		<footer class="center">
-			<ul>
-				<li>Main</li>
-				<li>About</li>
+	<footer>
+		<div class="center">
+			&copy; 2019 Devon O'Connor. <br>
+			All Rights Reserved. Patent Pending.
+		</div>
+	</footer>
 
-			</ul>		
-			&copy; 2019 Devon O'Connor. All Rights Reserved. <br>
-			Patent Pending.
-		</footer>
-	</div>	
-
-	<script>
-		var nav1 = document.getElementById("nav1");
-		var nav2 = document.getElementById("nav2");
-		var nav3 = document.getElementById("nav3");
-		var nav4 = document.getElementById("nav4");
-		nav1.addEventListener("mouseover", function() {floatLeft(nav1)} );
-		nav1.addEventListener("mouseout", function() {floatRight(nav1)} );
-		nav2.addEventListener("mouseover", function() {floatLeft(nav2)} );
-		nav2.addEventListener("mouseout", function() {floatRight(nav2)} );
-		nav3.addEventListener("mouseover", function() {floatLeft(nav3)} );
-		nav3.addEventListener("mouseout", function() {floatRight(nav3)} );
-		nav4.addEventListener("mouseover", function() {floatLeft(nav4)} );
-		nav4.addEventListener("mouseout", function() {floatRight(nav4)} );
-		function floatLeft(elem) {
-			elem.style.float = "left"; 
-			elem.style.width = "100px";
-		}
-		function floatRight(elem) {
-			elem.style.float = "right"; 
-			elem.style.width = "70px";
-		}
-	</script>	
 </body>
 </html>
 

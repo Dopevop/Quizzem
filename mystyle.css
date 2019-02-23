@@ -1,23 +1,41 @@
-body {
-	outline: 1px solid red;
-	margin: 0px;
-	margin-left: 0px;
-	width: 100%;
-	background-color: aliceblue;
-	font-family: Verdana;
-	outline: 1px solid red;
+html {
+	/* overflow: hidden; */
 }
 
-.header {
-	outline: 1px solid yellow;
-	background-color: #282b2d;
+body {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	margin: 0px;
+	width: 100%;
+	background-color: ghostwhite;
+	font-family: Verdana;
+}
+
+header {
+	/* outline: 1px solid yellow; */
+	position: fixed;
+	z-index: 20;
+	background-color: white;
 	width: 100%;
 	min-height: 50px;
-	max-height: 100px;
-	margin: 0px;
-	padding: 10px 0px;
-	box-shadow: 0px 3px 7px;
+	box-shadow: 0px 3px 7px lightgrey;
 }
+
+nav {
+	/* outline: 1px solid blue; */
+	height: 50px;
+	line-height: 50px;
+}
+
+button {
+	/* outline: 1px solid red; */
+	background-color: inherit;
+	border: none;
+	height: 25px;
+	margin: 5px;
+}
+
 
 h1 {
 	outline: 1px solid orange;
@@ -29,68 +47,28 @@ h1 {
 	text-align: center;
 }
 
-.left {
-	outline: 1px solid red;
-	width: 400px;
-	height: 50%;
-	position: absolute;
-	right: 50%;
-}
-
-nav {
-	outline: 1px solid orange;
-	width: 100px;
-	position: absolute;
-}
-
-button {
-	outline: 1px solid blue;
-	width: 70px;
-	height: 30px;
-	text-align: left;
-	float: right;
-	border: 2px groove aliceblue;
-	border-right: none;
-	box-shadow: 2px 0px 1px lightgrey;
-	border-radius: 10px 0px 0px 10px;
-	background-color: ghostwhite;
+.main {
+	/* outline: 1px solid red; */
+	position: relative;
+	top: 50px;
 }
 
 .center {
-	outline: 1px solid orange;
 	width: 600px;
 	margin: auto;
 }
 
-.main {
-	outline: 1px solid green;
-	background-color: ghostwhite;
-	box-shadow: 0px 6px 7px gray;
-	min-height: 600px;
-	padding: 25px 0px ;
-	margin: 20px auto;
-}
-
 p {
-	outline: 1px solid purple;
 	width: 80%;
-	margin: auto;
+	margin: 10px 0px;
 	padding: 5%;
 	background-color: white;
-	box-shadow: 0px 1px 7px lightgrey;
-}
-
-.footer {
-	outline: 1px solid red;
-	width: 100%;
-	height: 200px;
-	margin: 0px;
-	background-color: dimgrey;
 }
 
 footer {
-	outline: 1px solid yellow;
-	margin: auto;
-	background-color: gainsboro;
-	
+	width: 100%;
+	height: 100px;
+	margin: 300px 0px 0px 0px;
+	background-color: black;
+	color: white;
 }
