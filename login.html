@@ -27,7 +27,8 @@
 		document.getElementById("Result").innerHTML = "";
 	}
 	function postForm() {
-		document.getElementById("Result").innerHTML = "Checking...";
+		var response = document.getElementById("Result");
+		response.innerHTML = "Checking...";
 		var xhttp  = new XMLHttpRequest();
 		var jsonObj = {
 			"username" : document.getElementById("usrInput").value,
@@ -36,9 +37,9 @@
 		var jsonStr = JSON.stringify(jsonObj);
 		xhttp.onreadystatechange = function() {
 			if (xhttp.readyState == 4 && xhttp.status == 200) 
-				document.getElementById("Result").innerHTML = xhttp.responseText;
+				response.innerHTML = "[" + xhttp.responseText + "]";
 		};
-		xhttp.open("POST", "https://web.njit.edu/~djo23/alpha/curlObj.php", true);
+		xhttp.open("POST", "https://web.njit.edu/~djo23/curlObj.php", true);
 		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		xhttp.send(jsonStr);
 	}
