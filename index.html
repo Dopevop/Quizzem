@@ -15,7 +15,7 @@
 	<header> <!-- Holds the navigation buttons -->
 		<div>
 			<nav class="center">
-				<button id="homeBtn">Home</button>			
+				<a href="https://web.njit.edu/~djo23/"><button id="homeBtn">Home</button></a>
 				<button id="aboutBtn">About</button>			
 				<button id="resumeBtn">Resume</button>			
 				<a href="login.html"><button id="cs490Btn">CS490</button></a>			
@@ -42,7 +42,16 @@
 			</p>
 		</div>
 	</footer>
-
+	<script src="alerts.js"></script>
+	<script>
+		var aboutBtn = document.getElementById("aboutBtn");
+		var resumeBtn = document.getElementById("resumeBtn");
+		var btnArray = [aboutBtn, resumeBtn];
+		for (var i=0; i<2; i++) {
+			btnArray[i].addEventListener("click", comingSoon);
+		}
+		
+	</script>
 </body>
 </html>
 
