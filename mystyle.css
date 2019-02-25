@@ -58,7 +58,6 @@ p {
 }
 
 p.foot{
-	outline: 1px solid green;
 	background-color: black;
 	width: 50%;
 	margin-left: 0px;
@@ -70,13 +69,10 @@ p.foot{
 footer {
 	width: 100%;
 	margin: 200px 0px 0px 0px;
-	padding: 30px 0px;
 	background-color: black;
 	color: white;
 }
 
 .foot {
 	width: 600px;
-	outline: 1px solid yellow;
-	padding: 20px 0px;
 }
