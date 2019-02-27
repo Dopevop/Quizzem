@@ -23,9 +23,34 @@
 			<input type="text"> </br>
 			Test Case #4 </br>
 			<input type="text"> </br></br>
-			<button type="button">Submit</button> 
+			<button id="submitQuestionBtn" type="button">Submit</button> 
+			<button id="clearQuestionBtn"  type="reset">Clear</button> 
 		</fieldset>
 	</form>	
+	<script>
+	document.getElementById("submitQuestionBtn").addEventListener("click", postForm);
+	document.getElementById("clearQuestionBtn").addEventListener("click", clearResult);
+	function clearResult() {
+		document.getElementById("Result").innerHTML = "";
+	}
+	function postForm() {
+		var response = document.getElementById("Result");
+		response.innerHTML = "Checking...";
+		var xhttp  = new XMLHttpRequest();
+		var jsonObj = {
+			"username" : document.getElementById("usrInput").value,
+			"password" : document.getElementById("pwdInput").value,
+		}
+		var jsonStr = JSON.stringify(jsonObj);
+		xhttp.onreadystatechange = function() {
+			if (xhttp.readyState == 4 && xhttp.status == 200) 
+				response.innerHTML = "[" + xhttp.responseText + "]";
+		};
+		xhttp.open("POST", "https://web.njit.edu/~djo23/curlObj.php", true);
+		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhttp.send(jsonStr);
+	}
+	</script>
 </body>
 
 </html>
