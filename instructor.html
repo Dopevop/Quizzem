@@ -14,37 +14,42 @@
 		<fieldset>
 			<legend>Create Question:</legend>
 			Description </br>
-			<input type="text"> </br>
+			<input id="qDes" type="text"> </br>
 			Test Case #1 </br>
-			<input type="text"> </br>
+			<input id="qTC1" type="text"> </br>
 			Test Case #2 </br>
-			<input type="text"> </br>
+			<input id="qTC2" type="text"> </br>
 			Test Case #3 </br>
-			<input type="text"> </br>
+			<input id="qTC3" type="text"> </br>
 			Test Case #4 </br>
-			<input type="text"> </br></br>
+			<input id="qTC4" type="text"> </br></br>
 			<button id="submitQuestionBtn" type="button">Submit</button> 
 			<button id="clearQuestionBtn"  type="reset">Clear</button> 
+			<p id="addQuestionResult">Result goes here</p>
 		</fieldset>
 	</form>	
 	<script>
 	document.getElementById("submitQuestionBtn").addEventListener("click", postForm);
 	document.getElementById("clearQuestionBtn").addEventListener("click", clearResult);
 	function clearResult() {
-		document.getElementById("Result").innerHTML = "";
+		document.getElementById("addQuestionResult").innerHTML = "";
 	}
 	function postForm() {
-		var response = document.getElementById("Result");
-		response.innerHTML = "Checking...";
+		var result = document.getElementById("addQuestionResult");
+		result.innerHTML = "Checking...";
 		var xhttp  = new XMLHttpRequest();
 		var jsonObj = {
-			"username" : document.getElementById("usrInput").value,
-			"password" : document.getElementById("pwdInput").value,
+			"Type"		  : "Add",
+			"Description" : document.getElementById("qDes").value,
+			"TestCase1"	  : document.getElementById("qTC1").value,
+			"TestCase2"	  : document.getElementById("qTC2").value,
+			"TestCase3"	  : document.getElementById("qTC3").value,
+			"TestCase4"	  : document.getElementById("qTC4").value,
 		}
 		var jsonStr = JSON.stringify(jsonObj);
 		xhttp.onreadystatechange = function() {
 			if (xhttp.readyState == 4 && xhttp.status == 200) 
-				response.innerHTML = "[" + xhttp.responseText + "]";
+				result.innerHTML = "[" + xhttp.responseText + "]";
 		};
 		xhttp.open("POST", "https://web.njit.edu/~djo23/curlObj.php", true);
 		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
