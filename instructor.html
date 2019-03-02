@@ -15,17 +15,18 @@
 			<legend>Create Question:</legend>
 			Description </br>
 			<input id="qDes" type="text"> </br>
-			Test Case #1 </br>
-			<input id="qTC1" type="text"> </br>
-			Test Case #2 </br>
-			<input id="qTC2" type="text"> </br>
-			Test Case #3 </br>
-			<input id="qTC3" type="text"> </br>
-			Test Case #4 </br>
-			<input id="qTC4" type="text"> </br></br>
+			Difficulty </br>
+			<input id="qKWs" type="text"> </br>
+			Keywords </br>
+			<input id="qKWs" type="text"> </br>
+			<div id=testCases>
+				Test Cases </br>
+				<input id="qTC1" type="text"> </br> 
+			</div>
+			</br>
 			<button id="submitQuestionBtn" type="button">Submit</button> 
 			<button id="clearQuestionBtn"  type="reset">Clear</button> 
-			<p id="addQuestionResult">Result goes here</p>
+			<button id="addTestCaseBtn"  type="button" onclick="addTestCase()">Add Test</button> 
 		</fieldset>
 	</form>	
 	<script>
@@ -34,23 +35,30 @@
 	function clearResult() {
 		document.getElementById("addQuestionResult").innerHTML = "";
 	}
+	function addTestCase() {
+		var textInput = document.createElement("INPUT");
+		document.getElementById("testCases").appendChild(textInput);
+	}
 	function postForm() {
 		var result = document.getElementById("addQuestionResult");
-		result.innerHTML = "Checking...";
 		var xhttp  = new XMLHttpRequest();
 		var jsonObj = {
-			"Type" : "null",
+			"Type" : "AddQ",
 			"Desc" : document.getElementById("qDes").value,
-			Test   : [	document.getElementById("qTC1").value,
-						document.getElementById("qTC2").value,
-						document.getElementById("qTC3").value,
-						document.getElementById("qTC4").value	]
+			"Tests"  : []
+		}
+		var testFields = document.getElementById("testCases").children;
+		for(var i = 0; i < testFields.length; i++) {
+			if(testFields[i].tagName == "INPUT")
+				jsonObj["Tests"].push(testFields[i].value);
 		}
 		var jsonStr = JSON.stringify(jsonObj);
+		alert("Sending: " + jsonStr);
 		xhttp.onreadystatechange = function() {
 			if (xhttp.readyState == 4 && xhttp.status == 200) {
+				console.log(xhttp.responseText);
 				var retObj = JSON.parse(xhttp.responseText);
-				result.innerHTML = JSON.stringify(retObj);
+				alert(JSON.stringify(retObj));
 				console.log("back -> " + retObj.back)
 			}
 		};
