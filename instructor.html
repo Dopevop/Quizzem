@@ -39,20 +39,22 @@
 		result.innerHTML = "Checking...";
 		var xhttp  = new XMLHttpRequest();
 		var jsonObj = {
-			"Type"		  : "Add",
-			"Description" : document.getElementById("qDes").value,
-			Test		  : [	document.getElementById("qTC1").value,
-								document.getElementById("qTC2").value,
-								document.getElementById("qTC3").value,
-								document.getElementById("qTC4").value	]
+			"Type" : "null",
+			"Desc" : document.getElementById("qDes").value,
+			Test   : [	document.getElementById("qTC1").value,
+						document.getElementById("qTC2").value,
+						document.getElementById("qTC3").value,
+						document.getElementById("qTC4").value	]
 		}
 		var jsonStr = JSON.stringify(jsonObj);
-		console.log(jsonStr);
 		xhttp.onreadystatechange = function() {
-			if (xhttp.readyState == 4 && xhttp.status == 200) 
-				result.innerHTML = "[" + xhttp.responseText + "]";
+			if (xhttp.readyState == 4 && xhttp.status == 200) {
+				var retObj = JSON.parse(xhttp.responseText);
+				result.innerHTML = JSON.stringify(retObj);
+				console.log(retObj.back)
+			}
 		};
-		xhttp.open("POST", "https://web.njit.edu/~djo23/curlObj.php", true);
+		xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
 		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		xhttp.send(jsonStr);
 	}
