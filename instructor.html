@@ -41,12 +41,13 @@
 		var jsonObj = {
 			"Type"		  : "Add",
 			"Description" : document.getElementById("qDes").value,
-			"TestCase1"	  : document.getElementById("qTC1").value,
-			"TestCase2"	  : document.getElementById("qTC2").value,
-			"TestCase3"	  : document.getElementById("qTC3").value,
-			"TestCase4"	  : document.getElementById("qTC4").value,
+			Test		  : [	document.getElementById("qTC1").value,
+								document.getElementById("qTC2").value,
+								document.getElementById("qTC3").value,
+								document.getElementById("qTC4").value	]
 		}
 		var jsonStr = JSON.stringify(jsonObj);
+		console.log(jsonStr);
 		xhttp.onreadystatechange = function() {
 			if (xhttp.readyState == 4 && xhttp.status == 200) 
 				result.innerHTML = "[" + xhttp.responseText + "]";
