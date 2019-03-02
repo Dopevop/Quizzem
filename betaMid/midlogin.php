@@ -47,14 +47,12 @@ if(isset($demux['Type'])) {
    $testcase2 = $demux['TestCase2']; 
    $testcase3 = $demux['TestCase3']; 
    $testcase4 = $demux['TestCase4']; 
-   $mid = "mid received data"; 
-   $barrel = array("mid" => $mid, "Question" => $description, "TestCase1" => $testcase1, "TestCase2" => $testcase2, "TestCase3" => $testcase3, "TestCase4" => $testcase4); //note: Backend is asking for Question. 
-   $barrel = array("Question" => $description, "Cases" => array("TestCase1" => $testcase1, "TestCase2" => $testcase2, "TestCase3" => $testcase3, 
-            "TestCase4" => $testcase4)); 
+   $middle = "mid received data"; 
+   $barrel = array("mid" => $middle, "Question" => $description, "TestCase1" => $testcase1, "TestCase2" => $testcase2, "TestCase3" => $testcase3, "TestCase4" => $testcase4); //note: Backend is asking for Question. 
    $write .= trace($barrel, $note); 
    $cart = addQUEST($barrel); 	  
 
-   echo json_encode($cart); 
+   echo $cart; 
  //  echo ($cart); 
  //   echo json_encode($cart);  
 }
@@ -123,7 +121,7 @@ function addQUEST($ammo) {
          echo "curl_error:" . curl_error($proj) . "<br>"; 
     $recoil = curl_exec($proj); 
     curl_close($proj); 
-    return json_encode($recoil); 
+    return $recoil; 
 
 }//addQUEST();  
 
