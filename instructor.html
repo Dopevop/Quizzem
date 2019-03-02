@@ -51,7 +51,7 @@
 			if (xhttp.readyState == 4 && xhttp.status == 200) {
 				var retObj = JSON.parse(xhttp.responseText);
 				result.innerHTML = JSON.stringify(retObj);
-				console.log(retObj.back)
+				console.log("back -> " + retObj.back)
 			}
 		};
 		xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
