@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Log into Account</title>	
+	<link rel="stylesheet" href="mainstyle.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+	<form>
+		<legend>NJIT or Database Credentials:</legend>		
+		<fieldset>
+			<br/><div class="inputLabel">UCID:</div>
+			<input type="text" name="username" id="usrInput" autocomplete="on" >
+			<br><br><div class="inputLabel">Password:</div>
+			<input type="password" name="password" id="pwdInput" autocomplete="off">
+			<br/><br/><div class="buttons">
+				<button class="button" type="button" id="btn">Submit</button>			
+				<input  class="button" type="reset"  id="clr" value="Clear">
+			</div>
+			<p id=Result></p>			
+		</fieldset>
+	</form>
+	<script>
+	document.getElementById("btn").addEventListener("click", postForm);
+	document.getElementById("clr").addEventListener("click", clearResult);
+	function clearResult() {
+		document.getElementById("Result").innerHTML = "";
+	}
+	function postForm() {
+		var response = document.getElementById("Result");
+		response.innerHTML = "Checking...";
+		var xhttp  = new XMLHttpRequest();
+		var jsonObj = {
+			"username" : document.getElementById("usrInput").value,
+			"password" : document.getElementById("pwdInput").value,
+		}
+		var jsonStr = JSON.stringify(jsonObj);
+		xhttp.onreadystatechange = function() {
+			if (xhttp.readyState == 4 && xhttp.status == 200) 
+				response.innerHTML = "[" + xhttp.responseText + "]";
+		};
+		xhttp.open("POST", "https://web.njit.edu/~djo23/curlObj.php", true);
+		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhttp.send(jsonStr);
+	}
+	</script>
+</body>
+</html>
