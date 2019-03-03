@@ -41,16 +41,18 @@
 		document.getElementById("addQuestionResult").innerHTML = "";
 	}
 	function addKeyword() {
+		var keywords  = document.getElementById("keywords");
 		var textInput = document.createElement("INPUT");
 		var breakElem = document.createElement("BR");
-		document.getElementById("keywords").appendChild(textInput);
-		document.getElementById("keywords").appendChild(breakElem);
+		keywords.insertBefore(breakElem, keywords.childNodes[4]);
+		keywords.insertBefore(textInput, keywords.childNodes[4]);
 	}
 	function addTestCase() {
+		var testCases = document.getElementById("testCases");
 		var textInput = document.createElement("INPUT");
 		var breakElem = document.createElement("BR");
-		document.getElementById("testCases").appendChild(textInput);
-		document.getElementById("testCases").appendChild(breakElem);
+		testCases.insertBefore(breakElem, testCases.childNodes[4]);
+		testCases.insertBefore(textInput, testCases.childNodes[4]);
 	}
 	function postForm() {
 		var result = document.getElementById("addQuestionResult");
