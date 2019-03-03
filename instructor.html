@@ -17,16 +17,21 @@
 			<input id="qDes" type="text"> </br>
 			Difficulty </br>
 			<input id="qKWs" type="text"> </br>
-			Keywords </br>
-			<input id="qKWs" type="text"> </br>
-			<div id=testCases>
-				Test Cases </br>
-				<input id="qTC1" type="text"> </br> 
+			<div id="keywords">
+				Keywords 
+				<button id="addKeywordBtn" type="button" onclick="addKeyword()">+</button> 
+				</br>
+				<input type="text"> </br>
+			</div>
+			<div id="testCases">
+				Test Cases
+				<button id="addTestCaseBtn" type="button" onclick="addTestCase()">+</button> 
+				</br>
+				<input type="text"> </br> 
 			</div>
 			</br>
 			<button id="submitQuestionBtn" type="button">Submit</button> 
 			<button id="clearQuestionBtn"  type="reset">Clear</button> 
-			<button id="addTestCaseBtn"  type="button" onclick="addTestCase()">Add Test</button> 
 		</fieldset>
 	</form>	
 	<script>
@@ -34,6 +39,12 @@
 	document.getElementById("clearQuestionBtn").addEventListener("click", clearResult);
 	function clearResult() {
 		document.getElementById("addQuestionResult").innerHTML = "";
+	}
+	function addKeyword() {
+		var textInput = document.createElement("INPUT");
+		var breakElem = document.createElement("BR");
+		document.getElementById("keywords").appendChild(textInput);
+		document.getElementById("keywords").appendChild(breakElem);
 	}
 	function addTestCase() {
 		var textInput = document.createElement("INPUT");
@@ -47,7 +58,13 @@
 		var jsonObj = {
 			"Type" : "AddQ",
 			"Desc" : document.getElementById("qDes").value,
+			"KeyWs"  : [],
 			"Tests"  : []
+		}
+		var keywordFields = document.getElementById("keywords").children;
+		for(var i = 0; i < keywordFields.length; i++) {
+			if(keywordFields[i].tagName == "INPUT")
+				jsonObj["KeyWs"].push(keywordFields[i].value);
 		}
 		var testFields = document.getElementById("testCases").children;
 		for(var i = 0; i < testFields.length; i++) {
