@@ -37,7 +37,9 @@
 	}
 	function addTestCase() {
 		var textInput = document.createElement("INPUT");
+		var breakElem = document.createElement("BR");
 		document.getElementById("testCases").appendChild(textInput);
+		document.getElementById("testCases").appendChild(breakElem);
 	}
 	function postForm() {
 		var result = document.getElementById("addQuestionResult");
