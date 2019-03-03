@@ -17,18 +17,8 @@
 			<input id="qDes" type="text"> </br>
 			Difficulty </br>
 			<input id="qKWs" type="text"> </br>
-			<div id="keywords">
-				Keywords 
-				<button id="addKeywordBtn" type="button" onclick="addKeyword()">+</button> 
-				</br>
-				<input type="text"> </br>
-			</div>
-			<div id="testCases">
-				Test Cases
-				<button id="addTestCaseBtn" type="button" onclick="addTestCase()">+</button> 
-				</br>
-				<input type="text"> </br> 
-			</div>
+			<div id="keywords"></div>
+			<div id="testCases"></div>
 			</br>
 			<button id="submitQuestionBtn" type="button">Submit</button> 
 			<button id="clearQuestionBtn"  type="reset">Clear</button> 
@@ -38,8 +28,23 @@
 	var keywords = document.getElementById("keywords");
 	var testCases = document.getElementById("testCases");
 	document.getElementById("submitQuestionBtn").addEventListener("click", postForm);
-	document.getElementById("clearQuestionBtn").addEventListener("click", clearResult);
-	function clearResult() {
+	document.getElementById("clearQuestionBtn").addEventListener("click", resetInput);
+	resetInput();
+	function resetInput() {
+		var keywordsHTML = ` 
+			Keywords
+			<button id="addKeywordBtn" type="button" onclick="addKeyword()">+</button> 
+			</br>
+			<input type="text"> </br>
+		`;
+		var testCaseHTML = ` 
+			Test Cases
+			<button id="addTestCaseBtn" type="button" onclick="addTestCase()">+</button> 
+			</br>
+			<input type="text"> </br>
+		`;
+		keywords.innerHTML = keywordsHTML;
+		testCases.innerHTML = testCaseHTML;
 	}
 	function addKeyword() {
 		var textInput = document.createElement("INPUT");
@@ -78,7 +83,6 @@
 				console.log(xhttp.responseText);
 				var retObj = JSON.parse(xhttp.responseText);
 				alert(JSON.stringify(retObj));
-				console.log("back -> " + retObj.back)
 			}
 		};
 		xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
