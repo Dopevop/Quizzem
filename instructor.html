@@ -35,27 +35,25 @@
 		</fieldset>
 	</form>	
 	<script>
+	var keywords = document.getElementById("keywords");
+	var testCases = document.getElementById("testCases");
 	document.getElementById("submitQuestionBtn").addEventListener("click", postForm);
 	document.getElementById("clearQuestionBtn").addEventListener("click", clearResult);
 	function clearResult() {
-		document.getElementById("addQuestionResult").innerHTML = "";
 	}
 	function addKeyword() {
-		var keywords  = document.getElementById("keywords");
 		var textInput = document.createElement("INPUT");
 		var breakElem = document.createElement("BR");
 		keywords.insertBefore(breakElem, keywords.childNodes[4]);
 		keywords.insertBefore(textInput, keywords.childNodes[4]);
 	}
 	function addTestCase() {
-		var testCases = document.getElementById("testCases");
 		var textInput = document.createElement("INPUT");
 		var breakElem = document.createElement("BR");
 		testCases.insertBefore(breakElem, testCases.childNodes[4]);
 		testCases.insertBefore(textInput, testCases.childNodes[4]);
 	}
 	function postForm() {
-		var result = document.getElementById("addQuestionResult");
 		var xhttp  = new XMLHttpRequest();
 		var jsonObj = {
 			"Type" : "AddQ",
