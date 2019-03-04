@@ -39,7 +39,7 @@
 			if (xhttp.readyState == 4 && xhttp.status == 200) 
 				response.innerHTML = "[" + xhttp.responseText + "]";
 		};
-		xhttp.open("POST", "https://web.njit.edu/~djo23/curlObj.php", true);
+		xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
 		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		xhttp.send(jsonStr);
 	}
