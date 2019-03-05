@@ -3,15 +3,15 @@
 <head>
 	<title>Quizzum</title>
 	<meta name="description" content="Instructor's page for creating questions and building exams.">
-	<meta name="keywords" content="Computer Science, Exam, Questions, Instructor, NJIT, Python">
-	<meta name="author" content="Devon J O'Connor">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="keywords"    content="Computer Science, Exam, Questions, Instructor, NJIT, Python">
+	<meta name="author"      content="Devon J O'Connor">
+	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
 </head>
-
 <body>
 	<form>
 		<fieldset>
 			<legend>Create Question:</legend>
+			
 			Description </br>
 			<input id="qDes" type="text"> </br>
 			Difficulty </br>
@@ -40,7 +40,7 @@
 		</fieldset>
 	</form>
 	<script>
-	var keywords = document.getElementById("addKeys");
+	var keywords  = document.getElementById("addKeys");
 	var testCases = document.getElementById("testCases");
 	document.getElementById("submitQuestionBtn").addEventListener("click", postQuestion);
 	document.getElementById("clearQuestionBtn").addEventListener("click", resetInput);
@@ -51,7 +51,7 @@
 	 * Works for elements that contain a label, a button, and then a list of inputs 
 	 * elemId: The id of the element you want to add the input box to */
 	function addInput(elemId) {
-		var elem = document.getElementById(elemId);
+		var elem      = document.getElementById(elemId);
 		var textInput = document.createElement("INPUT");
 		var breakElem = document.createElement("BR");
 		elem.insertBefore(textInput, elem.childNodes[4]);
@@ -77,10 +77,10 @@
 		var xhttp  = new XMLHttpRequest();
 		// Create new object with type and description initialized; Keywords and Tests declared.
 		var jsonObj = {
-			"Type" : "AddQ",
-			"Desc" : document.getElementById("qDes").value,
-			"KeyWs"  : [],
-			"Tests"  : []
+			"Type"  : "AddQ",
+			"Desc"  : document.getElementById("qDes").value,
+			"KeyWs" : [],
+			"Tests" : []
 		}
 		// Loop through all keywords given add to KeyWs array
 		var keywordFields = document.getElementById("addKeys").children;
