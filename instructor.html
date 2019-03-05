@@ -9,51 +9,57 @@
 </head>
 <body>
 	<form id="addForm">
-		<fieldset>
-			<legend>Create Question:</legend>
-			Description </br>
-			<input id="addDesc"   type="text"> </br>
+		<div id="quizPreview">
+			<ul id="qList"></ul>
+		</div>
+		<div id="quizBuilder">
+			<fieldset>
+				<legend>Create Question:</legend>
+				Description </br>
+				<input id="addDesc"   type="text"> </br>
 
-			<div id="addDiff">
-				Difficulty </br>
-				<label><input type="radio" name="diff" value="1">Very Easy</label></br>
-				<label><input type="radio" name="diff" value="2">Easy     </label></br>
-				<label><input type="radio" name="diff" value="3">Medium   </label></br>
-				<label><input type="radio" name="diff" value="4">Hard     </label></br>
-				<label><input type="radio" name="diff" value="5">Very Hard</label></br>
-			</div>
+				<div id="addDiff">
+					Difficulty </br>
+					<label><input type="radio" name="diff" value="1">Very Easy</label></br>
+					<label><input type="radio" name="diff" value="2">Easy	 </label></br>
+					<label><input type="radio" name="diff" value="3" checked>Medium   </label></br>
+					<label><input type="radio" name="diff" value="4">Hard	 </label></br>
+					<label><input type="radio" name="diff" value="5">Very Hard</label></br>
+				</div>
 
-			<div   id="addKeys"   class="modular keys"></div>
-			<div   id="addTests"  class="modular tests"></div>
-			</br>
-			<button id="addSub"   type="button">Submit</button> 
-			<button id="addClear" type="reset">Clear</button> 
-		</fieldset>
-	</form>	
-	<form id="searchForm">
-		<fieldset>
-			<legend>Search for Questions</legend>
-			<div id="searchDiff">
-				Difficulty </br>
-				<label><input type ="checkbox" value="1">Very Easy</label></br>
-				<label><input type ="checkbox" value="2">Easy	 </label></br>
-				<label><input type ="checkbox" value="3">Medium   </label></br>
-				<label><input type ="checkbox" value="4">Hard	 </label></br>
-				<label><input type ="checkbox" value="5">Very Hard</label></br>
-			</div>
-			<div id   ="searchKeys" class="modular keys"></div>
-			</br>
-			<button id="searchSub" type="button">Submit</button> 
-			<button id="searchClear"  type="reset">Clear</button> 
-		</fieldset>
-	</form>
+				<div   id="addKeys"   class="modular keys"></div>
+				<div   id="addTests"  class="modular tests"></div>
+				</br>
+				<button id="addSub"   type="reset">Submit</button> 
+			</fieldset>
+		</form>	
+		<form id="searchForm">
+			<fieldset>
+				<legend>Search for Questions</legend>
+				<div id="searchDiff">
+					Difficulty </br>
+					<label><input type ="checkbox" value="1">Very Easy</label></br>
+					<label><input type ="checkbox" value="2">Easy	 </label></br>
+					<label><input type ="checkbox" value="3">Medium   </label></br>
+					<label><input type ="checkbox" value="4">Hard	 </label></br>
+					<label><input type ="checkbox" value="5">Very Hard</label></br>
+				</div>
+				<div id   ="searchKeys" class="modular keys"></div>
+				</br>
+				<button id="searchSub" type="reset">Submit</button> 
+			</fieldset>
+		</form>
+	</div>
 	<script>
+	// Var to hold all locally known questions
+	var questions = [];
+
 	/* Adding event listeners to submit and clear buttons 
 	 * Uses the id short hand rather than document.getElementById(id) */
-	addSub.addEventListener("click"     , function(){sendRequest("AddQ")});
-	searchSub.addEventListener("click"  , function(){sendRequest("SearchQ")});
-	addClear.addEventListener("click"   , function(){clearForm("addForm")});
-	searchClear.addEventListener("click", function(){clearForm("searchForm")});
+	addSub.addEventListener("click"   , function(){sendRequest("AddQ")});
+	addSub.addEventListener("click"   , function(){clearForm("addForm")});
+	searchSub.addEventListener("click", function(){sendRequest("SearchQ")});
+	searchSub.addEventListener("click", function(){clearForm("searchForm")});
 
 	/* Initializes the modular elements */
 	resetInput("Test Cases", "addTests"  , 'addInput("addTests")');
@@ -110,6 +116,8 @@
 		return -1;
 	}
 	
+	/* Returns an array of the checked input values inside of given element 
+	 * This assumes checkbox input types inside a div of their own */
 	function getCheckedValues(divId) {
 		var checked = [];
 		var elems = document.getElementById(divId).getElementsByTagName("INPUT");
@@ -123,12 +131,58 @@
 		return checked;
 	}
 
-
-	/* Posts the new question to be added to the database
-	 * Sends the Type, Description, an array of Keywords, and an array of Tests
-	 * The JSON sent and the response received are both made into alerts 
-	 * The response should be in JSON format or will result in an error */
 	
+	/* Given a number 1-5, it will return string version of that difficulty
+	 * Given a string Very Easy, Easy, Medium, Hard, Very Hard return corresponding 1-5
+	 * Given anything else, returns -1 */
+	function convertDiffFormat(diff) {
+		switch(diff) {
+			case 1:
+			case "1":
+				return "Very Easy";
+			case 2:
+			case "2":
+				return "Easy";
+			case 3:
+			case "3":
+				return "Medium";
+			case 4:
+			case "4":
+				return "Hard";
+			case 5:
+			case "5":
+				return "Very Hard";
+			case "Very Easy":
+				return 1;
+			case "Easy":
+				return 2;
+			case "Medium":
+				return 3;
+			case "Hard":
+				return 4;
+			case "Very Hard":
+				return 5;
+			default:
+				return -1;
+		}
+	}
+
+	/* Turns the given question into an HTML element
+	 * Inserts new element into list of previewed questions */
+	function addToQList(newQ){
+		var Desc     = newQ["Desc"];
+		var Diff     = convertDiffFormat(newQ["Diff"]);
+		var item     = document.createElement("LI");
+		var br       = document.createElement("BR");
+		var descText = document.createTextNode(""+Desc);
+		var diffText = document.createTextNode("Difficulty: "+Diff);
+		item.appendChild(descText);
+		item.appendChild(br);
+		item.appendChild(diffText);
+		document.getElementById("qList").appendChild(item);
+	}
+
+
 	/* Sends the specified type of request to the server 
 	 * Types so far: AddQ, SearchQ 
 	 * AddQ sends: { type, desc, diff, keys, tests }
@@ -174,11 +228,16 @@
 			if(keywordFields[i].tagName == "INPUT")
 				jsonObj["Keys"].push(keywordFields[i].value);
 		}
+
+		questions.push(jsonObj);	// Add new question to local questions array
+		addToQList(jsonObj);		// Add new question to previewed questions
+
+
 		var jsonStr = JSON.stringify(jsonObj);
 		console.log("Sent: " + jsonStr);					// <--- JUST FOR TESTING, REMOVE LATER
 		xhttp.onreadystatechange = function() {
 			if (xhttp.readyState == 4 && xhttp.status == 200) {
-				console.log(xhttp.responseText);
+				console.log("Rcvd: " + xhttp.responseText);
 			}
 		};
 		xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
