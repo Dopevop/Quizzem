@@ -17,9 +17,9 @@
 			<div id="addDiff">
 				Difficulty </br>
 				<label><input type="radio" name="diff" value="1">Very Easy</label></br>
-				<label><input type="radio" name="diff" value="2">Easy</label></br>
-				<label><input type="radio" name="diff" value="3">Medium</label></br>
-				<label><input type="radio" name="diff" value="4">Hard</label></br>
+				<label><input type="radio" name="diff" value="2">Easy     </label></br>
+				<label><input type="radio" name="diff" value="3">Medium   </label></br>
+				<label><input type="radio" name="diff" value="4">Hard     </label></br>
 				<label><input type="radio" name="diff" value="5">Very Hard</label></br>
 			</div>
 
@@ -33,13 +33,14 @@
 	<form id="searchForm">
 		<fieldset>
 			<legend>Search for Questions</legend>
-			Difficulty </br>
-			<input id ="searchEasy" type ="checkbox" name="diff" value="easy">
-			<label for="searchEasy">Easy</label> </br>
-			<input id ="searchMed"  type ="checkbox" name="diff" value="medium">
-			<label for="searchMed">Medium</label> </br>
-			<input id ="searchHard" type ="checkbox" name="diff" value="hard">
-			<label for="searchHard">Hard</label> </br>
+			<div id="searchDiff">
+				Difficulty </br>
+				<label><input type ="checkbox" value="1">Very Easy</label></br>
+				<label><input type ="checkbox" value="2">Easy	 </label></br>
+				<label><input type ="checkbox" value="3">Medium   </label></br>
+				<label><input type ="checkbox" value="4">Hard	 </label></br>
+				<label><input type ="checkbox" value="5">Very Hard</label></br>
+			</div>
 			<div id   ="searchKeys" class="modular keys"></div>
 			</br>
 			<button id="searchSub" type="button">Submit</button> 
@@ -49,8 +50,8 @@
 	<script>
 	/* Adding event listeners to submit and clear buttons 
 	 * Uses the id short hand rather than document.getElementById(id) */
-	addSub.addEventListener("click"     , function(){sendForm("AddQ")});
-	searchSub.addEventListener("click"  , function(){sendForm("SearchQ")});
+	addSub.addEventListener("click"     , function(){sendRequest("AddQ")});
+	searchSub.addEventListener("click"  , function(){sendRequest("SearchQ")});
 	addClear.addEventListener("click"   , function(){clearForm("addForm")});
 	searchClear.addEventListener("click", function(){clearForm("searchForm")});
 
@@ -106,36 +107,75 @@
 				return elems[i].value;
 			}
 		}
+		return -1;
 	}
+	
+	function getCheckedValues(divId) {
+		var checked = [];
+		var elems = document.getElementById(divId).getElementsByTagName("INPUT");
+		for(var i=0; i<elems.length; i++) {
+			if(elems[i].checked) {
+				checked.push(elems[i].value);
+			}
+		}
+		if(checked.length === 0)
+			checked = [1,2,3,4,5];
+		return checked;
+	}
+
 
 	/* Posts the new question to be added to the database
 	 * Sends the Type, Description, an array of Keywords, and an array of Tests
 	 * The JSON sent and the response received are both made into alerts 
 	 * The response should be in JSON format or will result in an error */
-	function sendForm(type) {
+	
+	/* Sends the specified type of request to the server 
+	 * Types so far: AddQ, SearchQ 
+	 * AddQ sends: { type, desc, diff, keys, tests }
+	 *    type is always AddQ
+	 *    desc is the question prompt student will see when taking test
+	 *    diff is the difficulty specified by instructor for that question
+	 *    keys is an array of keywords that can be used to search for this question
+	 *    tests is an arry of tests that should pass if student gives correct answer
+	 *        Format in which tests should be given is not yet decided
+	 * SearchQ: { type, diff, keys } 
+	 *    type: Always SearchQ for searching questions, used by server
+	 *    diff: An array of booleans specifying which difficulty questions to return
+	 *    keys: An array of keywords that should match the returned questions*/
+	function sendRequest(reqType) {
 		var xhttp  = new XMLHttpRequest();
-		// Create new object with type and description initialized; Keywords and Tests declared.
 		var jsonObj = {
-			"Type"  : type,
-			"Desc"  : addDesc.value,
-			"Diff"  : getCheckedValue("addDiff"),
+			"Type"  : reqType,
 			"Keys"  : [],
-			"Tests" : []
 		}
+		// Fill in reqType-specific object fields
+		if(reqType === "AddQ"){
+			keysId = "addKeys";
+			jsonObj["Desc"] = addDesc.value;
+			jsonObj["Diff"] = getCheckedValue("addDiff");
+			jsonObj["Tests"] = [];
+			// Loop through all test cases given and add to Tests array
+			var testFields = document.getElementById("addTests").children;
+			for(var i = 0; i < testFields.length; i++) {
+				if(testFields[i].tagName == "INPUT")
+					jsonObj["Tests"].push(testFields[i].value);
+			}
+		} else if(reqType === "SearchQ") {
+			keysId = "searchKeys";
+			jsonObj["Diffs"] = getCheckedValues("searchDiff");
+		} else {
+			console.log("Invalid reqType passed to sendRequest()");
+			return -1;
+		}
+
 		// Loop through all keywords given add to KeyWs array
-		var keywordFields = document.getElementById("addKeys").children;
+		var keywordFields = document.getElementById(keysId).children;
 		for(var i = 0; i < keywordFields.length; i++) {
 			if(keywordFields[i].tagName == "INPUT")
 				jsonObj["Keys"].push(keywordFields[i].value);
 		}
-		// Loop through all test cases given and add to Tests array
-		var testFields = document.getElementById("addTests").children;
-		for(var i = 0; i < testFields.length; i++) {
-			if(testFields[i].tagName == "INPUT")
-				jsonObj["Tests"].push(testFields[i].value);
-		}
 		var jsonStr = JSON.stringify(jsonObj);
-		console.log("Sending: " + jsonStr);					// <--- JUST FOR TESTING, REMOVE LATER
+		console.log("Sent: " + jsonStr);					// <--- JUST FOR TESTING, REMOVE LATER
 		xhttp.onreadystatechange = function() {
 			if (xhttp.readyState == 4 && xhttp.status == 200) {
 				console.log(xhttp.responseText);
