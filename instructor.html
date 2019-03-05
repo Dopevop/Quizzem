@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
 <head>
 	<title>Quizzum</title>
@@ -17,7 +16,7 @@
 			<input id="qDes" type="text"> </br>
 			Difficulty </br>
 			<input id="qKWs" type="text"> </br>
-			<div id="keywords"></div>
+			<div id="addKeys"></div>
 			<div id="testCases"></div>
 			</br>
 			<button id="submitQuestionBtn" type="button">Submit</button> 
@@ -34,62 +33,69 @@
 			<label for="medium">Medium</label> </br>
 			<input id="hard" type="checkbox" name="hard" value="hard">
 			<label for="hard">Hard</label> </br>
+			<div id="searchKeys"></div>
+			</br>
+			<button id="searchQuestionBtn" type="button">Submit</button> 
+			<button id="clearSearchBtn"   type="reset">Clear</button> 
 		</fieldset>
 	</form>
 	<script>
-	var keywords = document.getElementById("keywords");
+	var keywords = document.getElementById("addKeys");
 	var testCases = document.getElementById("testCases");
-	document.getElementById("submitQuestionBtn").addEventListener("click", postForm);
+	document.getElementById("submitQuestionBtn").addEventListener("click", postQuestion);
 	document.getElementById("clearQuestionBtn").addEventListener("click", resetInput);
-	resetInput();
-	function resetInput() {
-		var keywordsHTML = ` 
-			Keywords
-			<button id="addKeywordBtn" type="button" onclick="addKeyword()">+</button> 
-			</br>
-			<input type="text"> </br>
-		`;
-		var testCaseHTML = ` 
-			Test Cases
-			<button id="addTestCaseBtn" type="button" onclick="addTestCase()">+</button> 
-			</br>
-			<input type="text"> </br>
-		`;
-		keywords.innerHTML = keywordsHTML;
-		testCases.innerHTML = testCaseHTML;
-	}
-	function addKeyword() {
+	resetInput("Test Cases", "testCases", 'addInput("testCases")');
+	resetInput("Keywords", "addKeys", 'addInput("addKeys")');
+
+	/* Add another input text box to the top of the specified element.
+	 * Works for elements that contain a label, a button, and then a list of inputs 
+	 * elemId: The id of the element you want to add the input box to */
+	function addInput(elemId) {
+		var elem = document.getElementById(elemId);
 		var textInput = document.createElement("INPUT");
 		var breakElem = document.createElement("BR");
-		keywords.insertBefore(breakElem, keywords.childNodes[4]);
-		keywords.insertBefore(textInput, keywords.childNodes[4]);
+		elem.insertBefore(textInput, elem.childNodes[4]);
+		elem.insertBefore(breakElem, elem.childNodes[4]);
 	}
-	function addTestCase() {
-		var textInput = document.createElement("INPUT");
-		var breakElem = document.createElement("BR");
-		testCases.insertBefore(breakElem, testCases.childNodes[4]);
-		testCases.insertBefore(textInput, testCases.childNodes[4]);
+
+	/* Resets an input div to contain a label, a button for adding more inputs,
+	 * and a single text input.
+	 * label: The label of the input fields (e.g. Keywords, or Test Cases)
+	 * elemId: The id of the button that will be added to this  */
+	function resetInput(label, elemId, func) {
+		var htmlStr = "" + label + '<button id="' + elemId + '" type="button" ' +
+			'onclick=' + func + '>+</button></br><input type="text">';
+		console.log(htmlStr);
+		document.getElementById(elemId).innerHTML = htmlStr;
 	}
-	function postForm() {
+
+	/* Posts the new question to be added to the database
+	 * Sends the Type, Description, an array of Keywords, and an array of Tests
+	 * The JSON sent and the response received are both made into alerts 
+	 * The response should be in JSON format or will result in an error */
+	function postQuestion() {
 		var xhttp  = new XMLHttpRequest();
+		// Create new object with type and description initialized; Keywords and Tests declared.
 		var jsonObj = {
 			"Type" : "AddQ",
 			"Desc" : document.getElementById("qDes").value,
 			"KeyWs"  : [],
 			"Tests"  : []
 		}
-		var keywordFields = document.getElementById("keywords").children;
+		// Loop through all keywords given add to KeyWs array
+		var keywordFields = document.getElementById("addKeys").children;
 		for(var i = 0; i < keywordFields.length; i++) {
 			if(keywordFields[i].tagName == "INPUT")
 				jsonObj["KeyWs"].push(keywordFields[i].value);
 		}
+		// Loop through all test cases given and add to Tests array
 		var testFields = document.getElementById("testCases").children;
 		for(var i = 0; i < testFields.length; i++) {
 			if(testFields[i].tagName == "INPUT")
 				jsonObj["Tests"].push(testFields[i].value);
 		}
 		var jsonStr = JSON.stringify(jsonObj);
-		alert("Sending: " + jsonStr);
+		alert("Sending: " + jsonStr);					// <--- JUST FOR TESTING, REMOVE LATER
 		xhttp.onreadystatechange = function() {
 			if (xhttp.readyState == 4 && xhttp.status == 200) {
 				console.log(xhttp.responseText);
