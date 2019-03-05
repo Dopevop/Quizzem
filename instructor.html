@@ -8,44 +8,46 @@
 	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-	<form>
+	<form id="addForm">
 		<fieldset>
 			<legend>Create Question:</legend>
-			
 			Description </br>
-			<input id="qDes" type="text"> </br>
+			<input id="addDesc"   type="text"> </br>
 			Difficulty </br>
-			<input id="qKWs" type="text"> </br>
-			<div id="addKeys"></div>
-			<div id="testCases"></div>
+			<input id="addDiff"   type="text"> </br>
+			<div   id="addKeys"   class="modular"></div>
+			<div   id="addTests"  class="modular"></div>
 			</br>
-			<button id="submitQuestionBtn" type="button">Submit</button> 
-			<button id="clearQuestionBtn"  type="reset">Clear</button> 
+			<button id="addSubmit" type="button">Submit</button> 
+			<button id="addClear"  type="reset">Clear</button> 
 		</fieldset>
 	</form>	
-	<form>
+	<form id="searchForm">
 		<fieldset>
 			<legend>Search for Questions</legend>
 			Difficulty </br>
-			<input id="easy" type="checkbox" name="easy" value="easy"> 
-			<label for="easy">Easy</label> </br>
-			<input id="medium" type="checkbox" name="medium" value="medium"> 
-			<label for="medium">Medium</label> </br>
-			<input id="hard" type="checkbox" name="hard" value="hard">
-			<label for="hard">Hard</label> </br>
-			<div id="searchKeys"></div>
+			<input id ="searchEasy" type ="checkbox" name="easy" value  ="easy">
+			<label for="searchEasy">Easy</label> </br>
+			<input id ="searchMed"  type ="checkbox" name="medium" value="medium">
+			<label for="searchMed">Medium</label> </br>
+			<input id ="searchHard" type ="checkbox" name="hard" value  ="hard">
+			<label for="searchHard">Hard</label> </br>
+			<div id   ="searchKeys" class="modular"></div>
 			</br>
-			<button id="searchQuestionBtn" type="button">Submit</button> 
-			<button id="clearSearchBtn"   type="reset">Clear</button> 
+			<button id="searchSubmit" type="button">Submit</button> 
+			<button id="searchClear"  type="reset">Clear</button> 
 		</fieldset>
 	</form>
 	<script>
-	var keywords  = document.getElementById("addKeys");
-	var testCases = document.getElementById("testCases");
-	document.getElementById("submitQuestionBtn").addEventListener("click", postQuestion);
-	document.getElementById("clearQuestionBtn").addEventListener("click", resetInput);
-	resetInput("Test Cases", "testCases", 'addInput("testCases")');
-	resetInput("Keywords", "addKeys", 'addInput("addKeys")');
+	<!-- var addKeys  = document.getElementById("addKeys"); -->
+	<!-- var addTests = document.getElementById("addTests"); -->
+
+	document.getElementById("addSubmit").addEventListener("click", postQuestion);
+	document.getElementById("addClear" ).addEventListener("click", resetInput);
+
+	resetInput("Test Cases", "addTests"  , 'addInput("addTests")');
+	resetInput("Keywords"  , "addKeys"   , 'addInput("addKeys")');
+	resetInput("Keywords"  , "searchKeys", 'addInput("searchKeys")');
 
 	/* Add another input text box to the top of the specified element.
 	 * Works for elements that contain a label, a button, and then a list of inputs 
@@ -56,6 +58,10 @@
 		var breakElem = document.createElement("BR");
 		elem.insertBefore(textInput, elem.childNodes[4]);
 		elem.insertBefore(breakElem, elem.childNodes[4]);
+	}
+
+	function clearForm() {
+
 	}
 
 	/* Resets an input div to contain a label, a button for adding more inputs,
@@ -78,18 +84,18 @@
 		// Create new object with type and description initialized; Keywords and Tests declared.
 		var jsonObj = {
 			"Type"  : "AddQ",
-			"Desc"  : document.getElementById("qDes").value,
-			"KeyWs" : [],
+			"Desc"  : document.getElementById("addDesc").value,
+			"Keys"  : [],
 			"Tests" : []
 		}
 		// Loop through all keywords given add to KeyWs array
 		var keywordFields = document.getElementById("addKeys").children;
 		for(var i = 0; i < keywordFields.length; i++) {
 			if(keywordFields[i].tagName == "INPUT")
-				jsonObj["KeyWs"].push(keywordFields[i].value);
+				jsonObj["Keys"].push(keywordFields[i].value);
 		}
 		// Loop through all test cases given and add to Tests array
-		var testFields = document.getElementById("testCases").children;
+		var testFields = document.getElementById("addTests").children;
 		for(var i = 0; i < testFields.length; i++) {
 			if(testFields[i].tagName == "INPUT")
 				jsonObj["Tests"].push(testFields[i].value);
