@@ -18,19 +18,19 @@
 			<div   id="addKeys"   class="modular keys"></div>
 			<div   id="addTests"  class="modular tests"></div>
 			</br>
-			<button id="addSub" type="button">Submit</button> 
-			<button id="addClear"  type="reset">Clear</button> 
+			<button id="addSub"   type="button">Submit</button> 
+			<button id="addClear" type="reset">Clear</button> 
 		</fieldset>
 	</form>	
 	<form id="searchForm">
 		<fieldset>
 			<legend>Search for Questions</legend>
 			Difficulty </br>
-			<input id ="searchEasy" type ="checkbox" name="easy" value  ="easy">
+			<input id ="searchEasy" type ="checkbox" name="diff" value="easy">
 			<label for="searchEasy">Easy</label> </br>
-			<input id ="searchMed"  type ="checkbox" name="medium" value="medium">
+			<input id ="searchMed"  type ="checkbox" name="diff" value="medium">
 			<label for="searchMed">Medium</label> </br>
-			<input id ="searchHard" type ="checkbox" name="hard" value  ="hard">
+			<input id ="searchHard" type ="checkbox" name="diff" value="hard">
 			<label for="searchHard">Hard</label> </br>
 			<div id   ="searchKeys" class="modular keys"></div>
 			</br>
@@ -41,9 +41,9 @@
 	<script>
 	/* Adding event listeners to submit and clear buttons 
 	 * Uses the id short hand rather than document.getElementById(id) */
-	addSub.addEventListener("click", function(){sendForm("AddQ")});
-	searchSub.addEventListener("click", function(){sendForm("SearchQ")});
-	addClear.addEventListener("click", function(){clearForm("addForm")});
+	addSub.addEventListener("click"     , function(){sendForm("AddQ")});
+	searchSub.addEventListener("click"  , function(){sendForm("SearchQ")});
+	addClear.addEventListener("click"   , function(){clearForm("addForm")});
 	searchClear.addEventListener("click", function(){clearForm("searchForm")});
 
 	/* Initializes the modular elements */
@@ -97,7 +97,7 @@
 		var xhttp  = new XMLHttpRequest();
 		// Create new object with type and description initialized; Keywords and Tests declared.
 		var jsonObj = {
-			"Type"  : "AddQ",
+			"Type"  : type,
 			"Desc"  : document.getElementById("addDesc").value,
 			"Keys"  : [],
 			"Tests" : []
@@ -115,12 +115,10 @@
 				jsonObj["Tests"].push(testFields[i].value);
 		}
 		var jsonStr = JSON.stringify(jsonObj);
-		alert("Sending: " + jsonStr);					// <--- JUST FOR TESTING, REMOVE LATER
+		console.log("Sending: " + jsonStr);					// <--- JUST FOR TESTING, REMOVE LATER
 		xhttp.onreadystatechange = function() {
 			if (xhttp.readyState == 4 && xhttp.status == 200) {
 				console.log(xhttp.responseText);
-				var retObj = JSON.parse(xhttp.responseText);
-				alert(JSON.stringify(retObj));
 			}
 		};
 		xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
