@@ -15,10 +15,10 @@
 			<input id="addDesc"   type="text"> </br>
 			Difficulty </br>
 			<input id="addDiff"   type="text"> </br>
-			<div   id="addKeys"   class="modular"></div>
-			<div   id="addTests"  class="modular"></div>
+			<div   id="addKeys"   class="modular keys"></div>
+			<div   id="addTests"  class="modular tests"></div>
 			</br>
-			<button id="addSubmit" type="button">Submit</button> 
+			<button id="addSub" type="button">Submit</button> 
 			<button id="addClear"  type="reset">Clear</button> 
 		</fieldset>
 	</form>	
@@ -32,19 +32,21 @@
 			<label for="searchMed">Medium</label> </br>
 			<input id ="searchHard" type ="checkbox" name="hard" value  ="hard">
 			<label for="searchHard">Hard</label> </br>
-			<div id   ="searchKeys" class="modular"></div>
+			<div id   ="searchKeys" class="modular keys"></div>
 			</br>
-			<button id="searchSubmit" type="button">Submit</button> 
+			<button id="searchSub" type="button">Submit</button> 
 			<button id="searchClear"  type="reset">Clear</button> 
 		</fieldset>
 	</form>
 	<script>
-	<!-- var addKeys  = document.getElementById("addKeys"); -->
-	<!-- var addTests = document.getElementById("addTests"); -->
+	/* Adding event listeners to submit and clear buttons 
+	 * Uses the id short hand rather than document.getElementById(id) */
+	addSub.addEventListener("click", function(){sendForm("AddQ")});
+	searchSub.addEventListener("click", function(){sendForm("SearchQ")});
+	addClear.addEventListener("click", function(){clearForm("addForm")});
+	searchClear.addEventListener("click", function(){clearForm("searchForm")});
 
-	document.getElementById("addSubmit").addEventListener("click", postQuestion);
-	document.getElementById("addClear" ).addEventListener("click", resetInput);
-
+	/* Initializes the modular elements */
 	resetInput("Test Cases", "addTests"  , 'addInput("addTests")');
 	resetInput("Keywords"  , "addKeys"   , 'addInput("addKeys")');
 	resetInput("Keywords"  , "searchKeys", 'addInput("searchKeys")');
@@ -60,10 +62,6 @@
 		elem.insertBefore(breakElem, elem.childNodes[4]);
 	}
 
-	function clearForm() {
-
-	}
-
 	/* Resets an input div to contain a label, a button for adding more inputs,
 	 * and a single text input.
 	 * label: The label of the input fields (e.g. Keywords, or Test Cases)
@@ -71,15 +69,31 @@
 	function resetInput(label, elemId, func) {
 		var htmlStr = "" + label + '<button id="' + elemId + '" type="button" ' +
 			'onclick=' + func + '>+</button></br><input type="text">';
-		console.log(htmlStr);
 		document.getElementById(elemId).innerHTML = htmlStr;
+	}
+
+	/* Resets all of the modular elements inside of the specified element.
+	 * Modular elems are those such as keywords where more can be added
+	 * The given id should contain modular elements, most likely a form */
+	function clearForm(formId) {
+		var elems = document.getElementById(formId).getElementsByClassName("modular");
+		for(var i=0; i<elems.length; i++) {
+			var classes = elems[i].classList;
+			if(classes.contains("modular")) {
+				if(classes.contains("tests")) {
+					resetInput("Test Cases", elems[i].id, 'addInput("'+elems[i].id+'")');
+				} else {
+					resetInput("Keywords"  , elems[i].id, 'addInput("'+elems[i].id+'")');
+				}
+			}
+		}
 	}
 
 	/* Posts the new question to be added to the database
 	 * Sends the Type, Description, an array of Keywords, and an array of Tests
 	 * The JSON sent and the response received are both made into alerts 
 	 * The response should be in JSON format or will result in an error */
-	function postQuestion() {
+	function sendForm(type) {
 		var xhttp  = new XMLHttpRequest();
 		// Create new object with type and description initialized; Keywords and Tests declared.
 		var jsonObj = {
