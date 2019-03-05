@@ -13,8 +13,16 @@
 			<legend>Create Question:</legend>
 			Description </br>
 			<input id="addDesc"   type="text"> </br>
-			Difficulty </br>
-			<input id="addDiff"   type="text"> </br>
+
+			<div id="addDiff">
+				Difficulty </br>
+				<label><input type="radio" name="diff" value="1">Very Easy</label></br>
+				<label><input type="radio" name="diff" value="2">Easy</label></br>
+				<label><input type="radio" name="diff" value="3">Medium</label></br>
+				<label><input type="radio" name="diff" value="4">Hard</label></br>
+				<label><input type="radio" name="diff" value="5">Very Hard</label></br>
+			</div>
+
 			<div   id="addKeys"   class="modular keys"></div>
 			<div   id="addTests"  class="modular tests"></div>
 			</br>
@@ -89,6 +97,17 @@
 		}
 	}
 
+	/* Returns the value of the first checked input element contained by the given element 
+	 * This assumes radio input types inside a div of their own */
+	function getCheckedValue(divId) {
+		var elems = document.getElementById(divId).getElementsByTagName("INPUT");
+		for(var i=0; i<elems.length; i++){
+			if(elems[i].checked){
+				return elems[i].value;
+			}
+		}
+	}
+
 	/* Posts the new question to be added to the database
 	 * Sends the Type, Description, an array of Keywords, and an array of Tests
 	 * The JSON sent and the response received are both made into alerts 
@@ -98,7 +117,8 @@
 		// Create new object with type and description initialized; Keywords and Tests declared.
 		var jsonObj = {
 			"Type"  : type,
-			"Desc"  : document.getElementById("addDesc").value,
+			"Desc"  : addDesc.value,
+			"Diff"  : getCheckedValue("addDiff"),
 			"Keys"  : [],
 			"Tests" : []
 		}
