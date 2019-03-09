@@ -8,26 +8,23 @@
 	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-	<form id="addForm">
-		<div id="quizPreview">
-			<ul id="qList"></ul>
-		</div>
-		<div id="quizBuilder">
+	<div id="quizPreview">
+		<ul id="qList"></ul>
+	</div>
+	<div id="quizBuilder">
+		<form id="addForm">
 			<fieldset>
 				<legend>Create Question:</legend>
 				Description </br>
-				<input id="addDesc"   type="text"> </br>
-
+				<input id="addDesc" type="text"> </br>
 				<div id="addDiff">
 					Difficulty </br>
 					<label><input type="radio" name="diff" value="1">Very Easy</label></br>
 					<label><input type="radio" name="diff" value="2">Easy	 </label></br>
-					<label><input type="radio" name="diff" value="3" checked>Medium   </label></br>
+					<label><input type="radio" name="diff" value="3" checked>Medium</label></br>
 					<label><input type="radio" name="diff" value="4">Hard	 </label></br>
 					<label><input type="radio" name="diff" value="5">Very Hard</label></br>
 				</div>
-
-				<div   id="addKeys"   class="modular keys"></div>
 				<div   id="addTests"  class="modular tests"></div>
 				</br>
 				<button id="addSub"   type="reset">Submit</button> 
@@ -62,9 +59,8 @@
 	searchSub.addEventListener("click", function(){clearForm("searchForm")});
 
 	/* Initializes the modular elements */
-	resetInput("Test Cases", "addTests"  , 'addInput("addTests")');
-	resetInput("Keywords"  , "addKeys"   , 'addInput("addKeys")');
-	resetInput("Keywords"  , "searchKeys", 'addInput("searchKeys")');
+	resetModal("Test Cases", "addTests"  , 'addInput("addTests")');
+	resetModal("Keywords"  , "searchKeys", 'addInput("searchKeys")');
 
 	/* Add another input text box to the top of the specified element.
 	 * Works for elements that contain a label, a button, and then a list of inputs 
@@ -76,15 +72,29 @@
 		elem.insertBefore(textInput, elem.childNodes[4]);
 		elem.insertBefore(breakElem, elem.childNodes[4]);
 	}
-
+	
 	/* Resets an input div to contain a label, a button for adding more inputs,
 	 * and a single text input.
 	 * label: The label of the input fields (e.g. Keywords, or Test Cases)
-	 * elemId: The id of the button that will be added to this  */
-	function resetInput(label, elemId, func) {
-		var htmlStr = "" + label + '<button id="' + elemId + '" type="button" ' +
-			'onclick=' + func + '>+</button></br><input type="text">';
-		document.getElementById(elemId).innerHTML = htmlStr;
+	 * elemId: The id of the button that will be added to this  
+	 * func: The function that will be applied to the button */
+	function resetModal(label, elemId, func) {
+		var modalElem = document.getElementById(elemId);
+		var brkElem   = document.createElement("BR");
+		var textLabel = document.createTextNode(label);
+		var btnElem   = document.createElement("BUTTON");
+		var btnText   = document.createTextNode("+");
+		btnElem.appendChild(btnText);
+		btnElem.setAttribute("type", "button");
+		btnElem.setAttribute("onclick", func);
+
+		modalElem.innerHTML = "";
+		modalElem.appendChild(textLabel);
+		modalElem.appendChild(btnElem);
+		modalElem.appendChild(brkElem);
+		modalElem.appendChild(document.createElement("INPUT"));
+		if(elemId === "addTests")
+			modalElem.appendChild(document.createElement("INPUT"));
 	}
 
 	/* Resets all of the modular elements inside of the specified element.
@@ -96,9 +106,9 @@
 			var classes = elems[i].classList;
 			if(classes.contains("modular")) {
 				if(classes.contains("tests")) {
-					resetInput("Test Cases", elems[i].id, 'addInput("'+elems[i].id+'")');
+					resetModal("Test Cases", elems[i].id, 'addInput("'+elems[i].id+'")');
 				} else {
-					resetInput("Keywords"  , elems[i].id, 'addInput("'+elems[i].id+'")');
+					resetModal("Keywords"  , elems[i].id, 'addInput("'+elems[i].id+'")');
 				}
 			}
 		}
@@ -217,17 +227,17 @@
 		} else if(reqType === "SearchQ") {
 			keysId = "searchKeys";
 			jsonObj["Diffs"] = getCheckedValues("searchDiff");
+			// Loop through all keywords given add to KeyWs array
+			var keywordFields = document.getElementById(keysId).children;
+			for(var i = 0; i < keywordFields.length; i++) {
+				if(keywordFields[i].tagName == "INPUT")
+					jsonObj["Keys"].push(keywordFields[i].value);
+			}
 		} else {
 			console.log("Invalid reqType passed to sendRequest()");
 			return -1;
 		}
 
-		// Loop through all keywords given add to KeyWs array
-		var keywordFields = document.getElementById(keysId).children;
-		for(var i = 0; i < keywordFields.length; i++) {
-			if(keywordFields[i].tagName == "INPUT")
-				jsonObj["Keys"].push(keywordFields[i].value);
-		}
 
 		questions.push(jsonObj);	// Add new question to local questions array
 		addToQList(jsonObj);		// Add new question to previewed questions
