@@ -237,8 +237,7 @@
 		console.log("Sent: " + jsonStr);					// <--- JUST FOR TESTING, REMOVE LATER
 		xhttp.onreadystatechange = function() {
 			if (xhttp.readyState == 4 && xhttp.status == 200) {
-				console.log("Rcvd:");
-				console.log(xhttp.responseText);
+				console.log("Rcvd: " + xhttp.responseText);
 			}
 		};
 		xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
