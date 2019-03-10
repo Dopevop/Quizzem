@@ -50,7 +50,9 @@
 		</form>
 	</div>
 	<div id="quizPreview">
-		<ul id="qList"></ul>
+		<ul id="qList">
+			<li>Q's Go Here</li>
+		</ul>
 	</div>
 	<script>
 	// Var to hold all locally known questions
@@ -69,7 +71,7 @@
 	 * Uses the id short hand rather than document.getElementById(id) */
 	addSub.addEventListener("click"   , function(){sendRequest("AddQ")});
 	addSub.addEventListener("click"   , function(){clearForm("addForm")});
-	searchSub.addEventListener("click", function(){sendRequest("SearchQ")});
+	searchSub.addEventListener("click", function(){displaySearchResults()});
 	searchReset.addEventListener("click", function(){clearForm("searchForm")});
 
 	/* Initializes the modular elements */
@@ -83,28 +85,37 @@
 	function localSearch(topic, diffs, keys) {
 		var matches = [];
 		for(var i=0; i<localQ.length; i++){
-			var thisTopic = localQ[i]["Topic"].toLowerCase();
+			var thisQ = localQ[i];
+			var thisTopic = thisQ["Topic"].toLowerCase();
 			if(topic === "" || thisTopic === topic.toLowerCase()){
 				// Topic matches, now check Diffs
-				var thisDiff = localQ[i]["Diff"];
-				if( diffs.includes(thisDiff) ){
+				var thisDiff = thisQ["Diff"][0];
+				if( containsDiff(thisDiff, diffs) ){
 					// Topic and Diff matches, check Keys
-					var thisDesc = localQ[i]["Desc"].toLowerCase();
+					var thisDesc = thisQ["Desc"].toLowerCase();
 					var keysChecked = 0;
 					for(var j=0; j<keys.length; j++) {
 						var thisKey = keys[j].toLowerCase();
-						if( thisDesc.match(thisKey) ){
+						if( thisDesc.match(thisKey)){
 							// Topic, Diff, & Key matches, add to matches
 							keysChecked++;
-							matches.push(localQ[i]);
+							matches.push(thisQ);
 							break;
 						}
 					}
+					if(keysChecked === 0)
+						matches.push(thisQ);
 				}
-
-			} 
+			}
 		}
 		return matches;
+	}
+
+	function containsDiff(diff, diffs){
+		for(var i=0; i<diffs.length; i++){
+			if(diffs[i] == diff) return true;
+		}
+		return false;
 	}
 
 	/* Add another input text box to the top of the specified element.
@@ -193,24 +204,50 @@
 	 * Given a string Very Easy, Easy, Medium, Hard, Very Hard return corresponding 1-5
 	 * Given anything else, returns -1 */
 	function convertDiffFormat(diff) {
-		var swapper = {"1":"Very Easy","2":"Easy","3":"Medium","4":"Hard","5":"Very Hard",
-					   "Very Easy":"1","Easy":"2","Medium":"3","Hard":"4","Very Hard":"5",};
+		var swapper = {"1":"Very Easy", "2":"Easy", "3":"Medium", "4":"Hard", "5":"Very Hard",
+				   	   1:"Very Easy"  , 2:"Easy"  , 3:"Medium"  , 4:"Hard"  , 5:"Very Hard"  ,
+					   "Very Easy":"1", "Easy":"2", "Medium":"3", "Hard":"4", "Very Hard":"5", };
 		return swapper[diff];
 	}
 
 	/* Turns the given question into an HTML element
 	 * Inserts new element into list of previewed questions */
 	function addToPreview(newQ){
-		var Desc     = newQ["Desc"];
-		var Diff     = convertDiffFormat(newQ["Diff"]);
-		var item     = document.createElement("LI");
-		var br       = document.createElement("BR");
-		var descText = document.createTextNode(""+Desc);
-		var diffText = document.createTextNode("Difficulty: "+Diff);
+		var item      = document.createElement("LI");
+		var descText  = document.createTextNode(newQ["Desc"]);
+		var diffText  = document.createTextNode("Difficulty: "+newQ["Diff"]);
+		var topicText = document.createTextNode("Topic: "+newQ["Topic"]);
 		item.appendChild(descText);
-		item.appendChild(br);
+		item.appendChild(document.createElement("BR"));
+		item.appendChild(topicText);
+		item.appendChild(document.createElement("BR"));
 		item.appendChild(diffText);
 		document.getElementById("qList").appendChild(item);
+	}
+
+	function clearPreview() {
+		var ul = document.createElement("UL");
+		ul.setAttribute("id", "qList");
+		ul.appendChild(document.createTextNode("Questions List"));
+		quizPreview.innerHTML = "";
+		quizPreview.appendChild(ul);
+	}
+
+	function displaySearchResults() {
+		var topic = searchTopic.value;
+		var diffs = getCheckedValues("searchDiff");
+		var keys  = getNonEmptyInputs("searchKeys");
+		var matches = localSearch(topic, diffs, keys);
+		console.log(topic);
+		console.log(diffs);
+		console.log(keys);
+		console.log(matches);
+
+		clearPreview();
+
+		for(var i=0; i<matches.length; i++){
+			addToPreview(matches[i]);
+		}
 	}
 
 	/* Checks the given question's Id against all Ids in localQ
@@ -227,9 +264,6 @@
 		return uniq;
 	}
 
-	function displaySearchResults() {
-		var matches = localSearch(searchTopic.value, );
-	}
 
 	/* Returns all non-empty input values in an array 
 	 * Takes the Id of a div element */
@@ -294,6 +328,8 @@
 						// Loop through DB Q's, adding each to local Q's
 						var DBQ = replyObj["Questions"];
 						for(var i=0; i<DBQ.length; i++){
+							if(!DBQ[i]["Topic"])
+								DBQ[i]["Topic"] = "UNDEFINED";
 							if(uniqQuestion(DBQ[i])){
 								localQ.push(DBQ[i]);
 							}
