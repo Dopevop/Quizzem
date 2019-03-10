@@ -57,12 +57,18 @@
 		{
 			"Desc":"TestDesc",
 			"Topic":"TestTopic",
-			"Diff":"TestDiff",
+			"Diff":"1",
 			"Tests":[ "TestTest" ],
+		},
+		{
+			"Desc":"BestDesc",
+			"Topic":"BestTopic",
+			"Diff":"2",
+			"Tests":[ "BestTest" ],
 		}
 	];
-	console.log("localQ" + JSON.stringify(localQ));
-	localSearch("a","","");
+	console.log("localQ: " + JSON.stringify(localQ));
+	localSearch("BestTopic", ["2","4","5"], [""]);
 	sendRequest("SearchQ");
 
 	/* Adding event listeners to submit and clear buttons 
@@ -77,18 +83,39 @@
 	resetModal("Keywords"  , "searchKeys", 'addInput("searchKeys")');
 
 	/* Searches through local questions returning matches
-	 * Keys[]: An array of words to search through descriptions by
-	 * Diffs[]: An array of difficulties to filter by 
-	 * Topic: A topic to search by */
-	function localSearch(Topic, Diffs, Keys) {
+	 * Topic   : A topic to search by, "" matches all topics
+	 * Diffs[] : An array of difficulties to filter by
+	 * Keys[]  : An array of words to search through descriptions by */
+	function localSearch(topic, diffs, keys) {
 		var matches = [];
 		for(var i=0; i<localQ.length; i++){
-			if( localQ[i]["Topic"].match(Topic) ){
-				console.log(localQ[i]["Topic"] + " matches " + Topic);
-			} else {
-				console.log(localQ[i]["Topic"] + " doesn't match " + Topic);
-			}
+			var thisTopic = localQ[i]["Topic"].toLowerCase();
+			if(topic === "" || thisTopic === topic.toLowerCase()){
+				// Topic matches, now check Diffs
+				var thisDiff = localQ[i]["Diff"];
+				if( diffs.includes(thisDiff) ){
+					// Topic and Diff matches, check Keys
+					var thisDesc = localQ[i]["Desc"].toLowerCase();
+					var keysChecked = 0;
+					for(var j=0; j<keys.length; j++) {
+						var thisKey = keys[i].toLowerCase();
+						if(thisKey === "") {
+							continue;
+						}
+						if( thisDesc.match(thisKey) ){
+							matches.push(localQ[j]);
+							break;
+						} else {
+							keysChecked++;
+						}
+					}
+					if(keysChecked === 0)
+						matches.push(localQ[i]);
+				}
+
+			} 
 		}
+		console.log("Matches:\n " + JSON.stringify(matches));
 	}
 
 	/* Add another input text box to the top of the specified element.
