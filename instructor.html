@@ -59,6 +59,8 @@
 		</ul>
 	</div>
 	<script>
+	// var to hold selected questionsn from preview list
+	var selectedQ = [];
 	// Var to hold all locally known questions
 	var localQ = [
 		{ "Id":"0" , "Desc":"Write a function name inRange() that tests whether a given number falls within a specified range. The function inRange() takes three parameters: testNum, floor, ceiling. The function inRange() should return True if testNum is greater than or equal to floor and less than or equal to ceiling.", "Topic":"If Statements"         , "Diff":"1", "Tests":[ "TestTest" ] },
@@ -78,12 +80,12 @@
 
 	/* Adding event listeners to submit and clear buttons 
 	 * Uses the id short hand rather than document.getElementById(id) */
-	addSub.addEventListener("click"     , function(){sendRequest("AddQ")});
-	addSub.addEventListener("click"     , function(){clearForm("addForm")});
-	searchSub.addEventListener("click"  , function(){displaySearchResults()});
-	searchReset.addEventListener("click", function(){clearForm("searchForm")});
-	addForm.addEventListener("mousemove", function(){updateDiff()});
-	addRange.addEventListener("mouseup" , function(){updateDiff()});
+	addSub.addEventListener("click"     , function() { sendRequest("AddQ")     } );
+	addSub.addEventListener("click"     , function() { clearForm("addForm")    } );
+	searchSub.addEventListener("click"  , function() { displaySearchResults()  } );
+	searchReset.addEventListener("click", function() { clearForm("searchForm") } );
+	addForm.addEventListener("mousemove", function() { updateDiff()            } );
+	addRange.addEventListener("mouseup" , function() { updateDiff()            } );
 
 	function updateDiff() {
 		addSpan.innerHTML = convertDiffFormat(addRange.value);
@@ -232,12 +234,34 @@
 		var descText  = document.createTextNode(newQ["Desc"]);
 		var diffText  = document.createTextNode("Difficulty: "+newQ["Diff"]);
 		var topicText = document.createTextNode("Topic: "+newQ["Topic"]);
+		var idStr = "q" + newQ["Id"];
+		item.setAttribute("id", idStr);
+		console.log(idStr);
+		item.addEventListener("click", function() { selectQuestion(idStr) });
 		item.appendChild(descText);
 		item.appendChild(document.createElement("BR"));
 		item.appendChild(diffText);
 		item.appendChild(document.createTextNode(" ~ "));
 		item.appendChild(topicText);
 		document.getElementById("qList").appendChild(item);
+	}
+
+	/* Adds the selected question to the selectedQ array
+ 	 * These are questions pending submittal of an exam
+	 * listItemId: The id of the List Item that the question appears in */
+	function selectQuestion(listItemId) {
+		var qId = listItemId.substring(1); 
+		var elemClicked = document.getElementById(listItemId);
+		for(var i=0; i<localQ.length; i++){
+			if(localQ[i]["Id"] === qId){
+				if(uniqQuestion(localQ[i], selectedQ)) {
+					selectedQ.push(localQ[i]);
+					elemClicked.appendChild(document.createTextNode(" ~ Selected ~ "));
+				}
+				break;
+			}
+		}
+		console.log(selectedQ);
 	}
 
 	function clearPreview() {
@@ -262,11 +286,11 @@
 
 	/* Checks the given question's Id against all Ids in localQ
 	 * Returns true if given question's Id is not found */
-	function uniqQuestion(question){
+	function uniqQuestion(question, qArr){
 		var uniq = true;
 		var thisId = question["Id"];
-		for(var i=0; i<localQ.length; i++){
-			if( localQ[i]["Id"] === thisId ) {
+		for(var i=0; i<qArr.length; i++){
+			if( qArr[i]["Id"] === thisId ) {
 				uniq = false;
 				break;
 			}
@@ -340,7 +364,7 @@
 						for(var i=0; i<DBQ.length; i++){
 							if(!DBQ[i]["Topic"])
 								DBQ[i]["Topic"] = "UNDEFINED";
-							if(uniqQuestion(DBQ[i])){
+							if(uniqQuestion(DBQ[i], localQ)){
 								localQ.push(DBQ[i]);
 							}
 						}
