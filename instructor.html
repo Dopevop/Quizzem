@@ -44,7 +44,8 @@
 				</div>
 				<div id   ="searchKeys" class="modular keys"></div>
 				</br>
-				<button id="searchSub" type="reset">Submit</button> 
+				<button id="searchSub" type="button">Submit</button> 
+				<button id="searchReset" type="reset">Clear</button> 
 			</fieldset>
 		</form>
 	</div>
@@ -54,25 +55,25 @@
 	<script>
 	// Var to hold all locally known questions
 	var localQ = [
-		{ "Id":"0", "Desc":"Test","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] },
-		{ "Id":"-1","Desc":"Rest","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] },
-		{ "Id":"-2","Desc":"Bunt","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] },
-		{ "Id":"-3","Desc":"Lart","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] },
-		{ "Id":"-4","Desc":"Fits","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] },
+		<!-- { "Id":"0", "Desc":"Test","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] }, -->
+		<!-- { "Id":"-1","Desc":"Rest","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] }, -->
+		<!-- { "Id":"-2","Desc":"Bunt","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] }, -->
+		<!-- { "Id":"-3","Desc":"Lart","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] }, -->
+		<!-- { "Id":"-4","Desc":"Fits","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] }, -->
 	];
-	console.log("localQ: " + JSON.stringify(localQ));
-	var matches = localSearch("", ['1','2','3','4','5'], ["t"]);
-	console.log("Keys:'t'\n" + JSON.stringify(matches) );
-	var matches = localSearch("", ['1','2','3','4','5'], ["st"]);
-	console.log("Keys:'st'\n" + JSON.stringify(matches) );
-	var matches = localSearch("", ['1','2','3','4','5'], ["est"]);
-	console.log("Keys:'est'\n" + JSON.stringify(matches) );
-	var matches = localSearch("", ['1','2','3','4','5'], ["Test"]);
-	console.log("Keys:'Test'\n" + JSON.stringify(matches) );
-	var matches = localSearch("", ['1','2','3','4','5'], ["b.+"]);
-	console.log("Keys:'b.+'\n" + JSON.stringify(matches) );
-	var matches = localSearch("", ['1','2','3','4','5'], [".e.."]);
-	console.log("Keys:'.e..'\n" + JSON.stringify(matches) );
+	<!-- console.log("localQ: " + JSON.stringify(localQ)); -->
+	<!-- var matches = localSearch("", ['1','2','3','4','5'], ["t"]); -->
+	<!-- console.log("Keys:'t'\n" + JSON.stringify(matches) ); -->
+	<!-- var matches = localSearch("", ['1','2','3','4','5'], ["st"]); -->
+	<!-- console.log("Keys:'st'\n" + JSON.stringify(matches) ); -->
+	<!-- var matches = localSearch("", ['1','2','3','4','5'], ["est"]); -->
+	<!-- console.log("Keys:'est'\n" + JSON.stringify(matches) ); -->
+	<!-- var matches = localSearch("", ['1','2','3','4','5'], ["Test"]); -->
+	<!-- console.log("Keys:'Test'\n" + JSON.stringify(matches) ); -->
+	<!-- var matches = localSearch("", ['1','2','3','4','5'], ["b.+"]); -->
+	<!-- console.log("Keys:'b.+'\n" + JSON.stringify(matches) ); -->
+	<!-- var matches = localSearch("", ['1','2','3','4','5'], [".e.."]); -->
+	<!-- console.log("Keys:'.e..'\n" + JSON.stringify(matches) ); -->
 
 	/* Get all questions in database */
 	sendRequest("SearchQ");
@@ -82,7 +83,7 @@
 	addSub.addEventListener("click"   , function(){sendRequest("AddQ")});
 	addSub.addEventListener("click"   , function(){clearForm("addForm")});
 	searchSub.addEventListener("click", function(){sendRequest("SearchQ")});
-	searchSub.addEventListener("click", function(){clearForm("searchForm")});
+	searchReset.addEventListener("click", function(){clearForm("searchForm")});
 
 	/* Initializes the modular elements */
 	resetModal("Test Cases", "addTests"  , 'addInput("addTests")');
@@ -239,6 +240,23 @@
 		return uniq;
 	}
 
+	function displaySearchResults() {
+		var matches = localSearch(searchTopic.value, );
+	}
+
+	/* Returns all non-empty input values in an array 
+	 * Takes the Id of a div element */
+	function getNonEmptyInputs(divId) {
+		var result = [];
+		var elems = document.getElementById(divId).children;
+		for(var i = 0; i < elems.length; i++) {
+			if(elems[i].tagName == "INPUT")
+				if(elems[i].value != "")
+					result.push(elems[i].value);
+		}
+		return result;
+	}
+
 	/* Sends the specified type of request to the server 
 	 * Types so far: AddQ, SearchQ 
 	 * AddQ sends: { type, desc, diff, keys, tests }
@@ -262,27 +280,11 @@
 			jsonObj["Desc"]  = addDesc.value;
 			jsonObj["Topic"] = addTopic.value;
 			jsonObj["Diff"]  = getCheckedValue("addDiff");
-			jsonObj["Tests"] = [];
-			// Loop through all test cases given and add to Tests array
-			var testFields = document.getElementById("addTests").children;
-			for(var i = 0; i < testFields.length; i++) {
-				if(testFields[i].tagName == "INPUT")
-					if(testFields[i].value != "")
-						jsonObj["Tests"].push(testFields[i].value);
-			}
+			jsonObj["Tests"] = getNonEmptyInputs("addTests");
 		} else if(reqType === "SearchQ") {
-			// Add an array of checked values to Diffs
-			// If none are checked, sends all checked
 			jsonObj["Diffs"] = getCheckedValues("searchDiff");
 			jsonObj["Topic"] = searchTopic.value;
-			jsonObj["Keys"]  = [];
-			// Loop through all keywords given add to Keys array
-			var keywordFields = searchKeys.children;
-			for(var i = 0; i < keywordFields.length; i++) {
-				if(keywordFields[i].tagName == "INPUT")
-					if(keywordFields[i].value != "")
-						jsonObj["Keys"].push(keywordFields[i].value);
-			}
+			jsonObj["Keys"]  = getNonEmptyInputs("searchKeys");
 		} else {
 			console.log("Invalid reqType passed to sendRequest()");
 		}
@@ -298,7 +300,8 @@
 					console.log("Error: " + replyObj["Error"]);
 				} else {
 					if(replyObj["Type"] === "AddQ"){
-						localQ.push(replyObj["Question"]);
+						//localQ.push(replyObj["Question"]);
+						localQ.push(replyObj);
 						console.log(localQ);
 					} else if(replyObj["Type"] === "SearchQ") {
 						// Loop through DB Q's, adding each to local Q's
