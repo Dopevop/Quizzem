@@ -55,25 +55,12 @@
 	<script>
 	// Var to hold all locally known questions
 	var localQ = [
-		<!-- { "Id":"0", "Desc":"Test","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] }, -->
-		<!-- { "Id":"-1","Desc":"Rest","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] }, -->
-		<!-- { "Id":"-2","Desc":"Bunt","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] }, -->
-		<!-- { "Id":"-3","Desc":"Lart","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] }, -->
-		<!-- { "Id":"-4","Desc":"Fits","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] }, -->
+		{ "Id":"0", "Desc":"Test","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] },
+		{ "Id":"-1","Desc":"Rest","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] },
+		{ "Id":"-2","Desc":"Bunt","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] },
+		{ "Id":"-3","Desc":"Lart","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] },
+		{ "Id":"-4","Desc":"Fits","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] },
 	];
-	<!-- console.log("localQ: " + JSON.stringify(localQ)); -->
-	<!-- var matches = localSearch("", ['1','2','3','4','5'], ["t"]); -->
-	<!-- console.log("Keys:'t'\n" + JSON.stringify(matches) ); -->
-	<!-- var matches = localSearch("", ['1','2','3','4','5'], ["st"]); -->
-	<!-- console.log("Keys:'st'\n" + JSON.stringify(matches) ); -->
-	<!-- var matches = localSearch("", ['1','2','3','4','5'], ["est"]); -->
-	<!-- console.log("Keys:'est'\n" + JSON.stringify(matches) ); -->
-	<!-- var matches = localSearch("", ['1','2','3','4','5'], ["Test"]); -->
-	<!-- console.log("Keys:'Test'\n" + JSON.stringify(matches) ); -->
-	<!-- var matches = localSearch("", ['1','2','3','4','5'], ["b.+"]); -->
-	<!-- console.log("Keys:'b.+'\n" + JSON.stringify(matches) ); -->
-	<!-- var matches = localSearch("", ['1','2','3','4','5'], [".e.."]); -->
-	<!-- console.log("Keys:'.e..'\n" + JSON.stringify(matches) ); -->
 
 	/* Get all questions in database */
 	sendRequest("SearchQ");
