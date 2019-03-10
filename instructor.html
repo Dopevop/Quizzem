@@ -17,6 +17,8 @@
 				<legend>Create Question:</legend>
 				Description </br>
 				<input id="addDesc" type="text"> </br>
+				Topic </br>
+				<input id="addTopic" type="text"> </br>
 				<div id="addDiff">
 					Difficulty </br>
 					<label><input type="radio" name="diff" value="1">Very Easy</label></br>
@@ -50,6 +52,7 @@
 	<script>
 	// Var to hold all locally known questions
 	var questions = [];
+	sendRequest("SearchQ");
 
 	/* Adding event listeners to submit and clear buttons 
 	 * Uses the id short hand rather than document.getElementById(id) */
@@ -146,35 +149,9 @@
 	 * Given a string Very Easy, Easy, Medium, Hard, Very Hard return corresponding 1-5
 	 * Given anything else, returns -1 */
 	function convertDiffFormat(diff) {
-		switch(diff) {
-			case 1:
-			case "1":
-				return "Very Easy";
-			case 2:
-			case "2":
-				return "Easy";
-			case 3:
-			case "3":
-				return "Medium";
-			case 4:
-			case "4":
-				return "Hard";
-			case 5:
-			case "5":
-				return "Very Hard";
-			case "Very Easy":
-				return 1;
-			case "Easy":
-				return 2;
-			case "Medium":
-				return 3;
-			case "Hard":
-				return 4;
-			case "Very Hard":
-				return 5;
-			default:
-				return -1;
-		}
+		var swapper = {"1":"Very Easy","2":"Easy","3":"Medium","4":"Hard","5":"Very Hard",
+					   "Very Easy":"1","Easy":"2","Medium":"3","Hard":"4","Very Hard":"5",};
+		return swapper[diff];
 	}
 
 	/* Turns the given question into an HTML element
@@ -192,7 +169,6 @@
 		document.getElementById("qList").appendChild(item);
 	}
 
-
 	/* Sends the specified type of request to the server 
 	 * Types so far: AddQ, SearchQ 
 	 * AddQ sends: { type, desc, diff, keys, tests }
@@ -207,16 +183,15 @@
 	 *    diff: An array of booleans specifying which difficulty questions to return
 	 *    keys: An array of keywords that should match the returned questions*/
 	function sendRequest(reqType) {
-		var xhttp  = new XMLHttpRequest();
+		var xhttp   = new XMLHttpRequest();
 		var jsonObj = {
 			"Type"  : reqType,
-			"Keys"  : [],
 		}
 		// Fill in reqType-specific object fields
 		if(reqType === "AddQ"){
-			keysId = "addKeys";
-			jsonObj["Desc"] = addDesc.value;
-			jsonObj["Diff"] = getCheckedValue("addDiff");
+			jsonObj["Desc"]  = addDesc.value;
+			jsonObj["Topic"] = addTopic.value;
+			jsonObj["Diff"]  = getCheckedValue("addDiff");
 			jsonObj["Tests"] = [];
 			// Loop through all test cases given and add to Tests array
 			var testFields = document.getElementById("addTests").children;
@@ -225,29 +200,40 @@
 					jsonObj["Tests"].push(testFields[i].value);
 			}
 		} else if(reqType === "SearchQ") {
-			keysId = "searchKeys";
+			// Add an array of checked values to Diffs
+			// If none are checked, sends all checked
 			jsonObj["Diffs"] = getCheckedValues("searchDiff");
-			// Loop through all keywords given add to KeyWs array
-			var keywordFields = document.getElementById(keysId).children;
+			jsonObj["Keys"]  = [];
+			// Loop through all keywords given add to Keys array
+			var keywordFields = searchKeys.children;
 			for(var i = 0; i < keywordFields.length; i++) {
 				if(keywordFields[i].tagName == "INPUT")
 					jsonObj["Keys"].push(keywordFields[i].value);
 			}
 		} else {
 			console.log("Invalid reqType passed to sendRequest()");
-			return -1;
 		}
 
-
-		questions.push(jsonObj);	// Add new question to local questions array
-		addToQList(jsonObj);		// Add new question to previewed questions
-
+//		questions.push(jsonObj);	// Add new question to local questions array
+//		addToQList(jsonObj);		// Add new question to previewed questions
 
 		var jsonStr = JSON.stringify(jsonObj);
 		console.log("Sent: " + jsonStr);					// <--- JUST FOR TESTING, REMOVE LATER
 		xhttp.onreadystatechange = function() {
 			if (xhttp.readyState == 4 && xhttp.status == 200) {
 				console.log("Rcvd: " + xhttp.responseText);
+				var replyObj = JSON.parse(xhttp.responseText);
+				
+				if(replyObj["Type"] === "AddQ"){
+					questions.push(responseObj["Question"]);
+				} else if(replyObj["Type"] === "SearchQ") {
+					// Check that there was no error
+					if(replyObj["Error"]){
+					} else {
+					}
+					// Loop through all questions received, add to local questions array
+				}
+
 			}
 		};
 		xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
