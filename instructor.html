@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
 <head>
-	<title>Quizzem</title>
+	<meta charset="UTF-8">
 	<meta name="description" content="Instructor's page for creating questions and building exams.">
 	<meta name="keywords"    content="Computer Science, Exam, Questions, Instructor, NJIT, Python">
 	<meta name="author"      content="Devon J O'Connor">
 	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
+	<title>Quizzem</title>
 </head>
 <body>
 	<div id="quizBuilder">
@@ -17,12 +18,15 @@
 				Topic </br>
 				<input id="addTopic" type="text"> </br>
 				<div id="addDiff">
-					Difficulty </br>
-					<label><input type="radio" name="diff" value="1">Very Easy</label></br>
-					<label><input type="radio" name="diff" value="2">Easy	 </label></br>
-					<label><input type="radio" name="diff" value="3" checked>Medium</label></br>
-					<label><input type="radio" name="diff" value="4">Hard	 </label></br>
-					<label><input type="radio" name="diff" value="5">Very Hard</label></br>
+					Difficulty: <span id ="addSpan">Medium</span></br>
+					<input id="addRange" type="range" name="diff" list="tickmarks" min="1" max="5">
+					<datalist id="tickmarks">
+						<option value="1">
+						<option value="2">
+						<option value="3">
+						<option value="4">
+						<option value="5">
+					</datalist>
 				</div>
 				<div    id="addTests" class="modular tests"></div>
 				</br>
@@ -74,10 +78,16 @@
 
 	/* Adding event listeners to submit and clear buttons 
 	 * Uses the id short hand rather than document.getElementById(id) */
-	addSub.addEventListener("click"   , function(){sendRequest("AddQ")});
-	addSub.addEventListener("click"   , function(){clearForm("addForm")});
-	searchSub.addEventListener("click", function(){displaySearchResults()});
+	addSub.addEventListener("click"     , function(){sendRequest("AddQ")});
+	addSub.addEventListener("click"     , function(){clearForm("addForm")});
+	searchSub.addEventListener("click"  , function(){displaySearchResults()});
 	searchReset.addEventListener("click", function(){clearForm("searchForm")});
+	addForm.addEventListener("mousemove", function(){updateDiff()});
+	addRange.addEventListener("mouseup" , function(){updateDiff()});
+
+	function updateDiff() {
+		addSpan.innerHTML = convertDiffFormat(addRange.value);
+	}
 
 	/* Initializes the modular elements */
 	resetModal("Test Cases", "addTests"  , 'addInput("addTests")');
@@ -300,7 +310,7 @@
 		if(reqType === "AddQ"){
 			jsonObj["Desc"]  = addDesc.value;
 			jsonObj["Topic"] = addTopic.value;
-			jsonObj["Diff"]  = getCheckedValue("addDiff");
+			jsonObj["Diff"]  = addRange.value;
 			jsonObj["Tests"] = getNonEmptyInputs("addTests");
 		} else if(reqType === "SearchQ") {
 			jsonObj["Diffs"] = getCheckedValues("searchDiff");
