@@ -24,7 +24,7 @@
 					<label><input type="radio" name="diff" value="4">Hard	 </label></br>
 					<label><input type="radio" name="diff" value="5">Very Hard</label></br>
 				</div>
-				<div   id="addTests"  class="modular tests"></div>
+				<div    id="addTests" class="modular tests"></div>
 				</br>
 				<button id="addSub"   type="reset">Submit</button> 
 			</fieldset>
@@ -32,6 +32,8 @@
 		<form id="searchForm">
 			<fieldset>
 				<legend>Search for Questions</legend>
+				Topic </br>
+				<input id="searchTopic" type="text"> </br>
 				<div id="searchDiff">
 					Difficulty </br>
 					<label><input type ="checkbox" value="1">Very Easy</label></br>
@@ -51,7 +53,15 @@
 	</div>
 	<script>
 	// Var to hold all locally known questions
-	var localQ = [];
+	var localQ = [
+		{
+			"Desc":"TestDesc",
+			"Topic":"TestTopic",
+			"Diff":"TestDiff",
+			"Tests":[ "TestTest" ],
+		}
+	];
+	console.log(localQ);
 	sendRequest("SearchQ");
 
 	/* Adding event listeners to submit and clear buttons 
@@ -69,10 +79,14 @@
 	 * Keys[]: An array of words to search through descriptions by
 	 * Diffs[]: An array of difficulties to filter by 
 	 * Topic: A topic to search by */
-	function searchQ(keys, diffs, topic) {
+	function searchQ(Topic, Diffs, Keys) {
 		var matches = [];
-		for(var i=0; i<localQ.length; i++) {
-			console.log(localQ[i]);
+		for(var i=0; i<localQ.length; i++){
+			if( localQ[i]["Topic"].test(Topic) ){
+				console.log(localQ[i]["Topic"] + " matches " + Topic);
+			} else {
+				console.log(localQ[i]["Topic"] + " doesn't match " + Topic);
+			}
 		}
 	}
 
@@ -216,6 +230,7 @@
 			// Add an array of checked values to Diffs
 			// If none are checked, sends all checked
 			jsonObj["Diffs"] = getCheckedValues("searchDiff");
+			jsonObj["Topic"] = searchTopic.value;
 			jsonObj["Keys"]  = [];
 			// Loop through all keywords given add to Keys array
 			var keywordFields = searchKeys.children;
@@ -239,6 +254,8 @@
 				} else {
 					if(replyObj["Type"] === "AddQ"){
 						localQ.push(replyObj["Question"]);
+						console.log("localQ:");
+						console.log(localQ);
 					} else if(replyObj["Type"] === "SearchQ") {
 						// Check that there was no error
 						// Loop through DB Q's, adding each to local Q's
@@ -246,6 +263,8 @@
 						for(var i=0; i<DBQ.length; i++){
 							localQ.push(DBQ[i]);
 						}
+						console.log("localQ:");
+						console.log(localQ);
 					}
 				}
 			}
