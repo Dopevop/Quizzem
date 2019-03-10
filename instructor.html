@@ -8,9 +8,6 @@
 	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-	<div id="quizPreview">
-		<ul id="qList"></ul>
-	</div>
 	<div id="quizBuilder">
 		<form id="addForm">
 			<fieldset>
@@ -49,9 +46,12 @@
 			</fieldset>
 		</form>
 	</div>
+	<div id="quizPreview">
+		<ul id="qList"></ul>
+	</div>
 	<script>
 	// Var to hold all locally known questions
-	var questions = [];
+	var localQ = [];
 	sendRequest("SearchQ");
 
 	/* Adding event listeners to submit and clear buttons 
@@ -64,6 +64,17 @@
 	/* Initializes the modular elements */
 	resetModal("Test Cases", "addTests"  , 'addInput("addTests")');
 	resetModal("Keywords"  , "searchKeys", 'addInput("searchKeys")');
+
+	/* Searches through local questions returning matches
+	 * Keys[]: An array of words to search through descriptions by
+	 * Diffs[]: An array of difficulties to filter by 
+	 * Topic: A topic to search by */
+	function searchQ(keys, diffs, topic) {
+		var matches = [];
+		for(var i=0; i<localQ.length; i++) {
+			console.log(localQ[i]);
+		}
+	}
 
 	/* Add another input text box to the top of the specified element.
 	 * Works for elements that contain a label, a button, and then a list of inputs 
@@ -96,8 +107,10 @@
 		modalElem.appendChild(btnElem);
 		modalElem.appendChild(brkElem);
 		modalElem.appendChild(document.createElement("INPUT"));
-		if(elemId === "addTests")
+		if(elemId === "addTests") {
+			modalElem.appendChild(document.createElement("BR"));
 			modalElem.appendChild(document.createElement("INPUT"));
+		}
 	}
 
 	/* Resets all of the modular elements inside of the specified element.
@@ -156,7 +169,7 @@
 
 	/* Turns the given question into an HTML element
 	 * Inserts new element into list of previewed questions */
-	function addToQList(newQ){
+	function addToPreview(newQ){
 		var Desc     = newQ["Desc"];
 		var Diff     = convertDiffFormat(newQ["Diff"]);
 		var item     = document.createElement("LI");
@@ -214,26 +227,27 @@
 			console.log("Invalid reqType passed to sendRequest()");
 		}
 
-//		questions.push(jsonObj);	// Add new question to local questions array
-//		addToQList(jsonObj);		// Add new question to previewed questions
-
 		var jsonStr = JSON.stringify(jsonObj);
-		console.log("Sent: " + jsonStr);					// <--- JUST FOR TESTING, REMOVE LATER
+		console.log("Sent: " + jsonStr);
 		xhttp.onreadystatechange = function() {
 			if (xhttp.readyState == 4 && xhttp.status == 200) {
 				console.log("Rcvd: " + xhttp.responseText);
 				var replyObj = JSON.parse(xhttp.responseText);
 				
-				if(replyObj["Type"] === "AddQ"){
-					questions.push(responseObj["Question"]);
-				} else if(replyObj["Type"] === "SearchQ") {
-					// Check that there was no error
-					if(replyObj["Error"]){
-					} else {
+				if( replyObj["Error"] != 0 ){
+					console.log("Error: " + replyObj["Error"]);
+				} else {
+					if(replyObj["Type"] === "AddQ"){
+						localQ.push(replyObj["Question"]);
+					} else if(replyObj["Type"] === "SearchQ") {
+						// Check that there was no error
+						// Loop through DB Q's, adding each to local Q's
+						var DBQ = replyObj["Questions"];
+						for(var i=0; i<DBQ.length; i++){
+							localQ.push(DBQ[i]);
+						}
 					}
-					// Loop through all questions received, add to local questions array
 				}
-
 			}
 		};
 		xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
