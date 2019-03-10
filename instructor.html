@@ -87,7 +87,7 @@
 		for(var i=0; i<localQ.length; i++){
 			var thisQ = localQ[i];
 			var thisTopic = thisQ["Topic"].toLowerCase();
-			if(topic === "" || thisTopic === topic.toLowerCase()){
+			if(topic === "" || thisTopic.match(topic.toLowerCase())){
 				// Topic matches, now check Diffs
 				var thisDiff = thisQ["Diff"][0];
 				if( containsDiff(thisDiff, diffs) ){
