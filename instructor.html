@@ -54,21 +54,27 @@
 	<script>
 	// Var to hold all locally known questions
 	var localQ = [
-		{
-			"Desc":"TestDesc",
-			"Topic":"TestTopic",
-			"Diff":"1",
-			"Tests":[ "TestTest" ],
-		},
-		{
-			"Desc":"BestDesc",
-			"Topic":"BestTopic",
-			"Diff":"2",
-			"Tests":[ "BestTest" ],
-		}
+		{ "Id":"0", "Desc":"Test","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] },
+		{ "Id":"-1","Desc":"Rest","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] },
+		{ "Id":"-2","Desc":"Bunt","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] },
+		{ "Id":"-3","Desc":"Lart","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] },
+		{ "Id":"-4","Desc":"Fits","Topic":"TestTopic","Diff":"1","Tests":[ "TestTest" ] },
 	];
 	console.log("localQ: " + JSON.stringify(localQ));
-	localSearch("BestTopic", ["2","4","5"], [""]);
+	var matches = localSearch("", ['1','2','3','4','5'], ["t"]);
+	console.log("Keys:'t'\n" + JSON.stringify(matches) );
+	var matches = localSearch("", ['1','2','3','4','5'], ["st"]);
+	console.log("Keys:'st'\n" + JSON.stringify(matches) );
+	var matches = localSearch("", ['1','2','3','4','5'], ["est"]);
+	console.log("Keys:'est'\n" + JSON.stringify(matches) );
+	var matches = localSearch("", ['1','2','3','4','5'], ["Test"]);
+	console.log("Keys:'Test'\n" + JSON.stringify(matches) );
+	var matches = localSearch("", ['1','2','3','4','5'], ["b.+"]);
+	console.log("Keys:'b.+'\n" + JSON.stringify(matches) );
+	var matches = localSearch("", ['1','2','3','4','5'], [".e.."]);
+	console.log("Keys:'.e..'\n" + JSON.stringify(matches) );
+
+	/* Get all questions in database */
 	sendRequest("SearchQ");
 
 	/* Adding event listeners to submit and clear buttons 
@@ -98,24 +104,19 @@
 					var thisDesc = localQ[i]["Desc"].toLowerCase();
 					var keysChecked = 0;
 					for(var j=0; j<keys.length; j++) {
-						var thisKey = keys[i].toLowerCase();
-						if(thisKey === "") {
-							continue;
-						}
+						var thisKey = keys[j].toLowerCase();
 						if( thisDesc.match(thisKey) ){
-							matches.push(localQ[j]);
-							break;
-						} else {
+							// Topic, Diff, & Key matches, add to matches
 							keysChecked++;
+							matches.push(localQ[i]);
+							break;
 						}
 					}
-					if(keysChecked === 0)
-						matches.push(localQ[i]);
 				}
 
 			} 
 		}
-		console.log("Matches:\n " + JSON.stringify(matches));
+		return matches;
 	}
 
 	/* Add another input text box to the top of the specified element.
@@ -224,6 +225,20 @@
 		document.getElementById("qList").appendChild(item);
 	}
 
+	/* Checks the given question's Id against all Ids in localQ
+	 * Returns true if given question's Id is not found */
+	function uniqQuestion(question){
+		var uniq = true;
+		var thisId = question["Id"];
+		for(var i=0; i<localQ.length; i++){
+			if( localQ[i]["Id"] === thisId ) {
+				uniq = false;
+				break;
+			}
+		}
+		return uniq;
+	}
+
 	/* Sends the specified type of request to the server 
 	 * Types so far: AddQ, SearchQ 
 	 * AddQ sends: { type, desc, diff, keys, tests }
@@ -252,7 +267,8 @@
 			var testFields = document.getElementById("addTests").children;
 			for(var i = 0; i < testFields.length; i++) {
 				if(testFields[i].tagName == "INPUT")
-					jsonObj["Tests"].push(testFields[i].value);
+					if(testFields[i].value != "")
+						jsonObj["Tests"].push(testFields[i].value);
 			}
 		} else if(reqType === "SearchQ") {
 			// Add an array of checked values to Diffs
@@ -264,7 +280,8 @@
 			var keywordFields = searchKeys.children;
 			for(var i = 0; i < keywordFields.length; i++) {
 				if(keywordFields[i].tagName == "INPUT")
-					jsonObj["Keys"].push(keywordFields[i].value);
+					if(keywordFields[i].value != "")
+						jsonObj["Keys"].push(keywordFields[i].value);
 			}
 		} else {
 			console.log("Invalid reqType passed to sendRequest()");
@@ -284,11 +301,12 @@
 						localQ.push(replyObj["Question"]);
 						console.log(localQ);
 					} else if(replyObj["Type"] === "SearchQ") {
-						// Check that there was no error
 						// Loop through DB Q's, adding each to local Q's
 						var DBQ = replyObj["Questions"];
 						for(var i=0; i<DBQ.length; i++){
-							localQ.push(DBQ[i]);
+							if(uniqQuestion(DBQ[i])){
+								localQ.push(DBQ[i]);
+							}
 						}
 						console.log(localQ);
 					}
