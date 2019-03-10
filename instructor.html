@@ -61,7 +61,8 @@
 			"Tests":[ "TestTest" ],
 		}
 	];
-	console.log(localQ);
+	console.log("localQ" + JSON.stringify(localQ));
+	localSearch("a","","");
 	sendRequest("SearchQ");
 
 	/* Adding event listeners to submit and clear buttons 
@@ -79,10 +80,10 @@
 	 * Keys[]: An array of words to search through descriptions by
 	 * Diffs[]: An array of difficulties to filter by 
 	 * Topic: A topic to search by */
-	function searchQ(Topic, Diffs, Keys) {
+	function localSearch(Topic, Diffs, Keys) {
 		var matches = [];
 		for(var i=0; i<localQ.length; i++){
-			if( localQ[i]["Topic"].test(Topic) ){
+			if( localQ[i]["Topic"].match(Topic) ){
 				console.log(localQ[i]["Topic"] + " matches " + Topic);
 			} else {
 				console.log(localQ[i]["Topic"] + " doesn't match " + Topic);
@@ -246,7 +247,7 @@
 		console.log("Sent: " + jsonStr);
 		xhttp.onreadystatechange = function() {
 			if (xhttp.readyState == 4 && xhttp.status == 200) {
-				console.log("Rcvd: " + xhttp.responseText);
+				//console.log("Rcvd: " + xhttp.responseText);
 				var replyObj = JSON.parse(xhttp.responseText);
 				
 				if( replyObj["Error"] != 0 ){
@@ -254,7 +255,6 @@
 				} else {
 					if(replyObj["Type"] === "AddQ"){
 						localQ.push(replyObj["Question"]);
-						console.log("localQ:");
 						console.log(localQ);
 					} else if(replyObj["Type"] === "SearchQ") {
 						// Check that there was no error
@@ -263,7 +263,6 @@
 						for(var i=0; i<DBQ.length; i++){
 							localQ.push(DBQ[i]);
 						}
-						console.log("localQ:");
 						console.log(localQ);
 					}
 				}
