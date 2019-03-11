@@ -28,17 +28,24 @@
 			background-color: ghostwhite;
 		}
 		#quizBuilder {
-			background-color: #F0F0F5;
+			background-color: ghostwhite;
 		}
 		#searchMatches {
 			background-color: ghostwhite;
 
 		}
+		ul {
+			text-align: center;
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
+		}
 		li {
+			text-align: left;
 			list-style-type: none;
 			background: white;
-			margin: 5px;
-			padding: 5px;
+			margin: 15px;
+			padding: 10px;
 		}
 	
 	</style>
@@ -102,7 +109,7 @@
 	</div>
 
 	<script>
-	var matches   = []; // var to hold selected questionsn from preview list
+	var matchedQ  = []; // var to hold selected questionsn from preview list
 	var selectedQ = []; // Var to hold all locally known questions
 	var localQ    = []; // Holds all questions
 
@@ -307,21 +314,21 @@
 		searchMatches.appendChild(ul);
 	}
 
-	/* Called whenever matches might change */
+	/* Called whenever matchedQ might change */
 	function updateMatchesDisplay() {
 		clearMatchesDisplay();
-		for(var i=0; i<matches.length; i++)
-			addToMatchesDisplay(matches[i]);
+		for(var i=0; i<matchedQ.length; i++)
+			addToMatchesDisplay(matchedQ[i]);
 	}
 
 	/* Called when searchSubmit button is clicked
-	 * Updates the matches array with Q's matching new search criteria
-	 * Displays the matches in the matches section */
+	 * Updates the matchedQ array with Q's matching new search criteria
+	 * Displays the matchedQ in the matches section */
 	function displaySearchResults() {
 		var topic = searchTopic.value;
 		var diffs = getCheckedValues("searchDiff");
 		var keys  = getNonEmptyInputs("searchKeys");
-		matches = localSearch(topic, diffs, keys);
+		matchedQ = localSearch(topic, diffs, keys);
 		updateMatchesDisplay();
 	}
 
