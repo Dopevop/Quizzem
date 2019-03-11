@@ -141,7 +141,6 @@
 					if(keys.length !== 0){
 						for(var j=0; j<keys.length; j++) {
 							var thisKey = keys[j].toLowerCase();
-							keysChecked++;
 							if( thisDesc.match(thisKey)){
 								// Topic, Diff, & Key matches, add to matches
 								matches.push(thisQ);
@@ -178,8 +177,8 @@
 		var elem      = document.getElementById(elemId);
 		var textInput = document.createElement("INPUT");
 		var breakElem = document.createElement("BR");
-		elem.insertBefore(textInput, elem.childNodes[4]);
-		elem.insertBefore(breakElem, elem.childNodes[4]);
+		elem.insertBefore(breakElem, elem.childNodes[3]);
+		elem.insertBefore(textInput, elem.childNodes[3]);
 	}
 	
 	/* Resets an input div to contain a label, a button for adding more inputs,
