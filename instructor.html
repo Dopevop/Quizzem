@@ -7,8 +7,38 @@
 	<meta name="author"      content="Devon J O'Connor">
 	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
 	<title>Quizzem</title>
+	<style> 
+		* {
+			box-sizing: border-box;
+		}
+		.box {
+			float: left;
+			width: 33.33%;
+			padding: 50px;
+		}
+		.clearfix::after {
+			content: "";
+			clear: both;
+			display: table;
+		}
+	
+	</style>
 </head>
 <body>
+	<div class="clearfix">
+		<div id="quizPreview" class="box" style="background-color:#bbb">
+			<ul id="previewList">
+				Selected Questions
+			</ul>
+		</div>
+		<div class="box" style="background-color:#ccc">
+			<p>Some text inside the box.</p>
+		</div>
+		<div class="box" style="background-color:#ddd">
+			<p>Some text inside the box.</p>
+		</div>
+	</div>
+
 	<div id="quizBuilder">
 		<form id="addForm">
 			<fieldset>
@@ -52,11 +82,11 @@
 				<button id="searchReset" type="reset">Clear</button> 
 			</fieldset>
 		</form>
-	</div>
-	<div id="quizPreview">
-		<ul id="qList">
-			<li>Q's Go Here</li>
-		</ul>
+		<div id="searchMatches">
+			<ul id="matchedList">
+				Matched Questions List
+			</ul>
+		</div>
 	</div>
 	<script>
 	var matches = [];   // var to hold selected questionsn from preview list
@@ -79,16 +109,14 @@
 
 	/* Adding event listeners to submit and clear buttons 
 	 * Uses the id short hand rather than document.getElementById(id) */
-	addSub.addEventListener("click"     , function() { sendRequest("AddQ")     } );
-	addSub.addEventListener("click"     , function() { clearForm("addForm")    } );
-	searchSub.addEventListener("click"  , function() { displaySearchResults()  } );
-	searchReset.addEventListener("click", function() { clearForm("searchForm") } );
-	addForm.addEventListener("mousemove", function() { updateDiff()            } );
-	addRange.addEventListener("mouseup" , function() { updateDiff()            } );
+	     addSub.addEventListener("click"    , function() { sendRequest("AddQ")     } );
+	     addSub.addEventListener("click"    , function() { clearForm("addForm")    } );
+	    addForm.addEventListener("mousemove", function() { updateDiff()            } );
+	   addRange.addEventListener("mouseup"  , function() { updateDiff()            } );
+	  searchSub.addEventListener("click"    , function() { displaySearchResults()  } );
+	searchReset.addEventListener("click"    , function() { clearForm("searchForm") } );
+	searchReset.addEventListener("click"    , function() { clearMatchesDisplay() } );
 
-	function updateDiff() {
-		addSpan.innerHTML = convertDiffFormat(addRange.value);
-	}
 
 	/* Initializes the modular elements */
 	resetModal("Test Cases", "addTests"  , 'addInput("addTests")');
@@ -127,11 +155,18 @@
 		return matches;
 	}
 
+	/* Checks if the diffs match
+	 * Loose comparison so e.g. 1 will match "1" */
 	function containsDiff(diff, diffs){
-		for(var i=0; i<diffs.length; i++){
-			if(diffs[i] == diff) return true;
-		}
+		for(var i=0; i<diffs.length; i++)
+			if(diffs[i] == diff) 
+				return true;
 		return false;
+	}
+
+	/* Checks value of addRange and updates display */
+	function updateDiff() {
+		addSpan.innerHTML = convertDiffFormat(addRange.value);
 	}
 
 	/* Add another input text box to the top of the specified element.
@@ -227,7 +262,7 @@
 	}
 
 	/* Turns the given question into an HTML element
-	 * Inserts new element into list of previewed questions */
+	 * Inserts new element into list of matching questions */
 	function addToMatchesDisplay(newQ){
 		var item      = document.createElement("LI");
 		var descText  = document.createTextNode(newQ["Desc"]);
@@ -266,9 +301,9 @@
 	function clearMatchesDisplay() {
 		var ul = document.createElement("UL");
 		ul.setAttribute("id", "qList");
-		ul.appendChild(document.createTextNode("Questions List"));
-		quizPreview.innerHTML = "";
-		quizPreview.appendChild(ul);
+		ul.appendChild(document.createTextNode("Matched Questions List"));
+		searchMatches.innerHTML = "";
+		searchMatches.appendChild(ul);
 	}
 
 	/* Called whenever matches might change */
