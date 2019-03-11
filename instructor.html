@@ -54,7 +54,7 @@
 	<div class="clearfix">
 		<div id="quizPreview" class="box">
 			<ul id="previewList">
-				Selected Questions
+				Selected
 			</ul>
 		</div>
 		<div id="quizBuilder" class="box">
@@ -96,14 +96,29 @@
 					</div>
 					<div id   ="searchKeys" class="modular keys"></div>
 					</br>
-					<button id="searchSub" type="button">Submit</button> 
+					<button id="searchSub" type="button">Search</button> 
 					<button id="searchReset" type="reset">Clear</button> 
+				</fieldset>
+			</form>
+			<form id="examForm">
+				<fieldset>
+					<legend>Create Exam</legend>
+					Exam Name</br>
+					<input id="examDesc" type="text"> </br>
+					<div id="examRelease">
+						Release Exam Now:</br>
+						<label><input type="radio" value="1">Yes</label>
+						<label><input type="radio" value="0" checked>No</label></br>
+						</br>
+					</div>
+					<button id="examSub" type="button">Submit</button> 
+					<button id="examReset" type="reset">Clear</button> 
 				</fieldset>
 			</form>
 		</div>
 		<div id="searchMatches" class="box">
 			<ul id="matchedList">
-				Matched Questions
+				Matches
 			</ul>
 		</div>
 	</div>
@@ -116,15 +131,15 @@
 	/* Get all questions in database */
 	sendRequest("SearchQ");
 
-	/* Adding event listeners to submit and clear buttons 
-	 * Uses the id short hand rather than document.getElementById(id) */
-	     addSub.addEventListener("click"    , function() { sendRequest("AddQ")            } );
-	     addSub.addEventListener("click"    , function() { clearForm("addForm")           } );
-	    addForm.addEventListener("mousemove", function() { updateDiff()                   } );
-	   addRange.addEventListener("mouseup"  , function() { updateDiff()                   } );
-	  searchSub.addEventListener("click"    , function() { displaySearchResults()         } );
-	searchReset.addEventListener("click"    , function() { clearForm("searchForm")        } );
+	/* Adding event listeners to submit and clear buttons  */
+	     addSub.addEventListener("click"    , function() { sendRequest("AddQ")         } );
+	     addSub.addEventListener("click"    , function() { clearForm("addForm")        } );
+	    addForm.addEventListener("mousemove", function() { updateDiff()                } );
+	   addRange.addEventListener("mouseup"  , function() { updateDiff()                } );
+	  searchSub.addEventListener("click"    , function() { displaySearchResults()      } );
+	searchReset.addEventListener("click"    , function() { clearForm("searchForm")     } );
 	searchReset.addEventListener("click"    , function() { clearDisplay("matchedList") } );
+	    examSub.addEventListener("click"    , function() { sendRequest("AddExam")      } );
 
 	/* Initializes the modular elements */
 	resetModal("Test Cases", "addTests"  , 'addInput("addTests")');
@@ -428,6 +443,15 @@
 		return result;
 	}
 
+	/* Returns an array of ids for the selected questions */
+	function getSelectedIds(){
+		var ids = [];
+		for(var i=0; i<selectedQ.length; i++){
+			ids.push(selectedQ[i]["Id"]);
+		}
+		return ids;
+	}
+
 	/* Sends the specified type of request to the server 
 	 * Types so far: AddQ, SearchQ 
 	 * AddQ sends: { type, desc, diff, keys, tests }
@@ -456,6 +480,10 @@
 			jsonObj["Diffs"] = getCheckedValues("searchDiff");
 			jsonObj["Topic"] = searchTopic.value;
 			jsonObj["Keys"]  = getNonEmptyInputs("searchKeys");
+		} else if(reqType === "AddExam") {
+			jsonObj["Desc"]      = examDesc.value;
+			jsonObj["Release"]   = getCheckedValue("examRelease");
+			jsonObj["Questions"] = getSelectedIds();
 		} else {
 			console.log("Invalid reqType passed to sendRequest()");
 		}
@@ -464,7 +492,7 @@
 		console.log("Sent: " + jsonStr);
 		xhttp.onreadystatechange = function() {
 			if (xhttp.readyState == 4 && xhttp.status == 200) {
-				//console.log("Rcvd: " + xhttp.responseText);
+				console.log("Rcvd: " + xhttp.responseText);
 				var replyObj = JSON.parse(xhttp.responseText);
 				
 				if( replyObj["Error"] != 0 ){
