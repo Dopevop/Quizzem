@@ -10,84 +10,89 @@
 	<style> 
 		* {
 			box-sizing: border-box;
+			margin: 0px
 		}
 		.box {
 			float: left;
 			width: 33.33%;
 			padding: 50px;
+			height: 100vh;
 		}
 		.clearfix::after {
 			content: "";
 			clear: both;
 			display: table;
 		}
+		#quizPreview {
+			background-color: ghostwhite
+		}
+		#quizBuilder {
+			background-color: #F0F0F5
+		}
+		#searchMatches {
+			background-color: ghostwhite
+		}
 	
 	</style>
 </head>
 <body>
 	<div class="clearfix">
-		<div id="quizPreview" class="box" style="background-color:#bbb">
+		<div id="quizPreview" class="box">
 			<ul id="previewList">
 				Selected Questions
 			</ul>
 		</div>
-		<div class="box" style="background-color:#ccc">
-			<p>Some text inside the box.</p>
+		<div id="quizBuilder" class="box">
+			<form id="addForm">
+				<fieldset>
+					<legend>Create Question:</legend>
+					Description </br>
+					<input id="addDesc" type="text"> </br>
+					Topic </br>
+					<input id="addTopic" type="text"> </br>
+					<div id="addDiff">
+						Difficulty: <span id ="addSpan">Medium</span></br>
+						<input id="addRange" type="range" name="diff" list="ticks" min="1" max="5">
+						<datalist id="ticks">
+							<option value="1">
+							<option value="2">
+							<option value="3">
+							<option value="4">
+							<option value="5">
+						</datalist>
+					</div>
+					<div    id="addTests" class="modular tests"></div>
+					</br>
+					<button id="addSub"   type="reset">Submit</button> 
+				</fieldset>
+			</form>	
+			<form id="searchForm">
+				<fieldset>
+					<legend>Search for Questions</legend>
+					Topic </br>
+					<input id="searchTopic" type="text"> </br>
+					<div id="searchDiff">
+						Difficulty </br>
+						<label><input type ="checkbox" value="1">Very Easy</label></br>
+						<label><input type ="checkbox" value="2">Easy	 </label></br>
+						<label><input type ="checkbox" value="3">Medium   </label></br>
+						<label><input type ="checkbox" value="4">Hard	 </label></br>
+						<label><input type ="checkbox" value="5">Very Hard</label></br>
+					</div>
+					<div id   ="searchKeys" class="modular keys"></div>
+					</br>
+					<button id="searchSub" type="button">Submit</button> 
+					<button id="searchReset" type="reset">Clear</button> 
+				</fieldset>
+			</form>
 		</div>
-		<div class="box" style="background-color:#ddd">
-			<p>Some text inside the box.</p>
-		</div>
-	</div>
-
-	<div id="quizBuilder">
-		<form id="addForm">
-			<fieldset>
-				<legend>Create Question:</legend>
-				Description </br>
-				<input id="addDesc" type="text"> </br>
-				Topic </br>
-				<input id="addTopic" type="text"> </br>
-				<div id="addDiff">
-					Difficulty: <span id ="addSpan">Medium</span></br>
-					<input id="addRange" type="range" name="diff" list="tickmarks" min="1" max="5">
-					<datalist id="tickmarks">
-						<option value="1">
-						<option value="2">
-						<option value="3">
-						<option value="4">
-						<option value="5">
-					</datalist>
-				</div>
-				<div    id="addTests" class="modular tests"></div>
-				</br>
-				<button id="addSub"   type="reset">Submit</button> 
-			</fieldset>
-		</form>	
-		<form id="searchForm">
-			<fieldset>
-				<legend>Search for Questions</legend>
-				Topic </br>
-				<input id="searchTopic" type="text"> </br>
-				<div id="searchDiff">
-					Difficulty </br>
-					<label><input type ="checkbox" value="1">Very Easy</label></br>
-					<label><input type ="checkbox" value="2">Easy	 </label></br>
-					<label><input type ="checkbox" value="3">Medium   </label></br>
-					<label><input type ="checkbox" value="4">Hard	 </label></br>
-					<label><input type ="checkbox" value="5">Very Hard</label></br>
-				</div>
-				<div id   ="searchKeys" class="modular keys"></div>
-				</br>
-				<button id="searchSub" type="button">Submit</button> 
-				<button id="searchReset" type="reset">Clear</button> 
-			</fieldset>
-		</form>
-		<div id="searchMatches">
+		<div id="searchMatches" class="box">
 			<ul id="matchedList">
 				Matched Questions List
 			</ul>
 		</div>
 	</div>
+
 	<script>
 	var matches = [];   // var to hold selected questionsn from preview list
 	var selectedQ = []; // Var to hold all locally known questions
