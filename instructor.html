@@ -112,7 +112,6 @@
 						</br>
 					</div>
 					<button id="examSub" type="button">Submit</button> 
-					<button id="examReset" type="reset">Clear</button> 
 				</fieldset>
 			</form>
 		</div>
@@ -140,6 +139,9 @@
 	searchReset.addEventListener("click"    , function() { clearForm("searchForm")     } );
 	searchReset.addEventListener("click"    , function() { clearDisplay("matchedList") } );
 	    examSub.addEventListener("click"    , function() { sendRequest("AddExam")      } );
+	    examSub.addEventListener("click"    , function() { clearArray(selectedQ) } );
+	    examSub.addEventListener("click"    , function() { updateDisplays(["previewList"]) } );
+	
 
 	/* Initializes the modular elements */
 	resetModal("Test Cases", "addTests"  , 'addInput("addTests")');
@@ -287,8 +289,6 @@
 	/* Turns the given question into an HTML element
 	 * Inserts new element into list of matching questions */
 	function addToDisplay(newQ, displayId){
-		console.log("adding to "+displayId+":");
-		console.log(newQ);
 		var item      = document.createElement("LI");
 		var descText  = document.createTextNode(newQ["Desc"]);
 		var diffText  = document.createTextNode("Difficulty: "+newQ["Diff"]);
@@ -317,7 +317,6 @@
 		var qId = listItemId.substring(1);
 		if ( listItemId[0] === "m") { // Selected Item is a matchList question
 			// add Q to selectedQ, remove from matchedQ
-			console.log("clicked on match list Q");
 			for(var i=0; i<matchedQ.length; i++){
 				var thisQ = matchedQ[i];
 				if(thisQ["Id"] === qId){ // Check if found the clicked on Q
@@ -329,7 +328,6 @@
 				}
 			}
 		} else if ( listItemId[0] === "p") { // Selected Item is a previewList question
-			console.log("clicked on selected list Q");
 			// add Q to matchedQ, remove from selectedQ
 			for(var i=0; i<selectedQ.length; i++){
 				var thisQ = selectedQ[i];
@@ -359,7 +357,12 @@
 		return qArr;
 	}
 
-	/* Resets matches dispaly 
+
+	function clearArray(arr) {
+		arr.length = 0;
+	}
+
+	/* Resets display and clears related array 
 	 * Display elements have a title, and an unorder list of Qs */
 	function clearDisplay(displayId) {
 		var display = document.getElementById(displayId);
@@ -380,8 +383,6 @@
 
 	/* Called whenever matchedQ might change */
 	function updateDisplays(displayIdArr) {
-		console.log("updating displays:");
-		console.log(displayIdArr);
 		for(var i=0; i<displayIdArr.length; i++){
 			var thisId = displayIdArr[i];
 			var relatedQ = getRelatedArray(thisId);
@@ -492,13 +493,14 @@
 		console.log("Sent: " + jsonStr);
 		xhttp.onreadystatechange = function() {
 			if (xhttp.readyState == 4 && xhttp.status == 200) {
-				console.log("Rcvd: " + xhttp.responseText);
+				<!-- console.log("Rcvd: " + xhttp.responseText); -->
 				var replyObj = JSON.parse(xhttp.responseText);
 				
 				if( replyObj["Error"] != 0 ){
 					console.log("Error: " + replyObj["Error"]);
 				} else {
 					if(replyObj["Type"] === "AddQ"){
+						alert("Question added successfully!");
 						//localQ.push(replyObj["Question"]);
 						localQ.push(replyObj);
 						console.log(localQ);
@@ -513,7 +515,10 @@
 							}
 						}
 						console.log(localQ);
+					} else if(replyObj["Type"] === "AddExam") {
+						alert("Exam added successfully!");
 					}
+
 				}
 			}
 		};
