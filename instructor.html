@@ -15,8 +15,9 @@
 		.box {
 			float: left;
 			width: 33.33%;
-			padding: 50px;
+			padding: 50px 5px;
 			height: 100vh;
+			overflow: auto;
 		}
 		.clearfix::after {
 			content: "";
@@ -24,13 +25,20 @@
 			display: table;
 		}
 		#quizPreview {
-			background-color: ghostwhite
+			background-color: ghostwhite;
 		}
 		#quizBuilder {
-			background-color: #F0F0F5
+			background-color: #F0F0F5;
 		}
 		#searchMatches {
-			background-color: ghostwhite
+			background-color: ghostwhite;
+
+		}
+		li {
+			list-style-type: none;
+			background: white;
+			margin: 5px;
+			padding: 5px;
 		}
 	
 	</style>
@@ -94,20 +102,9 @@
 	</div>
 
 	<script>
-	var matches = [];   // var to hold selected questionsn from preview list
+	var matches   = []; // var to hold selected questionsn from preview list
 	var selectedQ = []; // Var to hold all locally known questions
-	var localQ = [
-		{ "Id":"0" , "Desc":"Write a function name inRange() that tests whether a given number falls within a specified range. The function inRange() takes three parameters: testNum, floor, ceiling. The function inRange() should return True if testNum is greater than or equal to floor and less than or equal to ceiling.", "Topic":"If Statements"         , "Diff":"1", "Tests":[ "TestTest" ] },
-		{ "Id":"-1", "Desc":"Write a function named outside() that tests whether a given number falls outside a specified range. The fucntion outside() takes three parameters: testNum, beginRange, endRange. The function outside() should return True if testNum is less than beginRange and greater than endRange.", "Topic":"If Statements"            , "Diff":"1", "Tests":[ "TestTest" ] },
-		{ "Id":"-2", "Desc":"Write code that calls getNumber(), using a negative value for minInt and a positive value for maxInt. Your code should then print out the returned integer and whether it is posistive, negative or zero.", "Topic":"If Statements"     , "Diff":"1", "Tests":[ "TestTest" ] },
-		{ "Id":"-3", "Desc":"Write a function named greet(). The function greet() should ask the user's name, and then greet the user by name, with a comma between the greeting and the name. The fucntion greet() takes one parameter: a string named greeting.", "Topic":"Input"           , "Diff":"3", "Tests":[ "TestTest" ] },
-		{ "Id":"-4", "Desc":"Write a function named isSubstring that takes two string parameters. The function should print out whether each of the two string parameters is or is not a substring of the other. (Hint: use the string method find.)", "Topic":"Strings", "Diff":"2", "Tests":[ "TestTest" ] },
-		{ "Id":"-5", "Desc":"Write a function name getInt(). The function getInt() takes two parameters: minInt, maxInt. The function getInt() should prompt the user for an integer that is no less than minInt and no greater than maxInt. You may assume that the user repsonds with an integer in this range. (Hint: user input is always a string.)", "Topic":"Input"         , "Diff":"3", "Tests":[ "TestTest" ] },
-		{ "Id":"-6", "Desc":"Write code that calls containsLetter() for each letter in 'hulk'. Each function call should pass one of the letters in 'hulk' and the string hulkLine as paramters. After each function call your code should print thelist of words returned by containsLetter(). For full credit, you must put the call to containsLetter() inside of a for loop.", "Topic":"For Loops"  , "Diff":"2", "Tests":[ "TestTest" ] },
-		{ "Id":"-7", "Desc":"Write a function named containsLetter() that identifies all of the strings in a list that contain a specified letter and returns a list of those strings. The function containsLetter() takes two parameters: a string of length 1, aLetter; and a list of strings, strList.", "Topic":"Strings"    , "Diff":"2", "Tests":[ "TestTest" ] },
-		{ "Id":"-8", "Desc":"Write a function named duplicateWordLines() that takes two parameters: the name of an existing file to be read, inFile; and the name of a file into which to write program output, outFile. duplicateWordLines() reads the content of inFile, line by line, and writes into outFile any lines that contains at least one word greater than three letters long that occurs more than once on the line. The lines in inFile contain only lower case letters and spaces -- no capital letters and no punctuation marks.", "Topic":"Input Output"    , "Diff":"4", "Tests":[ "TestTest" ] },
-		{ "Id":"-9", "Desc":"Write a function named wordLengths() that takes a string parameter, str, and returns a dictionary in which each key is the length of a word in str and the corresponding value is a list of all distinct words in str of that length. Even if a word occurs more than once in str, it should appear in a value list only once. Treat the text as case sensitive (e.g., 'August' and 'august' are two different words). Assue, for simpicity, that there is no punctuation in str.", "Topic":"Dictionaries"       , "Diff":"3", "Tests":[ "TestTest" ] },
-	];
+	var localQ    = []; // Holds all questions
 
 	/* Get all questions in database */
 	sendRequest("SearchQ");
@@ -120,7 +117,7 @@
 	   addRange.addEventListener("mouseup"  , function() { updateDiff()            } );
 	  searchSub.addEventListener("click"    , function() { displaySearchResults()  } );
 	searchReset.addEventListener("click"    , function() { clearForm("searchForm") } );
-	searchReset.addEventListener("click"    , function() { clearMatchesDisplay() } );
+	searchReset.addEventListener("click"    , function() { clearMatchesDisplay()   } );
 
 
 	/* Initializes the modular elements */
