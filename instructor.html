@@ -158,7 +158,7 @@
 			var thisTopic = thisQ["Topic"].toLowerCase();
 			if(topic === "" || thisTopic.match(topic.toLowerCase())){
 				// Topic matches, now check Diffs
-				var thisDiff = thisQ["Diff"][0];
+				var thisDiff = thisQ["Diff"];
 				if( containsDiff(thisDiff, diffs) ){
 					// Topic and Diff matches, check Keys
 					var thisDesc = thisQ["Desc"].toLowerCase();
@@ -482,7 +482,7 @@
 			jsonObj["Topic"] = searchTopic.value;
 			jsonObj["Keys"]  = getNonEmptyInputs("searchKeys");
 		} else if(reqType === "AddExam") {
-			jsonObj["Desc"]      = examDesc.value;
+			jsonObj["TestName"]      = examDesc.value;
 			jsonObj["Release"]   = getCheckedValue("examRelease");
 			jsonObj["Questions"] = getSelectedIds();
 		} else {
