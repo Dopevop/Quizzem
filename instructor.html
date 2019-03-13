@@ -79,7 +79,7 @@
 					</div>
 					<div    id="addTests" class="modular tests"></div>
 					</br>
-					<button id="addSub"   type="reset">Submit</button> 
+					<button id="addSub"   type="button">Submit</button> 
 				</fieldset>
 			</form>	
 			<form id="searchForm">
@@ -132,8 +132,7 @@
 	sendRequest("SearchQ");
 
 	/* Adding event listeners to submit and clear buttons  */
-	     addSub.addEventListener("click"    , function() { sendRequest("AddQ")         } );
-	     addSub.addEventListener("click"    , function() { clearForm("addForm")        } );
+	     addSub.addEventListener("click"    , function() { validate("AddQ")         } );
 	    addForm.addEventListener("mousemove", function() { updateDiff()                } );
 	   addRange.addEventListener("mouseup"  , function() { updateDiff()                } );
 	  searchSub.addEventListener("click"    , function() { displaySearchResults()      } );
@@ -148,18 +147,34 @@
 	resetModal("Test Cases", "addTests"  , 'addInput("addTests")');
 	resetModal("Keywords"  , "searchKeys", 'addInput("searchKeys")');
 	
-	function validateSubmit(type) {
+	function validate(type) {
 		switch("AddQ") {
 			case "AddQ":
-				if(nonEmpty("addDesc") && nonEmpty("addTopic") && nonEmptyArray("addTests")) {
-					alert("AddQ fields all non-empty");
+				if(nonEmpty("addDesc") && nonEmpty("addTopic") && numNonEmpty("addTests") > 1) {
+					alert("AddQ fields all good");
+					sendRequest("AddQ");
+					clearForm("addForm");
+				} else {
+					alert("Fill out da fields!");
 				}
 				break;
 			case "AddTest":
 				if(nonEmpty("testDesc")) {
+					alert("AddTest fields all non-empty");
 				}
 			
 		}
+	}
+
+	/* Returns the number of non-empty inputs inside the div */
+	function numNonEmpty(divId){
+		var inputs = document.getElementById(divId).getElementsByTagName("Input");
+		var numNonEmpty = 0;
+		for(var i=0; i<inputs.length; i++){
+			if(inputs[i].value !== "")
+				numNonEmpty++;
+		}
+		return numNonEmpty;
 	}
 
 	/* Checks that the given element has a non-empty value */
@@ -236,34 +251,46 @@
 		var textLabel = document.createTextNode(label);
 		var btnElem   = document.createElement("BUTTON");
 		var btnText   = document.createTextNode("+");
-		btnElem.appendChild(btnText);
-		btnElem.setAttribute("type", "button");
-		btnElem.setAttribute("onclick", func);
-
-		modalElem.innerHTML = "";
-		modalElem.appendChild(textLabel);
-		modalElem.appendChild(btnElem);
+		btnElem.appendChild(btnText); // Put "+" on button
+		btnElem.setAttribute("type", "button"); // Make it a button (soas to not reload page)
+		btnElem.setAttribute("onclick", func); // Make button add new inputs
+		modalElem.innerHTML = ""; // Clear all inputs
+		modalElem.appendChild(textLabel); // Add label 
+		modalElem.appendChild(btnElem); // Add button
 		modalElem.appendChild(brkElem);
-		modalElem.appendChild(document.createElement("INPUT"));
-		if(elemId === "addTests") {
-			modalElem.appendChild(document.createElement("BR"));
-			modalElem.appendChild(document.createElement("INPUT"));
-		}
+		addInput(elemId);
+		if(elemId === "addTests")
+			addInput(elemId);
 	}
 
-	/* Resets all of the modular elements inside of the specified element.
-	 * Modular elems are those such as keywords where more can be added
-	 * The given id should contain modular elements, most likely a form */
+	/* Resets all of the inputs inside of the specified element.
+	 * Removes additionally added text boxes like those for test cases*/
 	function clearForm(formId) {
-		var elems = document.getElementById(formId).getElementsByClassName("modular");
+		var inputs = document.getElementById(formId).getElementsByTagName("INPUT");
+		var elems  = document.getElementById(formId).getElementsByClassName("modular");
+
+		// Reset out all inputs
+		for(var i=0; i<inputs.length; i++) {
+			switch(inputs[i].type) {
+				case "text":
+					inputs[i].value = "";
+					break;
+				case "range":
+					inputs[i].value = 3;
+					updateDiff();
+					break;
+				default:
+					console.log("Found a non text or range input");
+			}
+		}
+
+		// Reset all modular elements
 		for(var i=0; i<elems.length; i++) {
 			var classes = elems[i].classList;
-			if(classes.contains("modular")) {
-				if(classes.contains("tests")) {
-					resetModal("Test Cases", elems[i].id, 'addInput("'+elems[i].id+'")');
-				} else {
-					resetModal("Keywords"  , elems[i].id, 'addInput("'+elems[i].id+'")');
-				}
+			if(classes.contains("tests")) {
+				resetModal("Test Cases", elems[i].id, 'addInput("'+elems[i].id+'")');
+			} else {
+				resetModal("Keywords"  , elems[i].id, 'addInput("'+elems[i].id+'")');
 			}
 		}
 	}
@@ -311,7 +338,7 @@
 	function addToDisplay(newQ, displayId){
 		var item      = document.createElement("LI");
 		var descText  = document.createTextNode(newQ["Desc"]);
-		var diffText  = document.createTextNode("Difficulty: "+newQ["Diff"]);
+		var diffText  = document.createTextNode("Difficulty: "+convertDiffFormat(newQ["Diff"]));
 		var topicText = document.createTextNode("Topic: "+newQ["Topic"]);
 		var idStr, classStr;
 		if(displayId === "matchedList") {
@@ -339,11 +366,11 @@
 	 * listItemId: The id of the List Item that the question appears in */
 	function toggleSelected(listItemId) {
 		var qId = listItemId.substring(1);
-		if ( listItemId[0] === "m") { // Selected Item is a matchList question
+		if ( listItemId[0] == "m") { // Selected Item is a matchList question
 			// add Q to selectedQ, remove from matchedQ
 			for(var i=0; i<matchedQ.length; i++){
 				var thisQ = matchedQ[i];
-				if(thisQ["Id"] === qId){ // Check if found the clicked on Q
+				if(thisQ["Id"] == qId){ // Check if found the clicked on Q
 					if(uniqQuestion(thisQ, selectedQ)){
 						selectedQ.push(thisQ);
 					}
@@ -351,11 +378,11 @@
 					break;
 				}
 			}
-		} else if ( listItemId[0] === "p") { // Selected Item is a previewList question
+		} else if ( listItemId[0] == "p") { // Selected Item is a previewList question
 			// add Q to matchedQ, remove from selectedQ
 			for(var i=0; i<selectedQ.length; i++){
 				var thisQ = selectedQ[i];
-				if(thisQ["Id"] === qId){ // Check if found the clicked on Q
+				if(thisQ["Id"] == qId){ // Check if found the clicked on Q
 					if(uniqQuestion(thisQ, matchedQ)){
 						matchedQ.push(thisQ);
 					}
@@ -393,10 +420,10 @@
 		var ul      = document.createElement("UL");
 		if(displayId === "previewList"){
 			ul.setAttribute("id", "pList");
-			ul.appendChild(document.createTextNode("Selected Questions"));
+			ul.appendChild(document.createTextNode("Selected"));
 		} else if(displayId === "matchedList") {
 			ul.setAttribute("id", "mList");
-			ul.appendChild(document.createTextNode("Matched Questions"));
+			ul.appendChild(document.createTextNode("Matches"));
 		} else {
 			ul.setAttribute("id", "?List");
 			ul.appendChild(document.createTextNode("??? Questions"));
@@ -525,9 +552,10 @@
 				} else {
 					if(replyObj["Type"] === "AddQ"){
 						alert("Question added successfully!");
-						//localQ.push(replyObj["Question"]);
-						localQ.push(replyObj);
-						console.log(localQ);
+						localQ.push(replyObj["Question"]);
+						matchedQ.push(replyObj["Question"]);
+						updateDisplays(["matchedList"]);
+						console.log(matchedQ);
 					} else if(replyObj["Type"] === "SearchQ") {
 						// Loop through DB Q's, adding each to local Q's
 						var DBQ = replyObj["Questions"];
