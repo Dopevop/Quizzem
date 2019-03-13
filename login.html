@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Log into Account</title>	
+	<title>Quizzem Login</title>	
 	<link rel="stylesheet" href="mainstyle.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-	<form>
-		<legend>NJIT or Database Credentials:</legend>		
+	<form id="loginForm">
+		<legend>Log in to Quizzem</legend>		
 		<fieldset>
 			<br/><div class="inputLabel">UCID:</div>
 			<input type="text" name="username" id="usrInput" autocomplete="on" >
@@ -23,6 +23,14 @@
 	<script>
 	document.getElementById("btn").addEventListener("click", postForm);
 	document.getElementById("clr").addEventListener("click", clearResult);
+	document.getElementById("usrInput").addEventListener("keyup", function(e) { 
+		if(e.keyCode === 13) 
+			postForm();
+	} );
+	document.getElementById("pwdInput").addEventListener("keyup", function(e) { 
+		if(e.keyCode === 13) 
+			postForm();
+	} );
 	function clearResult() {
 		document.getElementById("Result").innerHTML = "";
 	}
@@ -40,10 +48,10 @@
 		xhttp.onreadystatechange = function() {
 			if (xhttp.readyState == 4 && xhttp.status == 200) {
 				response.innerHTML = "[" + xhttp.responseText + "]";
-				if(jsonObj["username"] === "teacher"){
+				if(jsonObj["username"] === "teacher" && jsonObj["password"] === "teach"){
 					alert("Welcome, Teacher");
 					window.location.href = "https://web.njit.edu/~djo23/CS490/instructor.html";
-				} else if(jsonObj["username"] === "student") {
+				} else if(jsonObj["username"] === "student" && jsonObj["password"] === "stu") {
 					alert("Welcome, Student");
 					window.location.href = "https://web.njit.edu/~djo23/CS490/student.html";
 				} else {
