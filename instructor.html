@@ -151,7 +151,7 @@
 	function validateSubmit(type) {
 		switch("AddQ") {
 			case "AddQ":
-				if(NonEmpty("addDesc") && NonEmpty("addTopic") && NonEmptyArray("addTests")) {
+				if(nonEmpty("addDesc") && nonEmpty("addTopic") && nonEmptyArray("addTests")) {
 					alert("AddQ fields all non-empty");
 				}
 				break;
