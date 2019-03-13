@@ -1,13 +1,13 @@
 JSON Messages:
 
 Question:
-{ Desc:Str, Topic:Str, Id:int, Diff:int, Tests:[Str] }
+Format	{ Desc:Str, Topic:Str, Id:int, Diff:int, Tests:[Str] }
 
 Test:
-{ TestId, TestName:Str, Released:int, QIds:[int] }
+Format	{ TestId, TestName:Str, Released:int, QIds:[int] }
 
 AddQ:
-Request { Type:AddQ, Desc:Str, Topic:Str, Diff:int, Tests:[Str] }
+Request { Type:AddQ, Desc:Str , Topic:Str   , Diff:int, Tests:[Str] }
 Reply 	{ Type:AddQ, Error:Str, {Question} }
 
 SearchQ:
@@ -15,9 +15,9 @@ Request { Type:SearchQ, Topic:Str, Diffs:[int], Keys:[Str] }
 Reply	{ Type:SearchQ, Error:Str, Questions:[{Question}] }
 
 AddTest:
-Request { Type:AddTest, TestName:Str, Release:int, QIds:[] }
-Reply	{ Type:AddTest, Error:Str, Test:{Test}}
+Request { Type:AddTest, TestName:Str, Release:int , QIds:[] }
+Reply	{ Type:AddTest, Error:Str   , Test:{Test}}
 
 GetTest:
 Request { Type:GetTest, TestIds:[], Release:int }
-Reply	{ Type:GetTest, Error:Str, Tests:[{Test}] }
+Reply	{ Type:GetTest, Error:Str , Tests:[{Test}] }
