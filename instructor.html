@@ -2,7 +2,7 @@
 <html lang="en-US">
 <head>
 	<meta charset="UTF-8">
-	<meta name="description" content="Instructor's page for creating questions and building exams.">
+	<meta name="description" content="Instructor's page for creating questions and building tests.">
 	<meta name="keywords"    content="Computer Science, Exam, Questions, Instructor, NJIT, Python">
 	<meta name="author"      content="Devon J O'Connor">
 	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
@@ -40,12 +40,13 @@
 			margin: 0;
 			padding: 0;
 		}
-		li {
+		.selected, .matched {
 			text-align: left;
 			list-style-type: none;
 			background: white;
 			margin: 15px;
 			padding: 10px;
+			box-shadow: 0px 0px 3px lightgrey;
 		}
 	
 	</style>
@@ -100,18 +101,18 @@
 					<button id="searchReset" type="reset">Clear</button> 
 				</fieldset>
 			</form>
-			<form id="examForm">
+			<form id="testForm">
 				<fieldset>
 					<legend>Create Exam</legend>
 					Exam Name</br>
-					<input id="examDesc" type="text"> </br>
-					<div id="examRelease">
+					<input id="testDesc" type="text"> </br>
+					<div id="testRelease">
 						Release Exam Now:</br>
 						<label><input type="radio" name="release" value="1">Yes</label>
 						<label><input type="radio" name="release" value="0" checked>No</label></br>
 						</br>
 					</div>
-					<button id="examSub" type="button">Submit</button> 
+					<button id="testSub" type="button">Submit</button> 
 				</fieldset>
 			</form>
 		</div>
@@ -138,14 +139,33 @@
 	  searchSub.addEventListener("click"    , function() { displaySearchResults()      } );
 	searchReset.addEventListener("click"    , function() { clearForm("searchForm")     } );
 	searchReset.addEventListener("click"    , function() { clearDisplay("matchedList") } );
-	    examSub.addEventListener("click"    , function() { sendRequest("AddExam")      } );
-	    examSub.addEventListener("click"    , function() { clearArray(selectedQ) } );
-	    examSub.addEventListener("click"    , function() { updateDisplays(["previewList"]) } );
+	    testSub.addEventListener("click"    , function() { sendRequest("AddTest")      } );
+	    testSub.addEventListener("click"    , function() { clearArray(selectedQ) } );
+	    testSub.addEventListener("click"    , function() { updateDisplays(["previewList"]) } );
 	
 
 	/* Initializes the modular elements */
 	resetModal("Test Cases", "addTests"  , 'addInput("addTests")');
 	resetModal("Keywords"  , "searchKeys", 'addInput("searchKeys")');
+	
+	function validateSubmit(type) {
+		switch("AddQ") {
+			case "AddQ":
+				if(NonEmpty("addDesc") && NonEmpty("addTopic") && NonEmptyArray("addTests")) {
+					alert("AddQ fields all non-empty");
+				}
+				break;
+			case "AddTest":
+				if(nonEmpty("testDesc")) {
+				}
+			
+		}
+	}
+
+	/* Checks that the given element has a non-empty value */
+	function nonEmpty(elemId) {
+		return ( document.getElementById(elemId).value !== "" );
+	}
 
 	/* Searches through local questions returning matches
 	 * Topic   : A topic to search by, "" matches all topics
@@ -293,15 +313,19 @@
 		var descText  = document.createTextNode(newQ["Desc"]);
 		var diffText  = document.createTextNode("Difficulty: "+newQ["Diff"]);
 		var topicText = document.createTextNode("Topic: "+newQ["Topic"]);
-		var idStr;
-		if(displayId === "matchedList")
+		var idStr, classStr;
+		if(displayId === "matchedList") {
 			idStr = "m" + newQ["Id"];
-		else if(displayId === "previewList")
+			classStr = "matched";
+		} else if(displayId === "previewList") {
 			idStr = "p" + newQ["Id"];
-		else
+			classStr = "selected";
+		} else {
 			idStr = "?" + newQ["Id"];
+		}
 
 		item.setAttribute("id", idStr);
+		item.setAttribute("class", classStr);
 		item.addEventListener("click", function() { toggleSelected(idStr) });
 		item.appendChild(descText);
 		item.appendChild(document.createElement("BR"));
@@ -481,9 +505,9 @@
 			jsonObj["Diffs"] = getCheckedValues("searchDiff");
 			jsonObj["Topic"] = searchTopic.value;
 			jsonObj["Keys"]  = getNonEmptyInputs("searchKeys");
-		} else if(reqType === "AddExam") {
-			jsonObj["TestName"]      = examDesc.value;
-			jsonObj["Release"]   = getCheckedValue("examRelease");
+		} else if(reqType === "AddTest") {
+			jsonObj["TestName"]      = testDesc.value;
+			jsonObj["Release"]   = getCheckedValue("testRelease");
 			jsonObj["Questions"] = getSelectedIds();
 		} else {
 			console.log("Invalid reqType passed to sendRequest()");
@@ -515,7 +539,7 @@
 							}
 						}
 						console.log(localQ);
-					} else if(replyObj["Type"] === "AddExam") {
+					} else if(replyObj["Type"] === "AddTest") {
 						alert("Exam added successfully!");
 					}
 
