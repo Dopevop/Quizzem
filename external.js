@@ -22,7 +22,7 @@ function sendRequest(reqType, option) {
 		jsonObj["Keys"]  = getNonEmptyInputs("searchKeys");
 	} else if(reqType === "AddTest") {
 		jsonObj["TestName"] = testDesc.value;
-		jsonObj["Release"]  = getCheckedValue("testRelease");
+		jsonObj["Rel"]      = getCheckedValue("testRelease");
 		jsonObj["QIds"]     = getSelectedIds();
 	} else if(reqType === "GetTests") {
 		if(option == "student")
