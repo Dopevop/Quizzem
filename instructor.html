@@ -151,12 +151,13 @@
 	function validateForm(type) {
 		switch("AddQ") {
 			case "AddQ":
-				if(nonEmpty("addDesc") && nonEmpty("addTopic") && numNonEmpty("addTests") > 1) {
-					if(validateTests(testArray)){
+				if(nonEmpty("addDesc") && nonEmpty("addTopic")) {
+					var testsArray = getNonEmptyInputs("addTests");
+					if(validateTests(testsArray)){
 						sendRequest("AddQ");
 						clearForm("addForm");
 					} else {
-						alert("Need two test cases in this form: funcName(param1, param2)=answer");
+						alert("Need two test cases: e.g. func(a,b)=ans");
 					}
 				} else {
 					alert("Make sure Description and Topic are filled out!");
@@ -174,11 +175,20 @@
 
 	/* Makes sure there are at least two non-empty tests
 	 * Makes sure all tests are in the form of func([a][,b]...)=answer */
-	function validateTests(tests){
-		var pattern = "";
-		for(var i=0; i<tests.length; i++){
-
+	function validateTests(tests) {
+		if(tests.length < 2){
+			console.log("Too few tests");
+			return false;
 		}
+		var pattern = /[a-zA-Z][a-zA-Z0-9]*\( *[^, (]+ *(, *[^,( ]+)* *\) *= *.*/;
+		<!-- var pattern = /ab+c/; -->
+		for(var i=0; i<tests.length; i++){
+			if(!tests[i].match(pattern)){
+				console.log("test " + i + " {"+ tests[i] +"} didn't match pattern");
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/* Returns the number of non-empty inputs inside the div */
