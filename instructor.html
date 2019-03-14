@@ -181,7 +181,6 @@
 			return false;
 		}
 		var pattern = /[a-zA-Z][a-zA-Z0-9]*\( *[^, (]+ *(, *[^,( ]+)* *\) *= *.*/;
-		<!-- var pattern = /ab+c/; -->
 		for(var i=0; i<tests.length; i++){
 			if(!tests[i].match(pattern)){
 				console.log("test " + i + " {"+ tests[i] +"} didn't match pattern");
@@ -189,17 +188,6 @@
 			}
 		}
 		return true;
-	}
-
-	/* Returns the number of non-empty inputs inside the div */
-	function numNonEmpty(divId){
-		var inputs = document.getElementById(divId).getElementsByTagName("Input");
-		var numNonEmpty = 0;
-		for(var i=0; i<inputs.length; i++){
-			if(inputs[i].value !== "")
-				numNonEmpty++;
-		}
-		return numNonEmpty;
 	}
 
 	/* Checks that the given element has a non-empty value */
