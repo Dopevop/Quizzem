@@ -18,6 +18,6 @@ AddTest:
 Request { Type:AddTest, TestName:Str, Release:int, QIds:[] }
 Reply	{ Type:AddTest, Error:Str, Test:{Test}}
 
-GetTest:
+GetTests:
 Request { Type:GetTest, TestIds:[], Release:int }
 Reply	{ Type:GetTest, Error:Str, Tests:[{Test}] }

@@ -30,6 +30,7 @@ function sendRequest(reqType) {
 		jsonObj["TestName"] = testDesc.value;
 		jsonObj["Release"]  = getCheckedValue("testRelease");
 		jsonObj["QIds"]     = getSelectedIds();
+	} else if(reqType === "GetTests") {
 	} else {
 		console.log("Invalid reqType passed to sendRequest()");
 	}
