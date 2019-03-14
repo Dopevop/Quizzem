@@ -544,13 +544,13 @@
 			jsonObj["Diff"]  = addRange.value;
 			jsonObj["Tests"] = getNonEmptyInputs("addTests");
 		} else if(reqType === "SearchQ") {
-			jsonObj["Topic"] = searchTopic.value;
 			jsonObj["Diffs"] = getCheckedValues("searchDiff");
+			jsonObj["Topic"] = searchTopic.value;
 			jsonObj["Keys"]  = getNonEmptyInputs("searchKeys");
 		} else if(reqType === "AddTest") {
-			jsonObj["TestName"]      = testDesc.value;
-			jsonObj["Release"]   = getCheckedValue("testRelease");
-			jsonObj["QIds"] = getSelectedIds();
+			jsonObj["TestName"] = testDesc.value;
+			jsonObj["Release"]  = getCheckedValue("testRelease");
+			jsonObj["QIds"]     = getSelectedIds();
 		} else {
 			console.log("Invalid reqType passed to sendRequest()");
 		}
