@@ -17,9 +17,9 @@ function sendRequest(reqType, option) {
 		jsonObj["Diff"]  = addRange.value;
 		jsonObj["Tests"] = getNonEmptyInputs("addTests");
 	} else if(reqType === "SearchQ") {
-		jsonObj["Diffs"] = getCheckedValues("searchDiff");
-		jsonObj["Topic"] = searchTopic.value;
-		jsonObj["Keys"]  = getNonEmptyInputs("searchKeys");
+		jsonObj["Diffs"] = [1,2,3,4,5];
+		jsonObj["Topic"] = "";
+		jsonObj["Keys"]  = [];
 	} else if(reqType === "AddTest") {
 		jsonObj["TestName"] = testDesc.value;
 		jsonObj["Rel"]      = getCheckedValue("testRelease");
@@ -42,6 +42,7 @@ function sendRequest(reqType, option) {
 				console.log("Error: " + replyObj["Error"]);
 			}
 			else {
+				var localQ = (option == "student")? studentLocalQ : instructorLocalQ;
 				if(replyObj["Type"] === "AddQ") {
 					alert("Question added successfully!");
 					localQ.push(replyObj["Question"]);
@@ -68,7 +69,7 @@ function sendRequest(reqType, option) {
 					console.log("GetTests Reply:");
 					console.log(replyObj["Tests"]);
 					if(option == "student") {
-						addObjsToArray(replyObj["Tests"], studentLocalTests);
+						addObjsToArray(replyObj["Tests"], studentLocalT);
 					}
 					else if(option == "instructor") {
 					}
@@ -85,11 +86,50 @@ function sendRequest(reqType, option) {
 	xhttp.send(jsonStr);
 }
 
-/* Adds an array of objects to another array */
-function addObjsToArray(objs, array){
-	for(var i=0; i<objs.length; i++)
-		array.push(objs[i]);
+function displayQuestionsToStudent(test) {
+	var testQuestions = [];
+	for(var i=0; i<test["QIds"]; i++){
+		var thisId = test["QIds"][i];
+		for(var j=0; j<studentLocalQ.length; j++){
+			var thisQ = studentLocalQ[j];
+			if(thisQ["Id"] == thisId){
+				testQuestions.push(thisQ);
+				break;
+			}
+		}
+	}
+	for(var i=0; i<testQuestions.length; i++){
+		addQuestionToDisplay(testQuestions[i], i);
+	}
 }
+
+function addQuestionToDisplay(Q, num) {
+	var qDiv      = document.createElement("DIV");
+	var leftMarg  = document.createElement("DIV");
+	var numText   = document.createTextNode("" + num + ".)");
+	var rightMarg = document.createElement("DIV");
+	var ptsText	  = document.createTextNode("5 Pts");
+	var desc      = document.createElement("P");
+	var answer    = document.createElement("TEXTAREA");
+
+	     qDiv.setAttribute("class", "qDiv");
+	 leftMarg.setAttribute("class", "qLeftMargin");
+	 leftMarg.appendChild(numText);
+	rightMarg.setAttribute("class", "qRightMargin");
+	rightMarg.appendChild(ptsText);
+	     desc.setAttribute("class", "qDesc");
+	     desc.value = Q["Desc"];
+	   answer.setAttribute("class", "qAns");
+
+	qDiv.appendChild(leftMarg);
+	qDiv.appendChild(desc);
+	qDiv.appendChild(answer);
+	qDiv.appendChild(rightMarg);
+
+	qDisplay.appendChild(qDiv);
+	
+}
+
 
 /* Searches through local questions returning matches
  * Topic   : A topic to search by, "" matches all topics
@@ -97,8 +137,8 @@ function addObjsToArray(objs, array){
  * Keys[]  : An array of words to search through descriptions by */
 function localSearch(topic, diffs, keys) {
 	var matches = [];
-	for(var i=0; i<localQ.length; i++){
-		var thisQ = localQ[i];
+	for(var i=0; i<instructorLocalQ.length; i++){
+		var thisQ = instructorLocalQ[i];
 		var thisTopic = thisQ["Topic"].toLowerCase();
 		if(topic === "" || thisTopic.match(topic.toLowerCase())){
 			// Topic matches, now check Diffs
@@ -384,6 +424,12 @@ function getCheckedValues(divId) {
 	return checked;
 }
 
+/* Adds an array of objects to another array */
+function addObjsToArray(objs, array){
+	for(var i=0; i<objs.length; i++)
+		array.push(objs[i]);
+}
+
 /* Removes question with qId from the array qArr */
 function removeQuestionFromArray(qId, qArr) {
 	var thisQ = document.getElementById(qId);
@@ -404,7 +450,8 @@ function getRelatedArray(displayId) {
 	} else if(displayId === "previewList" || displayId[0] === "s") {
 		relatedQ = selectedQ;
 	} else {
-		relatedQ = localQ;
+		relatedQ = [];
+		console.log("No relatedQ found for " + displayId);
 	}
 	return relatedQ;
 }
