@@ -18,10 +18,12 @@
 	</main>
 	<script src="external.js"></script>
 	<script>
+		qDisplay.addEventListener("click", function() { displayTestToStudent(studentLocalT[0]) } );
 		studentLocalQ = [];
 		studentLocalT = [];
 		sendRequest("SearchQ", "student");
 		sendRequest("GetTests", "student");
+		<!-- displayTestToStudent(studentLocalT[0]); -->
 	</script>
 </body>
 </html>

@@ -33,10 +33,8 @@ function sendRequest(reqType, option) {
 		console.log("Invalid reqType passed to sendRequest()");
 	}
 	var jsonStr = JSON.stringify(jsonObj);
-	console.log("Sent: " + jsonStr);
 	xhttp.onreadystatechange = function() {
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
-			console.log("Rcvd: " + xhttp.responseText); 
 			var replyObj = JSON.parse(xhttp.responseText);
 			if( replyObj["Error"] != 0 ) {
 				console.log("Error: " + replyObj["Error"]);
@@ -60,14 +58,11 @@ function sendRequest(reqType, option) {
 							localQ.push(DBQ[i]);
 						}
 					}
-					console.log(localQ);
 				}
 				else if(replyObj["Type"] === "AddTest") {
 					alert("Exam added successfully!");
 				}
 				else if(replyObj["Type"] === "GetTests") {
-					console.log("GetTests Reply:");
-					console.log(replyObj["Tests"]);
 					if(option == "student") {
 						addObjsToArray(replyObj["Tests"], studentLocalT);
 					}
@@ -86,12 +81,17 @@ function sendRequest(reqType, option) {
 	xhttp.send(jsonStr);
 }
 
-function displayQuestionsToStudent(test) {
+/* Takes a test, displays all of its questions on student page */
+function displayTestToStudent(test) {
+	console.log("entered displayTest");
+	console.log(test);
 	var testQuestions = [];
-	for(var i=0; i<test["QIds"]; i++){
+	for(var i=0; i<test["QIds"].length; i++){
 		var thisId = test["QIds"][i];
+		console.log(thisId);
 		for(var j=0; j<studentLocalQ.length; j++){
 			var thisQ = studentLocalQ[j];
+			console.log(thisQ);
 			if(thisQ["Id"] == thisId){
 				testQuestions.push(thisQ);
 				break;
@@ -99,10 +99,13 @@ function displayQuestionsToStudent(test) {
 		}
 	}
 	for(var i=0; i<testQuestions.length; i++){
+		console.log(testQuestions[i]);
 		addQuestionToDisplay(testQuestions[i], i);
 	}
+	addSubmitToDisplay();
 }
 
+	/* Appends one question to the end of the question display */
 function addQuestionToDisplay(Q, num) {
 	var qDiv      = document.createElement("DIV");
 	var leftMarg  = document.createElement("DIV");
@@ -118,7 +121,7 @@ function addQuestionToDisplay(Q, num) {
 	rightMarg.setAttribute("class", "qRightMargin");
 	rightMarg.appendChild(ptsText);
 	     desc.setAttribute("class", "qDesc");
-	     desc.value = Q["Desc"];
+	     desc.innerHTML = Q["Desc"];
 	   answer.setAttribute("class", "qAns");
 
 	qDiv.appendChild(leftMarg);
@@ -128,6 +131,16 @@ function addQuestionToDisplay(Q, num) {
 
 	qDisplay.appendChild(qDiv);
 	
+}
+
+/* Adds a button to the end of the student's question display */
+function addSubmitToDisplay() {
+	var theBtn = document.createElement("BUTTON");
+	theBtn.setAttribute("type","button");
+	theBtn.setAttribute("id", "testSub"); // <-- might have to change this
+	theBtn.addEventListener("click", function() { validateForm("SubmitTest") } );
+	theBtn.value = "Submit Exam";
+	qDisplay.appendChild(theBtn);
 }
 
 
@@ -177,7 +190,7 @@ function displaySearchResults() {
 
 /* Checks that all fields are correct in form being submitted */
 function validateForm(type) {
-	switch("AddQ") {
+	switch(type) {
 		case "AddQ":
 			if(nonEmpty("addDesc") && nonEmpty("addTopic")) {
 				var testsArray = getNonEmptyInputs("addTests");
@@ -195,6 +208,9 @@ function validateForm(type) {
 			if(nonEmpty("testDesc")) {
 				alert("AddTest fields all non-empty");
 			}
+			break;
+		case "SubmitTest":
+			alert("Submitting Test!");
 			break;
 		default:
 			console.log("Invalid type to validate");
