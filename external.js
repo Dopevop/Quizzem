@@ -31,6 +31,7 @@ function sendRequest(reqType) {
 		jsonObj["Release"]  = getCheckedValue("testRelease");
 		jsonObj["QIds"]     = getSelectedIds();
 	} else if(reqType === "GetTests") {
+		jsonObj["Rels"] = [ 0, 1];
 	} else {
 		console.log("Invalid reqType passed to sendRequest()");
 	}
@@ -39,19 +40,23 @@ function sendRequest(reqType) {
 	console.log("Sent: " + jsonStr);
 	xhttp.onreadystatechange = function() {
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
-			<!-- console.log("Rcvd: " + xhttp.responseText); -->
+			console.log("Rcvd: " + xhttp.responseText); 
 			var replyObj = JSON.parse(xhttp.responseText);
 			
-			if( replyObj["Error"] != 0 ){
+			if( replyObj["Error"] != 0 )
+			{
 				console.log("Error: " + replyObj["Error"]);
-			} else {
-				if(replyObj["Type"] === "AddQ"){
+			}
+			else
+			{
+				if(replyObj["Type"] === "AddQ") {
 					alert("Question added successfully!");
 					localQ.push(replyObj["Question"]);
 					matchedQ.push(replyObj["Question"]);
 					updateDisplays(["matchedList"]);
 					console.log(matchedQ);
-				} else if(replyObj["Type"] === "SearchQ") {
+				}
+				else if(replyObj["Type"] === "SearchQ") {
 					// Loop through DB Q's, adding each to local Q's
 					var DBQ = replyObj["Questions"];
 					for(var i=0; i<DBQ.length; i++){
@@ -62,8 +67,16 @@ function sendRequest(reqType) {
 						}
 					}
 					console.log(localQ);
-				} else if(replyObj["Type"] === "AddTest") {
+				}
+				else if(replyObj["Type"] === "AddTest") {
 					alert("Exam added successfully!");
+				}
+				else if(replyObj["Type"] === "GetTests") {
+					console.log("GetTests Reply:");
+					console.log(replyObj["Tests"]);
+				}
+				else {
+					console.log("Unknown reply type: " + replyObj["Type"]);
 				}
 
 			}
