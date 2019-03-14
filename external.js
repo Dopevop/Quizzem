@@ -32,20 +32,16 @@ function sendRequest(reqType, option) {
 	} else {
 		console.log("Invalid reqType passed to sendRequest()");
 	}
-
 	var jsonStr = JSON.stringify(jsonObj);
 	console.log("Sent: " + jsonStr);
 	xhttp.onreadystatechange = function() {
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
 			console.log("Rcvd: " + xhttp.responseText); 
 			var replyObj = JSON.parse(xhttp.responseText);
-			
-			if( replyObj["Error"] != 0 )
-			{
+			if( replyObj["Error"] != 0 ) {
 				console.log("Error: " + replyObj["Error"]);
 			}
-			else
-			{
+			else {
 				if(replyObj["Type"] === "AddQ") {
 					alert("Question added successfully!");
 					localQ.push(replyObj["Question"]);
@@ -71,6 +67,11 @@ function sendRequest(reqType, option) {
 				else if(replyObj["Type"] === "GetTests") {
 					console.log("GetTests Reply:");
 					console.log(replyObj["Tests"]);
+					if(option == "student") {
+						addObjsToArray(replyObj["Tests"], studentLocalTests);
+					}
+					else if(option == "instructor") {
+					}
 				}
 				else {
 					console.log("Unknown reply type: " + replyObj["Type"]);
@@ -82,6 +83,12 @@ function sendRequest(reqType, option) {
 	xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send(jsonStr);
+}
+
+/* Adds an array of objects to another array */
+function addObjsToArray(objs, array){
+	for(var i=0; i<objs.length; i++)
+		array.push(objs[i]);
 }
 
 /* Searches through local questions returning matches
