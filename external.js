@@ -33,27 +33,29 @@ function sendRequest(reqType, option) {
 		console.log("Invalid reqType passed to sendRequest()");
 	}
 	var jsonStr = JSON.stringify(jsonObj);
+	// console.log("Sent:" + jsonStr);
 	xhttp.onreadystatechange = function() {
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			// console.log("Rcvd:"+xhttp.responseText);
 			var replyObj = JSON.parse(xhttp.responseText);
 			if( replyObj["Error"] != 0 ) {
 				console.log("Error: " + replyObj["Error"]);
 			}
 			else {
-				var localQ = (option == "student")? studentLocalQ : instructorLocalQ;
+				var localQ = (option == "student")? studLocalQ : instLocalQ;
 				if(replyObj["Type"] === "AddQ") {
 					alert("Question added successfully!");
 					localQ.push(replyObj["Question"]);
 					matchedQ.push(replyObj["Question"]);
 					updateDisplays(["matchedList"]);
-					console.log(matchedQ);
+					// console.log(matchedQ);
 				}
 				else if(replyObj["Type"] === "SearchQ") {
 					// Loop through DB Q's, adding each to local Q's
 					var DBQ = replyObj["Questions"];
 					for(var i=0; i<DBQ.length; i++){
-						if(!DBQ[i]["Topic"])
-							DBQ[i]["Topic"] = "UNDEFINED";
+						// if(!DBQ[i]["Topic"])
+						// 	DBQ[i]["Topic"] = "UNDEFINED";
 						if(uniqQuestion(DBQ[i], localQ)){
 							localQ.push(DBQ[i]);
 						}
@@ -64,9 +66,12 @@ function sendRequest(reqType, option) {
 				}
 				else if(replyObj["Type"] === "GetTests") {
 					if(option == "student") {
-						addObjsToArray(replyObj["Tests"], studentLocalT);
+						addObjsToArray(replyObj["Tests"], studLocalT);
+						addObjsToArray(replyObj["Tests"], studAvailT);
+						updateDisplays( ["studTestNav"] );
 					}
 					else if(option == "instructor") {
+						console.log("instructorLocalT not implemented yet!!");
 					}
 				}
 				else {
@@ -81,8 +86,65 @@ function sendRequest(reqType, option) {
 	xhttp.send(jsonStr);
 }
 
+/* Takes a list of tests and displays them to be selected for student */
+function displayAvailableTests(tests){
+	console.log("Displaying tests for student");
+	studTestNav.innerHTML = "";
+	var numTests = tests.length
+	var sumStr = getSumStr(numTests);
+	addSummaryItem("studTestNav", sumStr)
+	for(var i=0; i<numTests; i++){
+		var test = tests[i];
+		addItemToDisplay(test, "studTestNav");
+	}
+}
+
+/* Creates a textnode with given string, adds it to given element */
+function addSummaryItem(parentId, sumStr) {
+	var child  = document.createTextNode("sumStr");
+	var parent = document.getElementById(parentId);
+	parent.appendChild(child);
+}
+
+/* Displays summary of test questions in nav
+ * Displays test questions in main block of student page*/
+function displaySelectedTest(){
+}
+
+/* Creates a test summary item and appends it to the given element */
+function addTestToDisplay(displayId, test) {
+	var tDiv  = document.createElement("DIV");
+	var tName = document.createTextNode(test["TestName"]);
+	var qSum  = document.createTextNode(""+test["QIds"].length+" Questions");
+	tDiv.setAttribute("class", "available");
+	tDiv.setAttribute("click", function() { 
+		if(confirm("Are you sure you want to take the exam? You will not be able to retake it.")){
+			studSelectedT = test["Id"];
+			displaySelectedTest();
+		}
+	});
+	tDiv.appendChild(tName);
+	tDiv.appendChild(qSum);
+	displayId.appendChild(tDiv);
+}
+
+/* Returns a text summary of the number of available tests */
+function getSumStr(numTests){
+	var sumStr;
+	if(numTests < 1){
+		sumStr = "No Tests Available";
+	}
+	else if(numTests == 1) {
+		sumStr = "1 Test Available";
+	}
+	else {
+		sumStr = "Tests Available";
+	}
+	return sumStr;
+}
+
 /* Takes a test, displays all of its questions on student page */
-function displayTestToStudent(test) {
+function displayTestQuestions(test) {
 	console.log("entered displayTest");
 	console.log(test);
 	var testQuestions = [];
@@ -109,7 +171,7 @@ function displayTestToStudent(test) {
 function addQuestionToDisplay(Q, num) {
 	var qDiv      = document.createElement("DIV");
 	var leftMarg  = document.createElement("DIV");
-	var numText   = document.createTextNode("" + num + ".)");
+	var numText   = document.createTextNode("" + ( num + 1 ) + ".)");
 	var rightMarg = document.createElement("DIV");
 	var ptsText	  = document.createTextNode("5 Pts");
 	var desc      = document.createElement("P");
@@ -139,7 +201,7 @@ function addSubmitToDisplay() {
 	theBtn.setAttribute("type","button");
 	theBtn.setAttribute("id", "testSub"); // <-- might have to change this
 	theBtn.addEventListener("click", function() { validateForm("SubmitTest") } );
-	theBtn.value = "Submit Exam";
+	theBtn.innerHTML = "Submit Exam";
 	qDisplay.appendChild(theBtn);
 }
 
@@ -150,8 +212,8 @@ function addSubmitToDisplay() {
  * Keys[]  : An array of words to search through descriptions by */
 function localSearch(topic, diffs, keys) {
 	var matches = [];
-	for(var i=0; i<instructorLocalQ.length; i++){
-		var thisQ = instructorLocalQ[i];
+	for(var i=0; i<instLocalQ.length; i++){
+		var thisQ = instLocalQ[i];
 		var thisTopic = thisQ["Topic"].toLowerCase();
 		if(topic === "" || thisTopic.match(topic.toLowerCase())){
 			// Topic matches, now check Diffs
@@ -237,35 +299,50 @@ function validateTests(tests) {
 /* Toggles whether the clicked on question is in selectedQ 
  * listItemId: The id of the List Item that the question appears in */
 function toggleSelected(listItemId) {
-	var qId = listItemId.substring(1);
-	if ( listItemId[0] == "m") { // Selected Item is a matchList question
+	var id = listItemId.substring(1);
+	if(listItemId[0] == "t") {
+		// add test with id to studSelectedT; remove from studAvailT
+		for(var i=0; i<studAvailT.length; i++) {
+			var thisT = studAvailT[i];
+			if(thisT["TestId"] == id) {
+				studSelectedT = thisT;
+				studSelectedT = removeItemFromArray(thisT["TestId"], studSelectedT);
+				break;
+			}
+		}
+		updateDisplays(["studTestNav"]);
+	}
+	else if ( listItemId[0] == "m") { // Selected Item is a matchList question
 		// add Q to selectedQ, remove from matchedQ
 		for(var i=0; i<matchedQ.length; i++){
 			var thisQ = matchedQ[i];
-			if(thisQ["Id"] == qId){ // Check if found the clicked on Q
+			if(thisQ["Id"] == id){ // Check if found the clicked on Q
 				if(uniqQuestion(thisQ, selectedQ)){
 					selectedQ.push(thisQ);
 				}
-				matchedQ = removeQuestionFromArray(thisQ["Id"], matchedQ);
+				matchedQ = removeItemFromArray(thisQ["Id"], matchedQ);
 				break;
 			}
+		updateDisplays(["previewList", "matchedList"]);
 		}
-	} else if ( listItemId[0] == "p") { // Selected Item is a previewList question
+	}
+	else if ( listItemId[0] == "p") { // Selected Item is a previewList question
 		// add Q to matchedQ, remove from selectedQ
 		for(var i=0; i<selectedQ.length; i++){
 			var thisQ = selectedQ[i];
-			if(thisQ["Id"] == qId){ // Check if found the clicked on Q
+			if(thisQ["Id"] == id){ // Check if found the clicked on Q
 				if(uniqQuestion(thisQ, matchedQ)){
 					matchedQ.push(thisQ);
 				}
-				selectedQ = removeQuestionFromArray(thisQ["Id"], selectedQ);
+				selectedQ = removeItemFromArray(thisQ["Id"], selectedQ);
 				break;
 			}
 		}
-	} else {
+		updateDisplays(["previewList", "matchedList"]);
+	}
+	else {
 		console.log("Shouldn't have gotten here");
 	}
-	updateDisplays(["previewList", "matchedList"]);
 }
 
 /* Resets all of the inputs inside of the specified element.
@@ -301,16 +378,25 @@ function clearForm(formId) {
 
 /* Resets display and clears related array 
  * Display elements have a title, and an unorder list of Qs */
-function clearDisplay(displayId) {
+function resetDisplay(displayId) {
+	console.log("clearing display: "+displayId);
 	var display = document.getElementById(displayId);
 	var ul      = document.createElement("UL");
-	if(displayId === "previewList"){
+	if( displayId === "previewList" ){
 		ul.setAttribute("id", "pList");
 		ul.appendChild(document.createTextNode("Selected"));
-	} else if(displayId === "matchedList") {
+	} 
+	else if( displayId === "matchedList" ) {
 		ul.setAttribute("id", "mList");
 		ul.appendChild(document.createTextNode("Matches"));
-	} else {
+	}
+	else if( displayId === "studTestNav" ) {
+		ul.setAttribute("id", "tList");
+		ul.appendChild(document.createTextNode("Tests"));
+	}
+	else if( displayId === "||||||||||||||||||||||||||||||||||||||||||||||||||||||" ) {
+	}
+	else {
 		ul.setAttribute("id", "?List");
 		ul.appendChild(document.createTextNode("??? Questions"));
 	}
@@ -323,38 +409,72 @@ function updateDisplays(displayIdArr) {
 	for(var i=0; i<displayIdArr.length; i++){
 		var thisId = displayIdArr[i];
 		var relatedQ = getRelatedArray(thisId);
-		clearDisplay(thisId);
+		resetDisplay(thisId);
 		for(var j=0; j<relatedQ.length; j++)
-			addToDisplay(relatedQ[j], thisId);
+			addItemToDisplay(relatedQ[j], thisId);
 	}
+} 
+function addItemToDisplay(newItem, displayId) {
+	console.log("Adding item to display: "+displayId);
+	if(displayId === "matchedList" || displayId === "previewList") {
+		var item      = document.createElement("LI");
+		var descText  = document.createTextNode(newItem["Desc"]);
+		var diffText  = document.createTextNode("Difficulty: "+convertDiffFormat(newItem["Diff"]));
+		var topicText = document.createTextNode("Topic: "+newItem["Topic"]);
+		var strObj    = getIdClassStrObj(newItem, displayId);
+		item.setAttribute("id", strObj["idStr"]);
+		item.setAttribute("class", strObj["classStr"]);
+		item.addEventListener("click", function() { toggleSelected( strObj["idStr"] ) });
+		item.appendChild(descText);
+		item.appendChild(document.createElement("BR"));
+		item.appendChild(diffText);
+		item.appendChild(document.createTextNode(" ~ "));
+		item.appendChild(topicText);
+	}
+	else if(displayId === "studTestNav") {
+		var item     = document.createElement("LI");
+		var descText = document.createTextNode(newItem["TestName"]);
+		var numQText = document.createTextNode(""+newItem["QIds"].length+" Questions");
+		var strObj   = getIdClassStrObj(newItem, displayId);
+		item.setAttribute("id", strObj["idStr"]);
+		item.setAttribute("class", strObj["classStr"]);
+		item.appendChild(descText);
+		item.appendChild(document.createElement("BR"));
+		item.appendChild(numQText);
+		item.appendChild(document.createElement("BR"));
+		item.addEventListener("click", function() { 
+			if(confirm("Are you sure you want to take the exam?")){
+				studSelectedT = newItem["TestId"];
+				displaySelectedTest(document.getElementById(strObj["idStr"]));
+			}});
+		} 
+	else {
+	}
+	document.getElementById(displayId).appendChild(item);
 }
 
-/* Turns the given question into an HTML element
- * Inserts new element into list of matching questions */
-function addToDisplay(newQ, displayId){
-	var item      = document.createElement("LI");
-	var descText  = document.createTextNode(newQ["Desc"]);
-	var diffText  = document.createTextNode("Difficulty: "+convertDiffFormat(newQ["Diff"]));
-	var topicText = document.createTextNode("Topic: "+newQ["Topic"]);
-	var idStr, classStr;
-	if(displayId === "matchedList") {
-		idStr = "m" + newQ["Id"];
-		classStr = "matched";
-	} else if(displayId === "previewList") {
-		idStr = "p" + newQ["Id"];
-		classStr = "selected";
-	} else {
-		idStr = "?" + newQ["Id"];
+
+/* Returns an object with two fields: idStr and classStr
+ * Used for constructing a new list item to add to displays */
+function getIdClassStrObj(newItem, displayId) {
+	var strObj = [];
+	     if(displayId === "matchedList") {
+		strObj["idStr"]    = "m" + newItem["Id"];
+		strObj["classStr"] = "matched";
 	}
-	item.setAttribute("id", idStr);
-	item.setAttribute("class", classStr);
-	item.addEventListener("click", function() { toggleSelected(idStr) });
-	item.appendChild(descText);
-	item.appendChild(document.createElement("BR"));
-	item.appendChild(diffText);
-	item.appendChild(document.createTextNode(" ~ "));
-	item.appendChild(topicText);
-	document.getElementById(displayId).appendChild(item);
+	else if(displayId === "previewList") {
+		strObj["idStr"]    = "p" + newItem["Id"];
+		strObj["classStr"] = "selected";
+	}
+	else if(displayId === "studTestNav") {
+		strObj["idStr"]    = "t" + newItem["TestId"];
+		strObj["classStr"] = "available";
+	}
+	else {
+		strObj["idStr"] = "?" + newItem["Id"];
+		strObj["classStr"] = "?" + "unknown";
+	}
+	return strObj;
 }
 
 /* Add another input text box to the top of the specified element.
@@ -447,15 +567,14 @@ function addObjsToArray(objs, array){
 }
 
 /* Removes question with qId from the array qArr */
-function removeQuestionFromArray(qId, qArr) {
-	var thisQ = document.getElementById(qId);
-	for(var i=0; i<qArr.length; i++){
-		if(qArr[i]["Id"] === qId) {
-			qArr.splice(i, 1);
+function removeItemFromArray(id, A) {
+	for(var i=0; i<A.length; i++){
+		if(A[i]["Id"] === id) {
+			A.splice(i, 1);
 			break;
 		}
 	}
-	return qArr;
+	return A;
 }
 
 /* Determines which array (selectedQ or matchedQ) is associated with a display */
@@ -463,12 +582,16 @@ function getRelatedArray(displayId) {
 	var relatedQ;
 	if(displayId === "matchedList" || displayId[0] === "m"){
 		relatedQ = matchedQ;
-	} else if(displayId === "previewList" || displayId[0] === "s") {
+	} else if(displayId === "previewList" /*|| displayId[0] === "s"*/) {
 		relatedQ = selectedQ;
+	} else if(displayId === "studTestNav") {
+		relatedQ = studLocalT;
 	} else {
 		relatedQ = [];
 		console.log("No relatedQ found for " + displayId);
 	}
+	console.log("relatedQ for "+displayId+" is:");
+	console.log(relatedQ);
 	return relatedQ;
 }
 

@@ -10,20 +10,58 @@
 	<title>Quizzem</title>
 </head>
 <body>
-	<nav>
-		Here's a nav
-	</nav>
-	<main id="qDisplay">
-		Here's a main
+	<main>
+		<nav id="studTestNav">
+			<ul>
+				<li>Tests</li>
+			</ul>	
+		</nav>
+		<article id="studQuestDisplay">
+			qDisplayer
+		</article>
 	</main>
 	<script src="external.js"></script>
 	<script>
-		qDisplay.addEventListener("click", function() { displayTestToStudent(studentLocalT[0]) } );
-		studentLocalQ = [];
-		studentLocalT = [];
-		sendRequest("SearchQ", "student");
-		sendRequest("GetTests", "student");
-		<!-- displayTestToStudent(studentLocalT[0]); -->
+		// Student Logs in
+		// Download data:
+		// - All questions get downloaded, stored in studLocalQ
+		// - All released tests get downloaded, stored in studLocalT
+		// - All tests that have not been taken already are added to studAvailT
+		var studLocalQ = [];
+		var studLocalT = [];
+		var studAvailT = [];
+		var studSelectedT;
+		sendRequest("SearchQ" , "student"); // Will update studLocalQ 
+		sendRequest("GetTests", "student"); // Will update studLocalT, studAvailT 
+		console.log(studLocalT);
+
+		// Reset Page:
+		// - studTestNav updated
+		// - studAvailT displayed
+		// - submitted tests displayed
+		// - possibly clickable for review?
+		// - studQuestDisplay updated
+		// - message about selecting a test to take
+
+
+		// Student selects test:
+		// - Student clicks on an available test to take
+		// - confirm box pops up to make sure
+		// - test id is added to studSelectedT
+		// - studTestNav displays question summary for test
+		// - studQuestDisplay displays each questin with inputs for answers
+		// - Might need to add some question specific id to each <textarea>
+		// - student submits exam
+		// - validation to make sure all answers are filled out
+		// - confirmation before submittal
+		// Reset Page:
+		// - studTestNav updated
+		// - available tests displayed like original
+		// - submitted tests displayed
+		// - possibly clickable for review?
+		// - studQuestDisplay updated
+		// - message about selecting a test to take
+
 	</script>
 </body>
 </html>
