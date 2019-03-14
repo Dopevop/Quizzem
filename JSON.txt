@@ -22,7 +22,7 @@ Request { Type:AddTest, TestName:Str, Release:int, QIds:[] }
 Reply	{ Type:AddTest, Error:Str, Test:{Test}}
 
 GetTests:
-Request { Type:GetTests, Release:[int] }
+Request { Type:GetTests, Rels:[int] }
 Reply	{ Type:GetTests, Error:Str, Tests:[{Test}] }
 
 SubmitTest:
