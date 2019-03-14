@@ -4,7 +4,7 @@ Question:
 { Desc:Str, Topic:Str, Id:int, Diff:int, Tests:[Str] }
 
 Test:
-{ TestId:int, TestName:Str, Released:int, QIds:[int] }
+{ TestId:int, TestName:Str, Rel:int, Sub:int, QIds:[int] }
 
 Answer:
 { TestId:int, QId:int, Text:Str }
