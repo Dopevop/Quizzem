@@ -1,0 +1,31 @@
+* {
+	box-sizing        : border-box;
+	margin            : 0px
+}
+.box {
+	float             : left;
+	width             : 33.33%;
+	padding           : 50px 5px;
+	height            : 100vh;
+	overflow          : auto;
+	background-color  : ghostwhite;
+}
+.clearfix::after {
+	content           : "";
+	clear             : both;
+	display           : table;
+}
+ul {
+	text-align        : center;
+	list-style-type   : none;
+	margin            : 0;
+	padding           : 0;
+}
+.selected, .matched {
+	text-align        : left;
+	list-style-type   : none;
+	background        : white;
+	margin            : 15px;
+	padding           : 10px;
+	box-shadow        : 0px 0px 3px lightgrey;
+}
