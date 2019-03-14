@@ -4,7 +4,10 @@ Question:
 { Desc:Str, Topic:Str, Id:int, Diff:int, Tests:[Str] }
 
 Test:
-{ TestId, TestName:Str, Released:int, QIds:[int] }
+{ TestId:int, TestName:Str, Released:int, QIds:[int] }
+
+Answer:
+{ TestId:int, QId:int, Text:Str }
 
 AddQ:
 Request { Type:AddQ, Desc:Str, Topic:Str, Diff:int, Tests:[Str] }
@@ -21,3 +24,6 @@ Reply	{ Type:AddTest, Error:Str, Test:{Test}}
 GetTest:
 Request { Type:GetTest, TestIds:[], Release:int }
 Reply	{ Type:GetTest, Error:Str, Tests:[{Test}] }
+
+SubmitTest:
+Request { Type:SubmitExam, Answers:[{Answer}] }
