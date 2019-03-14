@@ -1,17 +1,11 @@
 /* Sends the specified type of request to the server 
- * Types so far: AddQ, SearchQ 
- * AddQ sends: { type, desc, diff, keys, tests }
- *    type is always AddQ
- *    desc is the question prompt student will see when taking test
- *    diff is the difficulty specified by instructor for that question
- *    keys is an array of keywords that can be used to search for this question
- *    tests is an arry of tests that should pass if student gives correct answer
- *        Format in which tests should be given is not yet decided
- * SearchQ: { type, diff, keys } 
- *    type: Always SearchQ for searching questions, used by server
- *    diff: An array of booleans specifying which difficulty questions to return
- *    keys: An array of keywords that should match the returned questions*/
-function sendRequest(reqType) {
+ * Types so far: 
+ * AddQ: Option field not checked
+ * SearchQ: Option field is source of call
+ * 	If from Student -> only get released Tests, store in student's local array
+ * 	If from Teacher -> Get all release status, store in teacher's local array
+ * */
+function sendRequest(reqType, option) {
 	var xhttp   = new XMLHttpRequest();
 	var jsonObj = {
 		"Type"  : reqType,
@@ -31,7 +25,10 @@ function sendRequest(reqType) {
 		jsonObj["Release"]  = getCheckedValue("testRelease");
 		jsonObj["QIds"]     = getSelectedIds();
 	} else if(reqType === "GetTests") {
-		jsonObj["Rels"] = [ 0, 1];
+		if(option == "student")
+			jsonObj["Rels"] = [1]; 		// Only get released tests for student page
+		else if(option == "instructor")
+			jsonObj["Rels"] = [0, 1]; 	// Get all tests for instructor page
 	} else {
 		console.log("Invalid reqType passed to sendRequest()");
 	}
@@ -164,7 +161,7 @@ function validateTests(tests) {
 		console.log("Too few tests");
 		return false;
 	}
-	var pattern = /[a-zA-Z][a-zA-Z0-9]*\( *[^, (]+ *(, *[^,( ]+)* *\) *= *.*/;
+	var pattern = /[a-zA-Z][a-zA-Z0-9]*\( *([^, (]+ *(, *[^,( ]+)*)|\) *\) *= *.*/;
 	for(var i=0; i<tests.length; i++){
 		if(!tests[i].match(pattern)){
 			console.log("test " + i + " {"+ tests[i] +"} didn't match pattern");
