@@ -132,7 +132,7 @@
 	sendRequest("SearchQ");
 
 	/* Adding event listeners to submit and clear buttons  */
-	     addSub.addEventListener("click"    , function() { validate("AddQ")         } );
+	     addSub.addEventListener("click"    , function() { validateForm("AddQ")        } );
 	    addForm.addEventListener("mousemove", function() { updateDiff()                } );
 	   addRange.addEventListener("mouseup"  , function() { updateDiff()                } );
 	  searchSub.addEventListener("click"    , function() { displaySearchResults()      } );
@@ -147,22 +147,37 @@
 	resetModal("Test Cases", "addTests"  , 'addInput("addTests")');
 	resetModal("Keywords"  , "searchKeys", 'addInput("searchKeys")');
 	
-	function validate(type) {
+	/* Checks that all fields are correct in form being submitted */
+	function validateForm(type) {
 		switch("AddQ") {
 			case "AddQ":
 				if(nonEmpty("addDesc") && nonEmpty("addTopic") && numNonEmpty("addTests") > 1) {
-					alert("AddQ fields all good");
-					sendRequest("AddQ");
-					clearForm("addForm");
+					if(validateTests(testArray)){
+						sendRequest("AddQ");
+						clearForm("addForm");
+					} else {
+						alert("Need two test cases in this form: funcName(param1, param2)=answer");
+					}
 				} else {
-					alert("Fill out da fields!");
+					alert("Make sure Description and Topic are filled out!");
 				}
 				break;
 			case "AddTest":
 				if(nonEmpty("testDesc")) {
 					alert("AddTest fields all non-empty");
 				}
-			
+				break;
+			default:
+				console.log("Invalid type to validate");
+		}
+	}
+
+	/* Makes sure there are at least two non-empty tests
+	 * Makes sure all tests are in the form of func([a][,b]...)=answer */
+	function validateTests(tests){
+		var pattern = "";
+		for(var i=0; i<tests.length; i++){
+
 		}
 	}
 
@@ -529,13 +544,13 @@
 			jsonObj["Diff"]  = addRange.value;
 			jsonObj["Tests"] = getNonEmptyInputs("addTests");
 		} else if(reqType === "SearchQ") {
-			jsonObj["Diffs"] = getCheckedValues("searchDiff");
 			jsonObj["Topic"] = searchTopic.value;
+			jsonObj["Diffs"] = getCheckedValues("searchDiff");
 			jsonObj["Keys"]  = getNonEmptyInputs("searchKeys");
 		} else if(reqType === "AddTest") {
 			jsonObj["TestName"]      = testDesc.value;
 			jsonObj["Release"]   = getCheckedValue("testRelease");
-			jsonObj["Questions"] = getSelectedIds();
+			jsonObj["QIds"] = getSelectedIds();
 		} else {
 			console.log("Invalid reqType passed to sendRequest()");
 		}
