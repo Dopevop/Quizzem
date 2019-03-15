@@ -109,6 +109,8 @@ function addSummaryItem(parentId, sumStr) {
 /* Displays summary of test questions in nav
  * Displays test questions in main block of student page*/
 function displaySelectedTest(){
+	if(studSelectedT)
+		addTestToDisplay("studTestDisplay", studSelectedT);
 }
 
 /* Creates a test summary item and appends it to the given element */
@@ -343,6 +345,7 @@ function toggleSelected(listItemId) {
 	else {
 		console.log("Shouldn't have gotten here");
 	}
+	updateDisplays(["previewList", "matchedList"]);
 }
 
 /* Resets all of the inputs inside of the specified element.
@@ -362,7 +365,7 @@ function clearForm(formId) {
 				updateDiff();
 				break;
 			default:
-				console.log("Found a non text or range input");
+				break;
 		}
 	}
 	// Reset all modular elements
@@ -379,7 +382,6 @@ function clearForm(formId) {
 /* Resets display and clears related array 
  * Display elements have a title, and an unorder list of Qs */
 function resetDisplay(displayId) {
-	console.log("clearing display: "+displayId);
 	var display = document.getElementById(displayId);
 	var ul      = document.createElement("UL");
 	if( displayId === "previewList" ){
@@ -415,7 +417,6 @@ function updateDisplays(displayIdArr) {
 	}
 } 
 function addItemToDisplay(newItem, displayId) {
-	console.log("Adding item to display: "+displayId);
 	if(displayId === "matchedList" || displayId === "previewList") {
 		var item      = document.createElement("LI");
 		var descText  = document.createTextNode(newItem["Desc"]);
@@ -428,7 +429,7 @@ function addItemToDisplay(newItem, displayId) {
 		item.appendChild(descText);
 		item.appendChild(document.createElement("BR"));
 		item.appendChild(diffText);
-		item.appendChild(document.createTextNode(" ~ "));
+		item.appendChild(document.createElement("BR"));
 		item.appendChild(topicText);
 	}
 	else if(displayId === "studTestNav") {
@@ -588,10 +589,7 @@ function getRelatedArray(displayId) {
 		relatedQ = studLocalT;
 	} else {
 		relatedQ = [];
-		console.log("No relatedQ found for " + displayId);
 	}
-	console.log("relatedQ for "+displayId+" is:");
-	console.log(relatedQ);
 	return relatedQ;
 }
 
