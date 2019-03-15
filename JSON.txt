@@ -4,7 +4,7 @@ Question:
 { Desc:Str, Topic:Str, Id:int, Diff:int, Tests:[Str] }
 
 Test:
-{ TestId:int, TestName:Str, Rel:int, Sub:int, QIds:[int] }
+{ TestId:int, TestName:Str, Rel:int, Sub:int, Questions:[{Question}] }
 
 Answer:
 { TestId:int, QId:int, Text:Str }
@@ -14,11 +14,11 @@ Request { Type:AddQ, Desc:Str, Topic:Str, Diff:int, Tests:[Str] }
 Reply 	{ Type:AddQ, Error:Str, {Question} }
 
 SearchQ:
-Request { Type:SearchQ, Topic:Str, Diffs:[int], Keys:[Str] }
+Request { Type:SearchQ, Diffs:[int], Topic:Str, Keys:[Str] }
 Reply	{ Type:SearchQ, Error:Str, Questions:[{Question}] }
 
 AddTest:
-Request { Type:AddTest, TestName:Str, Release:int, QIds:[] }
+Request { Type:AddTest, TestName:Str, Release:int, Questions:[{Question}] }
 Reply	{ Type:AddTest, Error:Str, Test:{Test}}
 
 GetTests:
