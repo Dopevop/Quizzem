@@ -109,8 +109,9 @@ function sendAddQ() {
 	xhttp.send(jsonStr);
 }
 
-/* Sends a request to add a test to the DB */
-/*  */
+/* Sends a request to add a test to the DB        */
+/* Form is validated before this method is called */
+/* Only instructor will call this method          */
 function sendAddT() {
 	var xhttp   = new XMLHttpRequest();
 	var jsonObj = {
@@ -130,8 +131,8 @@ function sendAddT() {
 			}
 			else {
 				var DBT = replyObj["Tests"];
-				for(var i=0; i<DBT.length; i++){
-					if(uniqQuestion(DBT[i], iLocalT))
+				for(var i=0; i<DBT.length; i++){      // Add uniq DB
+					if(uniqQuestion(DBT[i], iLocalT)) // Qs to iLocalT
 						iLocalT.push(DBT[i]);
 				}
 			}
@@ -145,13 +146,13 @@ function sendAddT() {
 // /* Takes a list of tests and displays them to be selected for student */
 // function displayAvailableTests(tests){
 // 	//console.log("displayAvailableTests");
-// 	studTestNav.innerHTML = "";
+// 	sTestNav.innerHTML = "";
 // 	var numTests = tests.length
 // 	var sumStr = getSumStr(numTests);
-// 	addSummaryItem("studTestNav", sumStr)
+// 	addSummaryItem("sTestNav", sumStr)
 // 	for(var i=0; i<numTests; i++){
 // 		var test = tests[i];
-// 		addItemToDisplay(test, "studTestNav");
+// 		addItemToDisplay(test, "sTestNav");
 // 	}
 // }
 
@@ -270,7 +271,7 @@ function localSearch(topic, diffs, keys) {
 	//console.log("localSearch");
 	var matches = [];
 	for(var i=0; i<iLocalQ.length; i++){
-		var thisQ = iLocal[i];
+		var thisQ = iLocalQ[i];
 		var thisTopic = thisQ["Topic"].toLowerCase();
 		if(topic === "" || thisTopic.match(topic.toLowerCase())){
 			// Topic matches, now check Diffs
@@ -375,7 +376,7 @@ function toggleSelected(listItemId) {
 				break;
 			}
 		}
-		updateDisplays(["studTestNav", "studTestDisplay"]);
+		updateDisplays(["sTestNav", "sTestDisp"]);
 		studSelectedT = "none";
 	}
 	else if ( listItemId[0] == "m") { // Selected Item is a matchList question
@@ -463,11 +464,11 @@ function resetDisplay(displayId) {
 		ul.setAttribute("id", "mList");
 		ul.appendChild(document.createTextNode("Matches"));
 	}
-	else if( displayId === "studTestNav" ) {
+	else if( displayId === "sTestNav" ) {
 		ul.setAttribute("id", "tList");
 		ul.appendChild(document.createTextNode("Tests"));
 	}
-	else if( displayId === "studTestDisplay" ) {
+	else if( displayId === "sTestDisp" ) {
 		if(studSelectedT !== "none") {
 			// A test has been selected
 			ul.setAttribute("id", "qList");
@@ -529,7 +530,7 @@ function addItemToDisplay(newItem, displayId, num) {
 		item.appendChild(document.createElement("BR"));
 		item.appendChild(topicText);
 	}
-	else if(displayId === "studTestNav") {
+	else if(displayId === "sTestNav") {
 		var item     = document.createElement("LI");
 		var descText = document.createTextNode(newItem["TestName"]);
 		var numQText = document.createTextNode(""+newItem["Questions"].length+" Questions");
@@ -542,7 +543,7 @@ function addItemToDisplay(newItem, displayId, num) {
 		item.appendChild(document.createElement("BR"));
 		item.addEventListener("click", function() { toggleSelected(strObj["idStr"])	});
 	} 
-	else if(displayId === "studTestDisplay") {
+	else if(displayId === "sTestDisp") {
 		var item      = document.createElement("LI");
 		var qDiv      = document.createElement("DIV");
 		var leftMarg  = document.createElement("DIV");
@@ -569,9 +570,6 @@ function addItemToDisplay(newItem, displayId, num) {
 	else {
 	}
 	document.getElementById(displayId).appendChild(item);
-	//console.log(studLocalT);
-	//console.log(studAvailT);
-	//console.log(studSelectedT);
 }
 
 
@@ -588,7 +586,7 @@ function getIdClassStrObj(newItem, displayId) {
 		strObj["idStr"]    = "p" + newItem["Id"];
 		strObj["classStr"] = "selected";
 	}
-	else if(displayId === "studTestNav") {
+	else if(displayId === "sTestNav") {
 		strObj["idStr"]    = "t" + newItem["Id"];
 		strObj["classStr"] = "available";
 	}
@@ -716,9 +714,9 @@ function getRelArr(displayId) {
 		relArr = matchedQ;
 	} else if(displayId === "previewList" /*|| displayId[0] === "s"*/) {
 		relArr = iActiveQ;
-	} else if(displayId === "studTestNav") {
-		relArr = studAvailT;
-	} else if(displayId === "studTestDisplay") {
+	} else if(displayId === "sTestNav") {
+		relArr = sLocalT;
+	} else if(displayId === "sTestDisp") {
 		relArr = [];
 		if(!studSelectedT){
 			for(var i=0; i<studLocalQ.length; i++){
