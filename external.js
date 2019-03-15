@@ -130,11 +130,8 @@ function sendAddT() {
 				console.log("Error: " + replyObj["Error"]);
 			}
 			else {
-				var DBT = replyObj["Tests"];
-				for(var i=0; i<DBT.length; i++){      // Add uniq DB
-					if(uniqQuestion(DBT[i], iLocalT)) // Qs to iLocalT
-						iLocalT.push(DBT[i]);
-				}
+				var newTest = replyObj["Test"];
+				iLocalT.push(newTest);
 			}
 		}
 	};
