@@ -98,7 +98,7 @@ function sendAddQ() {
 				console.log("Error: " + replyObj["Error"]);
 			}
 			else {
-				if(replyObj["Question"]["QId"]){
+				if(replyObj["Question"]["QId"]){ // Make an Id field if absent
 					replyObj["Question"]["Id"] = replyObj["Question"]["QId"];
 				}
 				iLocalQ.push(replyObj["Question"]);  // Add to local Qs
@@ -389,15 +389,12 @@ function resetDisplay(displayId) {
 			// A test has been selected
 			ul.setAttribute("id", "qList");
 			ul.appendChild(document.createTextNode(sActiveT["Desc"]));
+			ul.appendChild(document.createTextNode("sActiveT.len == 1"));
 		} 
 		else {
 			ul.setAttribute("id", "info");
-			var li = document.createElement("LI");
-			var p  = document.createElement("P");
-			var t  = document.createTextNode("Please select a test");
-			 p.appendChild(t);
-			li.appendChild(p);
-			ul.appendChild(li);
+			ul.appendChild(document.createTextNode(sActiveT["Desc"]));
+			ul.appendChild(document.createTextNode("sActiveT.len != 1"));
 		}
 	}
 	else {
@@ -406,27 +403,18 @@ function resetDisplay(displayId) {
 	}
 	display.innerHTML = "";
 	display.appendChild(ul);
-	//console.log(studLocalT);
-	//console.log(studAvailT);
-	//console.log(sActiveT);
 }
 
 /* Called whenever iMatchQ might change */
 function updateDisplays(displayIdArr) {
-	//console.log("updateDisplays");
-	//console.log(displayIdArr);
 	for(var i = 0; i<displayIdArr.length; i++){
-		var thisId     = displayIdArr[i];
+		var thisId = displayIdArr[i];
 		var relArr = getRelArr(thisId);
-		//console.log(thisId + JSON.stringify(relArr));
 		resetDisplay(thisId);
 		for(var j=0; j<relArr.length; j++) {
 			addItemToDisplay(relArr[j], thisId, j);
 		}
 	}
-	//console.log(studLocalT);
-	//console.log(studAvailT);
-	//console.log(sActiveT);
 } 
 
 function addItemToDisplay(newItem, displayId, num) {
@@ -633,25 +621,24 @@ function removeItemFromArray(id, A) {
 function getRelArr(displayId) {
 	//console.log("getRelArr");
 	var relArr;
-	if(displayId === "matchedList" || displayId[0] === "m"){
+	if(displayId === "matchedList"){
 		relArr = iMatchQ;
-	} else if(displayId === "previewList" /*|| displayId[0] === "s"*/) {
+	} else if(displayId === "previewList") {
 		relArr = iActiveQ;
 	} else if(displayId === "sTestNav") {
 		relArr = sLocalT;
 	} else if(displayId === "sTestDisp") {
 		relArr = [];
-		if(!sActiveT){
-			for(var i=0; i<sLocalQ.length; i++){
-				var thisQ = sLocalQ;
-				if( inArr(thisQ["Id"], sActiveT["QIds"])) {
-					//console.log("Found thisQ in selected test Qs");
-					relArr.push(thisQ);
-				}
-			}
+		if(sActiveT.length == 1){
+			relArr = sActiveT["Questions"];
+		} 
+		else {
+			relArr = [{ "Desc":"sActiveT.len != 1", "Topic":"Fail", "Id":"Fail", "Diff":"Fail",
+						"Tests":["a()=b", "a()=c"] }];
 		}
 	} else {
-		relArr = [];
+		relArr = [{ "Desc":"Invalid Display Id", "Topic":"Fail", "Id":"Fail", "Diff":"Fail",
+					"Tests":["a()=b", "a()=c"] }];
 	}
 	return relArr;
 }
