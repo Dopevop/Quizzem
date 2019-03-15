@@ -36,10 +36,10 @@ function sendGetQ() {
 /* Sends a request for all appropriate tests        */
 /* Both student and instructor will use this method */
 /* source: either 'student' or 'instructor'         */
-/* ..if student: only released exams will be sent   */
-/* ....tests stored in sLocalT                      */
-/* ..if instructor: all tests in DB will be sent    */
-/* ....tests stored in iLocalT                      */
+/* _ student: only released exams will be sent      */
+/* __________ tests stored in sLocalT               */
+/* _ instructor: all tests in DB will be sent       */
+/* _____________ tests stored in iLocalT            */
 /* After updating localT, call updateDisplays       */
 function sendGetTests(source) {
 	var xhttp   = new XMLHttpRequest();
@@ -73,6 +73,12 @@ function sendGetTests(source) {
 	}
 }
 
+/* Sends a request to add a new Q into the DB             */
+/* Form is validated before this function will be called  */
+/* Server responds with newly added question upon success */
+/* Newly added Q is added to both iLocalQ and matchedQ    */
+/* matchedList display is updated                         */
+/* Only instructor will be calling this method            */
 function sendAddQ() {
 	var xhttp   = new XMLHttpRequest();
 	var jsonObj = {
@@ -92,9 +98,9 @@ function sendAddQ() {
 				console.log("Error: " + replyObj["Error"]);
 			}
 			else {
-				iLocalQ.push(replyObj["Question"]);
-				matchedQ.push(replyObj["Question"]);
-				updateDisplays(["matchedList"]);
+				iLocalQ.push(replyObj["Question"]);  // Add to local Qs
+				iMatchQ.push(replyObj["Question"]); // Add to matched Qs
+				updateDisplays(["matchedList"]);     // Update matchedList
 			}
 	}
 	xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
@@ -103,7 +109,9 @@ function sendAddQ() {
 	}
 }
 
-function sendAddTest() {
+/* Sends a request to add a test to the DB */
+/*  */
+function sendAddT() {
 	var xhttp   = new XMLHttpRequest();
 	var jsonObj = {
 		"Type"     : "AddTest",
@@ -299,20 +307,17 @@ function displaySearchResults() {
 	var keys  = getNonEmptyInputs("searchKeys");
 	matchedQ  = localSearch(topic, diffs, keys);
 	updateDisplays(["matchedList"]);
-	//console.log(studLocalT);
-	//console.log(studAvailT);
-	//console.log(studSelectedT);
 }
 
 /* Checks that all fields are correct in form being submitted */
-function validateForm(type) {
+function validateForm(type, callback) {
 	//console.log("validateForm");
 	switch(type) {
 		case "AddQ":
 			if(nonEmpty("addDesc") && nonEmpty("addTopic")) {
 				var testsArray = getNonEmptyInputs("addTests");
 				if(validateTests(testsArray)){
-					sendAddQ();
+					callback();
 					clearForm("addForm");
 				} else {
 					alert("Need two test cases: e.g. func(a,b)=ans");
@@ -323,7 +328,11 @@ function validateForm(type) {
 			break;
 		case "AddTest":
 			if(nonEmpty("testDesc")) {
-				alert("AddTest fields all non-empty");
+				callback();
+				clearForm("testForm");
+			}
+			else {
+				alert("Make sure you've named the exam!");
 			}
 			break;
 		case "SubmitTest":
@@ -352,7 +361,7 @@ function validateTests(tests) {
 	return true;
 }
 
-/* Toggles whether the clicked on question is in selectedQ 
+/* Toggles whether the clicked on question is in iActiveQ 
  * listItemId: The id of the List Item that the question appears in */
 function toggleSelected(listItemId) {
 	//console.log("toggleSelected");
@@ -371,12 +380,12 @@ function toggleSelected(listItemId) {
 		studSelectedT = "none";
 	}
 	else if ( listItemId[0] == "m") { // Selected Item is a matchList question
-		// add Q to selectedQ, remove from matchedQ
+		// add Q to iActiveQ, remove from matchedQ
 		for(var i=0; i<matchedQ.length; i++){
 			var thisQ = matchedQ[i];
 			if(thisQ["Id"] == id){ // Check if found the clicked on Q
-				if(uniqQuestion(thisQ, selectedQ)){
-					selectedQ.push(thisQ);
+				if(uniqQuestion(thisQ, iActiveQ)){
+					iActiveQ.push(thisQ);
 				}
 				matchedQ = removeItemFromArray(thisQ["Id"], matchedQ);
 				break;
@@ -385,14 +394,14 @@ function toggleSelected(listItemId) {
 		updateDisplays(["previewList", "matchedList"]);
 	}
 	else if ( listItemId[0] == "p") { // Selected Item is a previewList question
-		// add Q to matchedQ, remove from selectedQ
-		for(var i=0; i<selectedQ.length; i++){
-			var thisQ = selectedQ[i];
+		// add Q to matchedQ, remove from iActiveQ
+		for(var i=0; i<iActiveQ.length; i++){
+			var thisQ = iActiveQ[i];
 			if(thisQ["Id"] == id){ // Check if found the clicked on Q
 				if(uniqQuestion(thisQ, matchedQ)){
 					matchedQ.push(thisQ);
 				}
-				selectedQ = removeItemFromArray(thisQ["Id"], selectedQ);
+				iActiveQ = removeItemFromArray(thisQ["Id"], iActiveQ);
 				break;
 			}
 		}
@@ -412,8 +421,7 @@ function clearForm(formId) {
 	//console.log("clearForm");
 	var inputs = document.getElementById(formId).getElementsByTagName("INPUT");
 	var elems  = document.getElementById(formId).getElementsByClassName("modular");
-
-	// Reset out all inputs
+	// Reset all inputs
 	for(var i=0; i<inputs.length; i++) {
 		switch(inputs[i].type) {
 			case "text":
@@ -422,6 +430,10 @@ function clearForm(formId) {
 			case "range":
 				inputs[i].value = 3;
 				updateDiff();
+				break;
+			case "radio":
+				if(inputs[i].value == 0)
+					inputs[i].checked = true;
 				break;
 			default:
 				break;
@@ -642,8 +654,8 @@ function getNonEmptyInputs(divId) {
 function getSelectedIds(){
 	//console.log("getSelectedIds");
 	var ids = [];
-	for(var i=0; i<selectedQ.length; i++){
-		ids.push(selectedQ[i]["Id"]);
+	for(var i=0; i<iActiveQ.length; i++){
+		ids.push(iActiveQ[i]["Id"]);
 	}
 	return ids;
 }
@@ -697,14 +709,14 @@ function removeItemFromArray(id, A) {
 	return A;
 }
 
-/* Determines which array (selectedQ or matchedQ) is associated with a display */
+/* Determines which array (iActiveQ or matchedQ) is associated with a display */
 function getRelArr(displayId) {
 	//console.log("getRelArr");
 	var relArr;
 	if(displayId === "matchedList" || displayId[0] === "m"){
 		relArr = matchedQ;
 	} else if(displayId === "previewList" /*|| displayId[0] === "s"*/) {
-		relArr = selectedQ;
+		relArr = iActiveQ;
 	} else if(displayId === "studTestNav") {
 		relArr = studAvailT;
 	} else if(displayId === "studTestDisplay") {
