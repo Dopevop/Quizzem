@@ -44,7 +44,7 @@ function sendGetQ() {
 function sendGetTests(source) {
 	var xhttp   = new XMLHttpRequest();
 	var jsonObj = {
-		"Type"     : "GetTests",                     // Send a GetTests req
+		"Type" : "GetTests",                         // Send a GetTests req
 		"Rels" : (source == "student")? [1] : [0,1], // Only released tests for student
 	}
 	var jsonStr = JSON.stringify(jsonObj);
@@ -115,10 +115,10 @@ function sendAddQ() {
 function sendAddT() {
 	var xhttp   = new XMLHttpRequest();
 	var jsonObj = {
-		"Type"     : "AddTest",
-		"TestName" : testDesc.value,
-		"Rel"      : getCheckedValue("testRelease"),
-		"QIds"     : getSelectedIds(),
+		"Type"      : "AddTest",
+		"Desc"      : testDesc.value,
+		"Rel"       : getCheckedValue("testRelease"),
+		"Questions" : getSelectedQs(),
 	}
 	var jsonStr = JSON.stringify(jsonObj);
 	console.log("Sent:"+jsonStr);
@@ -143,86 +143,8 @@ function sendAddT() {
 	xhttp.send(jsonStr);
 }
 
-// /* Takes a list of tests and displays them to be selected for student */
-// function displayAvailableTests(tests){
-// 	//console.log("displayAvailableTests");
-// 	sTestNav.innerHTML = "";
-// 	var numTests = tests.length
-// 	var sumStr = getSumStr(numTests);
-// 	addSummaryItem("sTestNav", sumStr)
-// 	for(var i=0; i<numTests; i++){
-// 		var test = tests[i];
-// 		addItemToDisplay(test, "sTestNav");
-// 	}
-// }
-
-// /* Creates a textnode with given string, adds it to given element */
-// function addSummaryItem(parentId, sumStr) {
-// 	//console.log("addSummaryItem");
-// 	var child  = document.createTextNode("sumStr");
-// 	var parent = document.getElementById(parentId);
-// 	parent.appendChild(child);
-// }
-
-// /* Displays summary of test questions in nav
-//  * Displays test questions in main block of student page*/
-// function displaySelectedTest(){
-// 	//console.log("displaySelectedTest");
-// 	if(studSelectedT !== "none")
-// 		displayTestQuestions(studSelectedT);
-// 	else
-// 		//console.log("studSelectedT was undefined");
-// }
-
-// /* Creates a test summary item and appends it to the given element */
-// function addTestToDisplay(displayId, test) {
-// 	//console.log("addTestToDisplay");
-// 	var tDiv  = document.createElement("DIV");
-// 	var tName = document.createTextNode(test["TestName"]);
-// 	var qSum  = document.createTextNode(""+test["QIds"].length+" Questions");
-// 	tDiv.setAttribute("class", "available");
-// 	tDiv.appendChild(tName);
-// 	tDiv.appendChild(qSum);
-// 	document.getElementById(displayId).appendChild(tDiv);
-// }
-
-// /* Returns a text summary of the number of available tests */
-// function getSumStr(numTests){
-// 	//console.log("getSumStr");
-// 	var sumStr;
-// 	if(numTests < 1){
-// 		sumStr = "No Tests Available";
-// 	}
-// 	else if(numTests == 1) {
-// 		sumStr = "1 Test Available";
-// 	}
-// 	else {
-// 		sumStr = "Tests Available";
-// 	}
-// 	return sumStr;
-// }
-
-// /* Takes a test, displays all of its questions on student page */
-// function displayTestQuestions(test) {
-// 	//console.log("displayTestQuestions");
-// 	var testQuestions = [];
-// 	for(var i=0; i<test["QIds"].length; i++){
-// 		var thisId = test["QIds"][i];
-// 		for(var j=0; j<studentLocalQ.length; j++){
-// 			var thisQ = studentLocalQ[j];
-// 			if(thisQ["Id"] == thisId){
-// 				testQuestions.push(thisQ);
-// 				break;
-// 			}
-// 		}
-// 	}
-// 	for(var i=0; i<testQuestions.length; i++){
-// 		addQuestionToDisplay(testQuestions[i], i);
-// 	}
-// 	addSubmitToDisplay();
-// }
-
 /* Appends one question to the end of the question display */
+/* Takes a {Question} to add, & it's position on the display */
 function addQuestionToDisplay(Q, num) {
 	//console.log("addQuestionToDisplay");
 	var qDiv      = document.createElement("DIV");
@@ -367,17 +289,16 @@ function toggleSelected(listItemId) {
 	//console.log("toggleSelected");
 	var id = listItemId.substring(1);
 	if(listItemId[0] == "t") {
-		// add test with id to studSelectedT; remove from studAvailT
-		for(var i=0; i<studAvailT.length; i++) {
-			var thisT = studAvailT[i];
-			if(thisT["Id"] === id) { // Found the test that was clicked on
-				studSelectedT = thisT;
-				studAvailT    = removeItemFromArray(thisT["Id"], studAvailT);
+		// add test with id to sActiveT 
+		sActiveT.length = 0;
+		for(var i=0; i<sLocalT.length; i++) {
+			var thisT = sLocalT[i];
+			if(thisT["Id"] == id) {
+				sActiveT.push(thisT);
 				break;
 			}
 		}
 		updateDisplays(["sTestNav", "sTestDisp"]);
-		studSelectedT = "none";
 	}
 	else if ( listItemId[0] == "m") { // Selected Item is a matchList question
 		// add Q to iActiveQ, remove from matchedQ
@@ -412,7 +333,7 @@ function toggleSelected(listItemId) {
 	}
 	//console.log(studLocalT);
 	//console.log(studAvailT);
-	//console.log(studSelectedT);
+	//console.log(sActiveT);
 }
 
 /* Resets all of the inputs inside of the specified element.
@@ -469,10 +390,10 @@ function resetDisplay(displayId) {
 		ul.appendChild(document.createTextNode("Tests"));
 	}
 	else if( displayId === "sTestDisp" ) {
-		if(studSelectedT !== "none") {
+		if(sActiveT !== "none") {
 			// A test has been selected
 			ul.setAttribute("id", "qList");
-			ul.appendChild(document.createTextNode(studSelectedT["TestName"]));
+			ul.appendChild(document.createTextNode(sActiveT["TestName"]));
 		} 
 		else {
 			ul.setAttribute("id", "info");
@@ -492,7 +413,7 @@ function resetDisplay(displayId) {
 	display.appendChild(ul);
 	//console.log(studLocalT);
 	//console.log(studAvailT);
-	//console.log(studSelectedT);
+	//console.log(sActiveT);
 }
 
 /* Called whenever matchedQ might change */
@@ -510,7 +431,7 @@ function updateDisplays(displayIdArr) {
 	}
 	//console.log(studLocalT);
 	//console.log(studAvailT);
-	//console.log(studSelectedT);
+	//console.log(sActiveT);
 } 
 
 function addItemToDisplay(newItem, displayId, num) {
@@ -533,7 +454,7 @@ function addItemToDisplay(newItem, displayId, num) {
 	else if(displayId === "sTestNav") {
 		var item     = document.createElement("LI");
 		var descText = document.createTextNode(newItem["TestName"]);
-		var numQText = document.createTextNode(""+newItem["Questions"].length+" Questions");
+		var numQText = document.createTextNode(""+newItem["QIds"].length+" Questions");
 		var strObj   = getIdClassStrObj(newItem, displayId);
 		item.setAttribute("id", strObj["idStr"]);
 		item.setAttribute("class", strObj["classStr"]);
@@ -647,9 +568,16 @@ function getNonEmptyInputs(divId) {
 	return result;
 }
 
+function getSelectedQs() {
+	var Qs = [];
+	for(var i=0; i<iActiveQ.length; i++){
+		ids.push(iActiveQ[i]);
+	}
+	return Qs;
+}
+
 /* Returns an array of ids for the selected questions */
 function getSelectedIds(){
-	//console.log("getSelectedIds");
 	var ids = [];
 	for(var i=0; i<iActiveQ.length; i++){
 		ids.push(iActiveQ[i]["Id"]);
@@ -718,10 +646,10 @@ function getRelArr(displayId) {
 		relArr = sLocalT;
 	} else if(displayId === "sTestDisp") {
 		relArr = [];
-		if(!studSelectedT){
-			for(var i=0; i<studLocalQ.length; i++){
-				var thisQ = studLocalQ;
-				if( inArr(thisQ["Id"], studSelectedT["QIds"])) {
+		if(!sActiveT){
+			for(var i=0; i<sLocalQ.length; i++){
+				var thisQ = sLocalQ;
+				if( inArr(thisQ["Id"], sActiveT["QIds"])) {
 					//console.log("Found thisQ in selected test Qs");
 					relArr.push(thisQ);
 				}
