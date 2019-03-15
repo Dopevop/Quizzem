@@ -6,7 +6,7 @@ function sendGetQ() {
 	var jsonObj = {
 		"Type"  : "SearchQ",   // Build SearchQ req
 		"Topic" : "",          // Don't filter by topic
-		"Diff"  : [1,2,3,4,5], // Don't filter by diff
+		"Diffs" : [1,2,3,4,5], // Don't filter by diff
 		"Keys"  : [],          // Don't filter by keyword
 	}
 	var jsonStr = JSON.stringify(jsonObj);
