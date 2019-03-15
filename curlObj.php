@@ -1,6 +1,3 @@
-/* CurlObj.php
- * Devon O'Connor
- * March 15, 2019 */
 <?php
 $url		= "https://web.njit.edu/~wbv4/Middle/midlogin.php";
 $contents	= file_get_contents('php://input');
