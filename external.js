@@ -1,3 +1,7 @@
+// external.js
+// Devon O'Connor
+// March 15, 2019
+
 /* Sends a request for all questions stored in database */
 /* These will be stored locally in the instructor's iLocalQ */
 /* instructor.html is only page that will be requesting Q's */
