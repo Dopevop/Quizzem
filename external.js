@@ -1,90 +1,13 @@
-/* Sends the specified type of request to the server 
- * Types so far: 
- * AddQ: Option field not checked
- * SearchQ: Option field is source of call
- * 	If from Student -> only get released Tests, store in student's local array
- * 	If from Teacher -> Get all release status, store in teacher's local array
- * */
-function sendRequest(reqType, option) {
-	//console.log("sendRequest");
-	var xhttp   = new XMLHttpRequest();
-	var jsonObj = {
-		"Type"  : reqType,
-	}
-	// Fill in reqType-specific object fields
-	if(reqType === "SearchQ") {
-		jsonObj["Diffs"] = [1,2,3,4,5];
-		jsonObj["Topic"] = "";
-		jsonObj["Keys"]  = [];
-	} else if(reqType === "AddTest") {
-		jsonObj["TestName"] = testDesc.value;
-		jsonObj["Rel"]      = getCheckedValue("testRelease");
-		jsonObj["QIds"]     = getSelectedIds();
-	} else if(reqType === "GetTests") {
-		if(option == "student")
-			jsonObj["Rels"] = [1]; 		// Only get released tests for student page
-		else if(option == "instructor")
-			jsonObj["Rels"] = [0, 1]; 	// Get all tests for instructor page
-	} else {
-		//console.log("Invalid reqType passed to sendRequest()");
-	}
-	var jsonStr = JSON.stringify(jsonObj);
-	console.log("Sent:" + jsonStr);
-	xhttp.onreadystatechange = function() {
-		if (xhttp.readyState == 4 && xhttp.status == 200) {
-			console.log("Rcvd:"+xhttp.responseText);
-			var replyObj = JSON.parse(xhttp.responseText);
-			if( replyObj["Error"] != 0 ) {
-				//console.log("Error: " + replyObj["Error"]);
-			}
-			else {
-				var localQ = (option == "student")? studLocalQ : iLocalQ;
-				if(replyObj["Type"] === "SearchQ") {
-					// Loop through DB Q's, adding each to local Q's
-					var DBQ = replyObj["Questions"];
-					for(var i=0; i<DBQ.length; i++){
-						if(uniqQuestion(DBQ[i], localQ)){
-							localQ.push(DBQ[i]);
-						}
-					}
-				}
-				else if(replyObj["Type"] === "AddTest") {
-					alert("Exam added successfully!");
-				}
-				else if(replyObj["Type"] === "GetTests") {
-					if(option == "student") {
-						clearArray(studLocalT);
-						clearArray(studAvailT);
-						addObjsToArray(replyObj["Tests"], studLocalT);
-						addObjsToArray(replyObj["Tests"], studAvailT);
-						updateDisplays( ["studTestNav", "studTestDisplay"] );
-						//console.log(studLocalT);
-						//console.log(studAvailT);
-						//console.log(studSelectedT);
-					}
-					else if(option == "instructor") {
-						//console.log("instructorLocalT not implemented yet!!");
-					}
-				}
-				else {
-					//console.log("Unknown reply type: " + replyObj["Type"]);
-				}
-
-			}
-		}
-	};
-	xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
-	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	xhttp.send(jsonStr);
-}
-
+/* Sends a request for all questions stored in database */
+/* These will be stored locally in the instructor's iLocalQ */
+/* instructor.html is only page that will be requesting Q's */
 function sendGetQ() {
 	var xhttp   = new XMLHttpRequest();
 	var jsonObj = {
-		"Type"  : "SearhQ",
-		"Topic" : "",
-		"Diff"  : [1,2,3,4,5],
-		"Keys"  : [],
+		"Type"  : "SearchQ",   // Build SearchQ req
+		"Topic" : "",          // Don't filter by topic
+		"Diff"  : [1,2,3,4,5], // Don't filter by diff
+		"Keys"  : [],          // Don't filter by keyword
 	}
 	var jsonStr = JSON.stringify(jsonObj);
 	console.log("Sent:"+jsonStr);
@@ -96,10 +19,10 @@ function sendGetQ() {
 				console.log("Error: " + replyObj["Error"]);
 			}
 			else {
-				var DBQ = replyObj["Questions"];
-				for(var i=0; i<DBQ.length; i++){
-					if(uniqQuestion(DBQ[i], iLocalQ)){
-						iLocalQ.push(DBQ[i]);
+				var DBQ = replyObj["Questions"];       // Extract all Qs
+				for(var i=0; i<DBQ.length; i++){       // Put all uniq Qs in
+					if(uniqQuestion(DBQ[i], iLocalQ)){ //   instructor's local
+						iLocalQ.push(DBQ[i]);          //   Q array
 					}
 				}
 			}
@@ -107,6 +30,50 @@ function sendGetQ() {
 	xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send(jsonStr);
+	}
+}
+
+/* Sends a request for all appropriate tests        */
+/* Both student and instructor will use this method */
+/* source: either 'student' or 'instructor'         */
+/* if student: only released exams will be sent     */
+/* -- tests stored in sLocalT                       */
+/* if instructor: all tests in DB will be sent      */
+/* -- tests stored in iLocalT                       */
+function sendGetTests(source) {
+	var xhttp   = new XMLHttpRequest();
+	var jsonObj = {
+		"Type"     : "GetTests",                     // Send a GetTests req
+		"Rels" : (source == "student")? [1] : [0,1], // Only released tests for student
+	}
+	var jsonStr = JSON.stringify(jsonObj);
+	console.log("Sent:"+jsonStr);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			console.log("Rcvd:"+xhttp.responseText);
+			var replyObj = JSON.parse(xhttp.responseText);
+			if( replyObj["Error"] != 0 ) {
+				console.log("Error: " + replyObj["Error"]);
+			}
+			else {
+				var localT = (source == "student")? sLocalT : iLocalT;
+				var DBT = replyObj["Tests"];
+				for(var i=0; i<DBT.length; i++){
+					if(uniqQuestion(DBT[i], localT)){
+						localT.push(DBT[i]);
+					}
+				}
+				// clearArray(studLocalT);
+				// clearArray(studAvailT);
+				// addObjsToArray(replyObj["Tests"], studLocalT);
+				// addObjsToArray(replyObj["Tests"], studAvailT);
+				// updateDisplays( ["studTestNav", "studTestDisplay"] );
+			}
+	}
+	xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send(jsonStr);
+	}
 }
 
 function sendAddQ() {
@@ -131,6 +98,38 @@ function sendAddQ() {
 				iLocalQ.push(replyObj["Question"]);
 				matchedQ.push(replyObj["Question"]);
 				updateDisplays(["matchedList"]);
+			}
+	}
+	xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send(jsonStr);
+	}
+}
+
+function sendAddTest() {
+	var xhttp   = new XMLHttpRequest();
+	var jsonObj = {
+		"Type"     : "AddTest",
+		"TestName" : testDesc.value,
+		"Rel"      : getCheckedValue("testRelease"),
+		"QIds"     : getSelectedIds(),
+	}
+	var jsonStr = JSON.stringify(jsonObj);
+	console.log("Sent:"+jsonStr);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			console.log("Rcvd:"+xhttp.responseText);
+			var replyObj = JSON.parse(xhttp.responseText);
+			if( replyObj["Error"] != 0 ) {
+				console.log("Error: " + replyObj["Error"]);
+			}
+			else {
+				var DBT = replyObj["Tests"];
+				for(var i=0; i<DBT.length; i++){
+					if(uniqQuestion(DBT[i], iLocalT)){
+						iLocalT.push(DBT[i]);
+					}
+				}
 			}
 	}
 	xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
