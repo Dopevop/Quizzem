@@ -27,3 +27,7 @@ Reply	{ Type:GetTests, Error:Str, Tests:[{Test}] }
 
 SubmitTest:
 Request { Type:SubmitExam, Answers:[{Answer}] }
+
+GetAnswers:
+Request { Type:GetAnswers, QIds:[int] }
+Reply	{ Type:GetAnswers, Error:Str, Answers:[{Answer}] }
