@@ -26,11 +26,11 @@ function sendGetQ() {
 					}
 				}
 			}
-	}
+		}
+	};
 	xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send(jsonStr);
-	}
 }
 
 /* Sends a request for all appropriate tests        */
@@ -66,11 +66,11 @@ function sendGetTests(source) {
 				}
 				updateDisplays( ["sTestNav"] );       // Update the display of available tests
 			}
-	}
+		}
+	};
 	xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send(jsonStr);
-	}
 }
 
 /* Sends a request to add a new Q into the DB             */
@@ -102,11 +102,11 @@ function sendAddQ() {
 				iMatchQ.push(replyObj["Question"]); // Add to matched Qs
 				updateDisplays(["matchedList"]);     // Update matchedList
 			}
-	}
+		}
+	};
 	xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send(jsonStr);
-	}
 }
 
 /* Sends a request to add a test to the DB */
@@ -131,16 +131,15 @@ function sendAddT() {
 			else {
 				var DBT = replyObj["Tests"];
 				for(var i=0; i<DBT.length; i++){
-					if(uniqQuestion(DBT[i], iLocalT)){
+					if(uniqQuestion(DBT[i], iLocalT))
 						iLocalT.push(DBT[i]);
-					}
 				}
 			}
-	}
+		}
+	};
 	xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send(jsonStr);
-	}
 }
 
 // /* Takes a list of tests and displays them to be selected for student */
