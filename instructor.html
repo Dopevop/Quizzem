@@ -85,6 +85,7 @@
 	var matchedQ  = []; // var to hold selected questionsn from preview list
 	var selectedQ = []; // Var to hold all locally known questions
 	var iLocalQ   = []; // Holds all questions
+	var iLocalT	  = [];
 
 	/* Get all questions in database */
 	sendGetQ();
@@ -96,7 +97,7 @@
 	  searchSub.addEventListener("click"    , function() { displaySearchResults()          } );
 	searchReset.addEventListener("click"    , function() { clearForm("searchForm")         } );
 	searchReset.addEventListener("click"    , function() { resetDisplay("matchedList")     } );
-	    testSub.addEventListener("click"    , function() { sendRequest("AddTest")          } );
+	    testSub.addEventListener("click"    , function() { sendAddTest()                   } );
 	    testSub.addEventListener("click"    , function() { clearArray(selectedQ)           } );
 	    testSub.addEventListener("click"    , function() { updateDisplays(["previewList"]) } );
 
