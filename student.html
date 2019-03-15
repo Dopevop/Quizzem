@@ -30,10 +30,13 @@
 		var studLocalQ = [];
 		var studLocalT = [];
 		var studAvailT = [];
-		var studSelectedT;
+		var studSelectedT = "none";
 		sendRequest("SearchQ" , "student"); // Will update studLocalQ 
 		sendRequest("GetTests", "student"); // Will update studLocalT, studAvailT 
+		console.log(studLocalQ);
 		console.log(studLocalT);
+		console.log(studAvailT);
+		console.log(studSelectedT);
 
 		// Reset Page:
 		// - studTestNav updated
