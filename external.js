@@ -33,10 +33,10 @@ function sendRequest(reqType, option) {
 		console.log("Invalid reqType passed to sendRequest()");
 	}
 	var jsonStr = JSON.stringify(jsonObj);
-	// console.log("Sent:" + jsonStr);
+	console.log("Sent:" + jsonStr);
 	xhttp.onreadystatechange = function() {
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
-			// console.log("Rcvd:"+xhttp.responseText);
+			console.log("Rcvd:"+xhttp.responseText);
 			var replyObj = JSON.parse(xhttp.responseText);
 			if( replyObj["Error"] != 0 ) {
 				console.log("Error: " + replyObj["Error"]);
