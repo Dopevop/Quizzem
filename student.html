@@ -11,29 +11,24 @@
 </head>
 <body>
 	<main>
-		<nav id="studTestNav">
+		<nav id="sTestNav">
 			<ul>
 				<li>Tests</li>
 			</ul>	
 		</nav>
-		<article id="studTestDisplay">
-			qDisplayer
+		<article id="sTestDisp">
+			<ul>
+				<li>Select a test from the list</li>
+			</ul>
 		</article>
 	</main>
 	<script src="external.js"></script>
 	<script>
-		// Student Logs in
-		// Download data:
-		// - All questions get downloaded, stored in studLocalQ
-		// - All released tests get downloaded, stored in studLocalT
-		// - All tests that have not been taken already are added to studAvailT
-		var studLocalQ = [];
-		var studLocalT = [];
-		var studAvailT = [];
-		var studSelectedT;
-		sendRequest("SearchQ" , "student"); // Will update studLocalQ 
-		sendRequest("GetTests", "student"); // Will update studLocalT, studAvailT 
-		console.log(studLocalT);
+		var sLocalT  = []; // Always holds all known tests
+		var sActiveT = []; // Should only ever have one test inside of it
+		sendGetTests("student"); // Get all released tests
+		console.log(sLocalT);
+		console.log(sActiveT);
 
 		// Reset Page:
 		// - studTestNav updated

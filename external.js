@@ -1,39 +1,16 @@
-/* Sends the specified type of request to the server 
- * Types so far: 
- * AddQ: Option field not checked
- * SearchQ: Option field is source of call
- * 	If from Student -> only get released Tests, store in student's local array
- * 	If from Teacher -> Get all release status, store in teacher's local array
- * */
-function sendRequest(reqType, option) {
+/* Sends a request for all questions stored in database */
+/* These will be stored locally in the instructor's iLocalQ */
+/* instructor.html is only page that will be requesting Q's */
+function sendGetQ() {
 	var xhttp   = new XMLHttpRequest();
 	var jsonObj = {
-		"Type"  : reqType,
-	}
-	// Fill in reqType-specific object fields
-	if(reqType === "AddQ"){
-		jsonObj["Desc"]  = addDesc.value;
-		jsonObj["Topic"] = addTopic.value;
-		jsonObj["Diff"]  = addRange.value;
-		jsonObj["Tests"] = getNonEmptyInputs("addTests");
-	} else if(reqType === "SearchQ") {
-		jsonObj["Diffs"] = [1,2,3,4,5];
-		jsonObj["Topic"] = "";
-		jsonObj["Keys"]  = [];
-	} else if(reqType === "AddTest") {
-		jsonObj["TestName"] = testDesc.value;
-		jsonObj["Rel"]      = getCheckedValue("testRelease");
-		jsonObj["QIds"]     = getSelectedIds();
-	} else if(reqType === "GetTests") {
-		if(option == "student")
-			jsonObj["Rels"] = [1]; 		// Only get released tests for student page
-		else if(option == "instructor")
-			jsonObj["Rels"] = [0, 1]; 	// Get all tests for instructor page
-	} else {
-		console.log("Invalid reqType passed to sendRequest()");
+		"Type"  : "SearchQ",   // Build SearchQ req
+		"Topic" : "",          // Don't filter by topic
+		"Diffs" : [1,2,3,4,5], // Don't filter by diff
+		"Keys"  : [],          // Don't filter by keyword
 	}
 	var jsonStr = JSON.stringify(jsonObj);
-	console.log("Sent:" + jsonStr);
+	console.log("Sent:"+jsonStr);
 	xhttp.onreadystatechange = function() {
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
 			console.log("Rcvd:"+xhttp.responseText);
@@ -42,42 +19,12 @@ function sendRequest(reqType, option) {
 				console.log("Error: " + replyObj["Error"]);
 			}
 			else {
-				var localQ = (option == "student")? studLocalQ : instLocalQ;
-				if(replyObj["Type"] === "AddQ") {
-					alert("Question added successfully!");
-					localQ.push(replyObj["Question"]);
-					matchedQ.push(replyObj["Question"]);
-					updateDisplays(["matchedList"]);
-					// console.log(matchedQ);
-				}
-				else if(replyObj["Type"] === "SearchQ") {
-					// Loop through DB Q's, adding each to local Q's
-					var DBQ = replyObj["Questions"];
-					for(var i=0; i<DBQ.length; i++){
-						// if(!DBQ[i]["Topic"])
-						// 	DBQ[i]["Topic"] = "UNDEFINED";
-						if(uniqQuestion(DBQ[i], localQ)){
-							localQ.push(DBQ[i]);
-						}
+				var DBQ = replyObj["Questions"];       // Extract all Qs
+				for(var i=0; i<DBQ.length; i++){       // Put all uniq Qs in
+					if(uniqQuestion(DBQ[i], iLocalQ)){ //   instructor's local
+						iLocalQ.push(DBQ[i]);          //   Q array
 					}
 				}
-				else if(replyObj["Type"] === "AddTest") {
-					alert("Exam added successfully!");
-				}
-				else if(replyObj["Type"] === "GetTests") {
-					if(option == "student") {
-						addObjsToArray(replyObj["Tests"], studLocalT);
-						addObjsToArray(replyObj["Tests"], studAvailT);
-						updateDisplays( ["studTestNav"] );
-					}
-					else if(option == "instructor") {
-						console.log("instructorLocalT not implemented yet!!");
-					}
-				}
-				else {
-					console.log("Unknown reply type: " + replyObj["Type"]);
-				}
-
 			}
 		}
 	};
@@ -86,91 +33,117 @@ function sendRequest(reqType, option) {
 	xhttp.send(jsonStr);
 }
 
-/* Takes a list of tests and displays them to be selected for student */
-function displayAvailableTests(tests){
-	console.log("Displaying tests for student");
-	studTestNav.innerHTML = "";
-	var numTests = tests.length
-	var sumStr = getSumStr(numTests);
-	addSummaryItem("studTestNav", sumStr)
-	for(var i=0; i<numTests; i++){
-		var test = tests[i];
-		addItemToDisplay(test, "studTestNav");
+/* Sends a request for all appropriate tests        */
+/* Both student and instructor will use this method */
+/* source: either 'student' or 'instructor'         */
+/* _ student: only released exams will be sent      */
+/* __________ tests stored in sLocalT               */
+/* _ instructor: all tests in DB will be sent       */
+/* _____________ tests stored in iLocalT            */
+/* After updating localT, call updateDisplays       */
+function sendGetTests(source) {
+	var xhttp   = new XMLHttpRequest();
+	var jsonObj = {
+		"Type" : "GetTests",                         // Send a GetTests req
+		"Rels" : (source == "student")? [1] : [0,1], // Only released tests for student
 	}
-}
-
-/* Creates a textnode with given string, adds it to given element */
-function addSummaryItem(parentId, sumStr) {
-	var child  = document.createTextNode("sumStr");
-	var parent = document.getElementById(parentId);
-	parent.appendChild(child);
-}
-
-/* Displays summary of test questions in nav
- * Displays test questions in main block of student page*/
-function displaySelectedTest(){
-	if(studSelectedT)
-		addTestToDisplay("studTestDisplay", studSelectedT);
-}
-
-/* Creates a test summary item and appends it to the given element */
-function addTestToDisplay(displayId, test) {
-	var tDiv  = document.createElement("DIV");
-	var tName = document.createTextNode(test["TestName"]);
-	var qSum  = document.createTextNode(""+test["QIds"].length+" Questions");
-	tDiv.setAttribute("class", "available");
-	tDiv.setAttribute("click", function() { 
-		if(confirm("Are you sure you want to take the exam? You will not be able to retake it.")){
-			studSelectedT = test["Id"];
-			displaySelectedTest();
-		}
-	});
-	tDiv.appendChild(tName);
-	tDiv.appendChild(qSum);
-	displayId.appendChild(tDiv);
-}
-
-/* Returns a text summary of the number of available tests */
-function getSumStr(numTests){
-	var sumStr;
-	if(numTests < 1){
-		sumStr = "No Tests Available";
-	}
-	else if(numTests == 1) {
-		sumStr = "1 Test Available";
-	}
-	else {
-		sumStr = "Tests Available";
-	}
-	return sumStr;
-}
-
-/* Takes a test, displays all of its questions on student page */
-function displayTestQuestions(test) {
-	console.log("entered displayTest");
-	console.log(test);
-	var testQuestions = [];
-	for(var i=0; i<test["QIds"].length; i++){
-		var thisId = test["QIds"][i];
-		console.log(thisId);
-		for(var j=0; j<studentLocalQ.length; j++){
-			var thisQ = studentLocalQ[j];
-			console.log(thisQ);
-			if(thisQ["Id"] == thisId){
-				testQuestions.push(thisQ);
-				break;
+	var jsonStr = JSON.stringify(jsonObj);
+	console.log("Sent:"+jsonStr);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			console.log("Rcvd:"+xhttp.responseText);
+			var replyObj = JSON.parse(xhttp.responseText);
+			if( replyObj["Error"] != 0 ) {
+				console.log("Error: " + replyObj["Error"]);
+			}
+			else {
+				var localT = (source == "student")? sLocalT : iLocalT; 
+				var DBT = replyObj["Tests"];          // Update the
+				for(var i=0; i<DBT.length; i++){      // relevant array
+					if(uniqQuestion(DBT[i], localT)){ // Only add
+						localT.push(DBT[i]);          // Uniq Qs
+					}
+				}
+				updateDisplays( ["sTestNav"] );       // Update the display of available tests
 			}
 		}
-	}
-	for(var i=0; i<testQuestions.length; i++){
-		console.log(testQuestions[i]);
-		addQuestionToDisplay(testQuestions[i], i);
-	}
-	addSubmitToDisplay();
+	};
+	xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send(jsonStr);
 }
 
-	/* Appends one question to the end of the question display */
+/* Sends a request to add a new Q into the DB             */
+/* Form is validated before this function will be called  */
+/* Server responds with newly added question upon success */
+/* Newly added Q is added to both iLocalQ and iMatchQ    */
+/* matchedList display is updated                         */
+/* Only instructor will be calling this method            */
+function sendAddQ() {
+	var xhttp   = new XMLHttpRequest();
+	var jsonObj = {
+		"Type"  : "AddQ",
+		"Desc"  : addDesc.value,
+		"Topic" : addTopic.value,
+		"Diff"  : addRange.value,
+		"Tests" : getNonEmptyInputs("addTests"),
+	}
+	var jsonStr = JSON.stringify(jsonObj);
+	console.log("Sent:"+jsonStr);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			console.log("Rcvd:"+xhttp.responseText);
+			var replyObj = JSON.parse(xhttp.responseText);
+			if( replyObj["Error"] != 0 ) {
+				console.log("Error: " + replyObj["Error"]);
+			}
+			else {
+				iLocalQ.push(replyObj["Question"]);  // Add to local Qs
+				iMatchQ.push(replyObj["Question"]); // Add to matched Qs
+				updateDisplays(["matchedList"]);     // Update matchedList
+			}
+		}
+	};
+	xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send(jsonStr);
+}
+
+/* Sends a request to add a test to the DB        */
+/* Form is validated before this method is called */
+/* Only instructor will call this method          */
+function sendAddT() {
+	var xhttp   = new XMLHttpRequest();
+	var jsonObj = {
+		"Type"      : "AddTest",
+		"Desc"      : testDesc.value,
+		"Rel"       : getCheckedValue("testRelease"),
+		"Questions" : getSelectedQs(),
+	}
+	var jsonStr = JSON.stringify(jsonObj);
+	console.log("Sent:"+jsonStr);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			console.log("Rcvd:"+xhttp.responseText);
+			var replyObj = JSON.parse(xhttp.responseText);
+			if( replyObj["Error"] != 0 ) {
+				console.log("Error: " + replyObj["Error"]);
+			}
+			else {
+				var newTest = replyObj["Test"];
+				iLocalT.push(newTest);
+			}
+		}
+	};
+	xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send(jsonStr);
+}
+
+/* Appends one question to the end of the question display */
+/* Takes a {Question} to add, & it's position on the display */
 function addQuestionToDisplay(Q, num) {
+	//console.log("addQuestionToDisplay");
 	var qDiv      = document.createElement("DIV");
 	var leftMarg  = document.createElement("DIV");
 	var numText   = document.createTextNode("" + ( num + 1 ) + ".)");
@@ -199,6 +172,7 @@ function addQuestionToDisplay(Q, num) {
 
 /* Adds a button to the end of the student's question display */
 function addSubmitToDisplay() {
+	//console.log("addSubmitToDisplay");
 	var theBtn = document.createElement("BUTTON");
 	theBtn.setAttribute("type","button");
 	theBtn.setAttribute("id", "testSub"); // <-- might have to change this
@@ -213,14 +187,15 @@ function addSubmitToDisplay() {
  * Diffs[] : An array of difficulties to filter by
  * Keys[]  : An array of words to search through descriptions by */
 function localSearch(topic, diffs, keys) {
+	//console.log("localSearch");
 	var matches = [];
-	for(var i=0; i<instLocalQ.length; i++){
-		var thisQ = instLocalQ[i];
+	for(var i=0; i<iLocalQ.length; i++){
+		var thisQ = iLocalQ[i];
 		var thisTopic = thisQ["Topic"].toLowerCase();
 		if(topic === "" || thisTopic.match(topic.toLowerCase())){
 			// Topic matches, now check Diffs
 			var thisDiff = thisQ["Diff"];
-			if( containsDiff(thisDiff, diffs) ){
+			if( inArr(thisDiff, diffs) ){
 				// Topic and Diff matches, check Keys
 				var thisDesc = thisQ["Desc"].toLowerCase();
 				if(keys.length !== 0){
@@ -242,24 +217,26 @@ function localSearch(topic, diffs, keys) {
 }
 
 /* Called when searchSubmit button is clicked
- * Updates the matchedQ array with Q's matching new search criteria
- * Displays the matchedQ in the matches section */
+ * Updates the iMatchQ array with Q's matching new search criteria
+ * Displays the iMatchQ in the matches section */
 function displaySearchResults() {
+	//console.log("displaySearchResults");
 	var topic = searchTopic.value;
 	var diffs = getCheckedValues("searchDiff");
 	var keys  = getNonEmptyInputs("searchKeys");
-	matchedQ  = localSearch(topic, diffs, keys);
+	iMatchQ  = localSearch(topic, diffs, keys);
 	updateDisplays(["matchedList"]);
 }
 
 /* Checks that all fields are correct in form being submitted */
-function validateForm(type) {
+function validateForm(type, callback) {
+	//console.log("validateForm");
 	switch(type) {
 		case "AddQ":
 			if(nonEmpty("addDesc") && nonEmpty("addTopic")) {
 				var testsArray = getNonEmptyInputs("addTests");
 				if(validateTests(testsArray)){
-					sendRequest("AddQ");
+					callback();
 					clearForm("addForm");
 				} else {
 					alert("Need two test cases: e.g. func(a,b)=ans");
@@ -270,91 +247,99 @@ function validateForm(type) {
 			break;
 		case "AddTest":
 			if(nonEmpty("testDesc")) {
-				alert("AddTest fields all non-empty");
+				callback();
+				clearForm("testForm");
+			}
+			else {
+				alert("Make sure you've named the exam!");
 			}
 			break;
 		case "SubmitTest":
 			alert("Submitting Test!");
 			break;
 		default:
-			console.log("Invalid type to validate");
+			//console.log("Invalid type to validate");
 	}
 }
 
 /* Makes sure there are at least two non-empty tests
  * Makes sure all tests are in the form of func([a][,b]...)=answer */
 function validateTests(tests) {
+	//console.log("validateTests");
 	if(tests.length < 2){
-		console.log("Too few tests");
+		//console.log("Too few tests");
 		return false;
 	}
 	var pattern = /[a-zA-Z][a-zA-Z0-9]*\( *([^, (]+ *(, *[^,( ]+)*)|\) *\) *= *.*/;
 	for(var i=0; i<tests.length; i++){
 		if(!tests[i].match(pattern)){
-			console.log("test " + i + " {"+ tests[i] +"} didn't match pattern");
+			//console.log("test " + i + " {"+ tests[i] +"} didn't match pattern");
 			return false;
 		}
 	}
 	return true;
 }
 
-/* Toggles whether the clicked on question is in selectedQ 
+/* Toggles whether the clicked on question is in iActiveQ 
  * listItemId: The id of the List Item that the question appears in */
 function toggleSelected(listItemId) {
+	//console.log("toggleSelected");
 	var id = listItemId.substring(1);
 	if(listItemId[0] == "t") {
-		// add test with id to studSelectedT; remove from studAvailT
-		for(var i=0; i<studAvailT.length; i++) {
-			var thisT = studAvailT[i];
-			if(thisT["TestId"] == id) {
-				studSelectedT = thisT;
-				studSelectedT = removeItemFromArray(thisT["TestId"], studSelectedT);
+		// add test with id to sActiveT 
+		sActiveT.length = 0;
+		for(var i=0; i<sLocalT.length; i++) {
+			var thisT = sLocalT[i];
+			if(thisT["Id"] == id) {
+				sActiveT.push(thisT);
 				break;
 			}
 		}
-		updateDisplays(["studTestNav"]);
+		updateDisplays(["sTestNav", "sTestDisp"]);
 	}
 	else if ( listItemId[0] == "m") { // Selected Item is a matchList question
-		// add Q to selectedQ, remove from matchedQ
-		for(var i=0; i<matchedQ.length; i++){
-			var thisQ = matchedQ[i];
+		// add Q to iActiveQ, remove from iMatchQ
+		for(var i=0; i<iMatchQ.length; i++){
+			var thisQ = iMatchQ[i];
 			if(thisQ["Id"] == id){ // Check if found the clicked on Q
-				if(uniqQuestion(thisQ, selectedQ)){
-					selectedQ.push(thisQ);
+				if(uniqQuestion(thisQ, iActiveQ)){
+					iActiveQ.push(thisQ);
 				}
-				matchedQ = removeItemFromArray(thisQ["Id"], matchedQ);
+				iMatchQ = removeItemFromArray(thisQ["Id"], iMatchQ);
 				break;
 			}
-		updateDisplays(["previewList", "matchedList"]);
 		}
+		updateDisplays(["previewList", "matchedList"]);
 	}
 	else if ( listItemId[0] == "p") { // Selected Item is a previewList question
-		// add Q to matchedQ, remove from selectedQ
-		for(var i=0; i<selectedQ.length; i++){
-			var thisQ = selectedQ[i];
+		// add Q to iMatchQ, remove from iActiveQ
+		for(var i=0; i<iActiveQ.length; i++){
+			var thisQ = iActiveQ[i];
 			if(thisQ["Id"] == id){ // Check if found the clicked on Q
-				if(uniqQuestion(thisQ, matchedQ)){
-					matchedQ.push(thisQ);
+				if(uniqQuestion(thisQ, iMatchQ)){
+					iMatchQ.push(thisQ);
 				}
-				selectedQ = removeItemFromArray(thisQ["Id"], selectedQ);
+				iActiveQ = removeItemFromArray(thisQ["Id"], iActiveQ);
 				break;
 			}
 		}
 		updateDisplays(["previewList", "matchedList"]);
 	}
 	else {
-		console.log("Shouldn't have gotten here");
+		//console.log("Shouldn't have gotten here");
 	}
-	updateDisplays(["previewList", "matchedList"]);
+	//console.log(studLocalT);
+	//console.log(studAvailT);
+	//console.log(sActiveT);
 }
 
 /* Resets all of the inputs inside of the specified element.
  * Removes additionally added text boxes like those for test cases*/
 function clearForm(formId) {
+	//console.log("clearForm");
 	var inputs = document.getElementById(formId).getElementsByTagName("INPUT");
 	var elems  = document.getElementById(formId).getElementsByClassName("modular");
-
-	// Reset out all inputs
+	// Reset all inputs
 	for(var i=0; i<inputs.length; i++) {
 		switch(inputs[i].type) {
 			case "text":
@@ -363,6 +348,10 @@ function clearForm(formId) {
 			case "range":
 				inputs[i].value = 3;
 				updateDiff();
+				break;
+			case "radio":
+				if(inputs[i].value == 0)
+					inputs[i].checked = true;
 				break;
 			default:
 				break;
@@ -382,6 +371,7 @@ function clearForm(formId) {
 /* Resets display and clears related array 
  * Display elements have a title, and an unorder list of Qs */
 function resetDisplay(displayId) {
+	//console.log("resetDisplay");
 	var display = document.getElementById(displayId);
 	var ul      = document.createElement("UL");
 	if( displayId === "previewList" ){
@@ -392,11 +382,25 @@ function resetDisplay(displayId) {
 		ul.setAttribute("id", "mList");
 		ul.appendChild(document.createTextNode("Matches"));
 	}
-	else if( displayId === "studTestNav" ) {
+	else if( displayId === "sTestNav" ) {
 		ul.setAttribute("id", "tList");
 		ul.appendChild(document.createTextNode("Tests"));
 	}
-	else if( displayId === "||||||||||||||||||||||||||||||||||||||||||||||||||||||" ) {
+	else if( displayId === "sTestDisp" ) {
+		if(sActiveT !== "none") {
+			// A test has been selected
+			ul.setAttribute("id", "qList");
+			ul.appendChild(document.createTextNode(sActiveT["TestName"]));
+		} 
+		else {
+			ul.setAttribute("id", "info");
+			var li = document.createElement("LI");
+			var p  = document.createElement("P");
+			var t  = document.createTextNode("Please select a test");
+			 p.appendChild(t);
+			li.appendChild(p);
+			ul.appendChild(li);
+		}
 	}
 	else {
 		ul.setAttribute("id", "?List");
@@ -404,19 +408,31 @@ function resetDisplay(displayId) {
 	}
 	display.innerHTML = "";
 	display.appendChild(ul);
+	//console.log(studLocalT);
+	//console.log(studAvailT);
+	//console.log(sActiveT);
 }
 
-/* Called whenever matchedQ might change */
+/* Called whenever iMatchQ might change */
 function updateDisplays(displayIdArr) {
-	for(var i=0; i<displayIdArr.length; i++){
-		var thisId = displayIdArr[i];
-		var relatedQ = getRelatedArray(thisId);
+	//console.log("updateDisplays");
+	//console.log(displayIdArr);
+	for(var i = 0; i<displayIdArr.length; i++){
+		var thisId     = displayIdArr[i];
+		var relArr = getRelArr(thisId);
+		//console.log(thisId + JSON.stringify(relArr));
 		resetDisplay(thisId);
-		for(var j=0; j<relatedQ.length; j++)
-			addItemToDisplay(relatedQ[j], thisId);
+		for(var j=0; j<relArr.length; j++) {
+			addItemToDisplay(relArr[j], thisId, j);
+		}
 	}
+	//console.log(studLocalT);
+	//console.log(studAvailT);
+	//console.log(sActiveT);
 } 
-function addItemToDisplay(newItem, displayId) {
+
+function addItemToDisplay(newItem, displayId, num) {
+	//console.log("addItemToDisplay");
 	if(displayId === "matchedList" || displayId === "previewList") {
 		var item      = document.createElement("LI");
 		var descText  = document.createTextNode(newItem["Desc"]);
@@ -432,7 +448,7 @@ function addItemToDisplay(newItem, displayId) {
 		item.appendChild(document.createElement("BR"));
 		item.appendChild(topicText);
 	}
-	else if(displayId === "studTestNav") {
+	else if(displayId === "sTestNav") {
 		var item     = document.createElement("LI");
 		var descText = document.createTextNode(newItem["TestName"]);
 		var numQText = document.createTextNode(""+newItem["QIds"].length+" Questions");
@@ -443,12 +459,32 @@ function addItemToDisplay(newItem, displayId) {
 		item.appendChild(document.createElement("BR"));
 		item.appendChild(numQText);
 		item.appendChild(document.createElement("BR"));
-		item.addEventListener("click", function() { 
-			if(confirm("Are you sure you want to take the exam?")){
-				studSelectedT = newItem["TestId"];
-				displaySelectedTest(document.getElementById(strObj["idStr"]));
-			}});
-		} 
+		item.addEventListener("click", function() { toggleSelected(strObj["idStr"])	});
+	} 
+	else if(displayId === "sTestDisp") {
+		var item      = document.createElement("LI");
+		var qDiv      = document.createElement("DIV");
+		var leftMarg  = document.createElement("DIV");
+		var numText   = document.createTextNode("" + (num+1) + ".)");
+		var rightMarg = document.createElement("DIV");
+		var ptsText	  = document.createTextNode("5 Pts");
+		var desc      = document.createElement("P");
+		var answer    = document.createElement("TEXTAREA");
+
+			 qDiv.setAttribute("class", "qDiv");
+		 leftMarg.setAttribute("class", "qLeftMargin");
+		 leftMarg.appendChild(numText);
+		rightMarg.setAttribute("class", "qRightMargin");
+		rightMarg.appendChild(ptsText);
+			 desc.setAttribute("class", "qDesc");
+			 desc.innerHTML = newItem["Desc"];
+		   answer.setAttribute("class", "qAns");
+		     qDiv.appendChild(leftMarg);
+		     qDiv.appendChild(desc);
+		     qDiv.appendChild(answer);
+		     qDiv.appendChild(rightMarg);
+			 item.appendChild(qDiv);
+	}
 	else {
 	}
 	document.getElementById(displayId).appendChild(item);
@@ -458,6 +494,7 @@ function addItemToDisplay(newItem, displayId) {
 /* Returns an object with two fields: idStr and classStr
  * Used for constructing a new list item to add to displays */
 function getIdClassStrObj(newItem, displayId) {
+	//console.log("getIdClassStrObj");
 	var strObj = [];
 	     if(displayId === "matchedList") {
 		strObj["idStr"]    = "m" + newItem["Id"];
@@ -467,8 +504,8 @@ function getIdClassStrObj(newItem, displayId) {
 		strObj["idStr"]    = "p" + newItem["Id"];
 		strObj["classStr"] = "selected";
 	}
-	else if(displayId === "studTestNav") {
-		strObj["idStr"]    = "t" + newItem["TestId"];
+	else if(displayId === "sTestNav") {
+		strObj["idStr"]    = "t" + newItem["Id"];
 		strObj["classStr"] = "available";
 	}
 	else {
@@ -482,6 +519,7 @@ function getIdClassStrObj(newItem, displayId) {
  * Works for elements that contain a label, a button, and then a list of inputs 
  * elemId: The id of the element you want to add the input box to */
 function addInput(elemId) {
+	//console.log("addInput");
 	var elem      = document.getElementById(elemId);
 	var textInput = document.createElement("INPUT");
 	var breakElem = document.createElement("BR");
@@ -495,6 +533,7 @@ function addInput(elemId) {
  * elemId: The id of the button that will be added to this  
  * func: The function that will be applied to the button */
 function resetModal(label, elemId, func) {
+	//console.log("resetModal");
 	var modalElem = document.getElementById(elemId);
 	var brkElem   = document.createElement("BR");
 	var textLabel = document.createTextNode(label);
@@ -515,6 +554,7 @@ function resetModal(label, elemId, func) {
 /* Returns all non-empty input values in an array 
  * Takes the Id of a div element */
 function getNonEmptyInputs(divId) {
+	//console.log("getNonEmptyInputs");
 	var result = [];
 	var elems = document.getElementById(divId).children;
 	for(var i = 0; i < elems.length; i++) {
@@ -525,11 +565,19 @@ function getNonEmptyInputs(divId) {
 	return result;
 }
 
+function getSelectedQs() {
+	var Qs = [];
+	for(var i=0; i<iActiveQ.length; i++){
+		Qs.push(iActiveQ[i]);
+	}
+	return Qs;
+}
+
 /* Returns an array of ids for the selected questions */
 function getSelectedIds(){
 	var ids = [];
-	for(var i=0; i<selectedQ.length; i++){
-		ids.push(selectedQ[i]["Id"]);
+	for(var i=0; i<iActiveQ.length; i++){
+		ids.push(iActiveQ[i]["Id"]);
 	}
 	return ids;
 }
@@ -537,6 +585,7 @@ function getSelectedIds(){
 /* Returns the value of the first checked input element contained by the given element 
  * This assumes radio input types inside a div of their own */
 function getCheckedValue(divId) {
+	//console.log("getCheckedValue");
 	var elems = document.getElementById(divId).getElementsByTagName("INPUT");
 	for(var i=0; i<elems.length; i++){
 		if(elems[i].checked){
@@ -549,6 +598,7 @@ function getCheckedValue(divId) {
 /* Returns an array of the checked input values inside of given element 
  * This assumes checkbox input types inside a div of their own */
 function getCheckedValues(divId) {
+	//console.log("getCheckedValues");
 	var checked = [];
 	var elems = document.getElementById(divId).getElementsByTagName("INPUT");
 	for(var i=0; i<elems.length; i++) {
@@ -563,14 +613,17 @@ function getCheckedValues(divId) {
 
 /* Adds an array of objects to another array */
 function addObjsToArray(objs, array){
+	//console.log("addObjsToArray");
 	for(var i=0; i<objs.length; i++)
 		array.push(objs[i]);
 }
 
 /* Removes question with qId from the array qArr */
 function removeItemFromArray(id, A) {
+	//console.log("removeItemFromArray");
+	idStr = (A["Id"])? "Id":"Id";
 	for(var i=0; i<A.length; i++){
-		if(A[i]["Id"] === id) {
+		if(A[i][idStr] === id) {
 			A.splice(i, 1);
 			break;
 		}
@@ -578,24 +631,37 @@ function removeItemFromArray(id, A) {
 	return A;
 }
 
-/* Determines which array (selectedQ or matchedQ) is associated with a display */
-function getRelatedArray(displayId) {
-	var relatedQ;
+/* Determines which array (iActiveQ or iMatchQ) is associated with a display */
+function getRelArr(displayId) {
+	//console.log("getRelArr");
+	var relArr;
 	if(displayId === "matchedList" || displayId[0] === "m"){
-		relatedQ = matchedQ;
+		relArr = iMatchQ;
 	} else if(displayId === "previewList" /*|| displayId[0] === "s"*/) {
-		relatedQ = selectedQ;
-	} else if(displayId === "studTestNav") {
-		relatedQ = studLocalT;
+		relArr = iActiveQ;
+	} else if(displayId === "sTestNav") {
+		relArr = sLocalT;
+	} else if(displayId === "sTestDisp") {
+		relArr = [];
+		if(!sActiveT){
+			for(var i=0; i<sLocalQ.length; i++){
+				var thisQ = sLocalQ;
+				if( inArr(thisQ["Id"], sActiveT["QIds"])) {
+					//console.log("Found thisQ in selected test Qs");
+					relArr.push(thisQ);
+				}
+			}
+		}
 	} else {
-		relatedQ = [];
+		relArr = [];
 	}
-	return relatedQ;
+	return relArr;
 }
 
 /* Checks the given question's Id against all Ids in localQ
  * Returns true if given question's Id is not found */
 function uniqQuestion(question, qArr){
+	//console.log("uniqQuestion");
 	var uniq = true;
 	var thisId = question["Id"];
 	for(var i=0; i<qArr.length; i++){
@@ -609,9 +675,10 @@ function uniqQuestion(question, qArr){
 
 /* Checks if the given diff is in the array of diffs
  * Loose comparison so e.g. 1 will match "1" */
-function containsDiff(diff, diffs){
-	for(var i=0; i<diffs.length; i++)
-		if(diffs[i] == diff) 
+function inArr(key, arr){
+	//console.log("inArr");
+	for(var i=0; i<arr.length; i++)
+		if(arr[i] == key) 
 			return true;
 	return false;
 }
@@ -620,6 +687,7 @@ function containsDiff(diff, diffs){
  * Given a string Very Easy, Easy, Medium, Hard, Very Hard return corresponding 1-5
  * Given anything else, returns -1 */
 function convertDiffFormat(diff) {
+	//console.log("convertDiffFormat");
 	var swapper = {"1":"Very Easy", "2":"Easy", "3":"Medium", "4":"Hard", "5":"Very Hard",
 				   1:"Very Easy"  , 2:"Easy"  , 3:"Medium"  , 4:"Hard"  , 5:"Very Hard"  ,
 				   "Very Easy":"1", "Easy":"2", "Medium":"3", "Hard":"4", "Very Hard":"5", };
@@ -628,15 +696,18 @@ function convertDiffFormat(diff) {
 
 /* Checks value of addRange and updates display */
 function updateDiff() {
+	//console.log("updateDiff");
 	addSpan.innerHTML = convertDiffFormat(addRange.value);
 }
 
 /* Checks that the given element has a non-empty value */
 function nonEmpty(elemId) {
+	//console.log("nonEmpty");
 	return ( document.getElementById(elemId).value !== "" );
 }
 
 /* Empties an array by setting its length to 0 */
 function clearArray(arr) {
+	//console.log("clearArray");
 	arr.length = 0;
 }

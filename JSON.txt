@@ -4,21 +4,21 @@ Question:
 { Desc:Str, Topic:Str, Id:int, Diff:int, Tests:[Str] }
 
 Test:
-{ TestId:int, TestName:Str, Rel:int, Sub:int, QIds:[int] }
+{ Id:int, Desc:Str, Rel:int, Sub:int, Questions:[{Question}] }
 
 Answer:
-{ TestId:int, QId:int, Text:Str }
+{ Id:int, QId:int, Text:Str }
 
 AddQ:
 Request { Type:AddQ, Desc:Str, Topic:Str, Diff:int, Tests:[Str] }
 Reply 	{ Type:AddQ, Error:Str, {Question} }
 
 SearchQ:
-Request { Type:SearchQ, Topic:Str, Diffs:[int], Keys:[Str] }
+Request { Type:SearchQ, Diffs:[int], Topic:Str, Keys:[Str] }
 Reply	{ Type:SearchQ, Error:Str, Questions:[{Question}] }
 
 AddTest:
-Request { Type:AddTest, TestName:Str, Release:int, QIds:[] }
+Request { Type:AddTest, TestName:Str, Release:int, Questions:[{Question}] }
 Reply	{ Type:AddTest, Error:Str, Test:{Test}}
 
 GetTests:
@@ -26,4 +26,9 @@ Request { Type:GetTests, Rels:[int] }
 Reply	{ Type:GetTests, Error:Str, Tests:[{Test}] }
 
 SubmitTest:
-Request { Type:SubmitExam, Answers:[{Answer}] }
+Request { Type:SubmitTest, Answers:[{Answer}] }
+Reply   { Type:SubmitTest, ?????? }
+
+GetAnswers:
+Request { Type:GetAnswers, QIds:[int] }
+Reply	{ Type:GetAnswers, Error:Str, Answers:[{Answer}] }
