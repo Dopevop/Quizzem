@@ -36,10 +36,11 @@ function sendGetQ() {
 /* Sends a request for all appropriate tests        */
 /* Both student and instructor will use this method */
 /* source: either 'student' or 'instructor'         */
-/* if student: only released exams will be sent     */
-/* -- tests stored in sLocalT                       */
-/* if instructor: all tests in DB will be sent      */
-/* -- tests stored in iLocalT                       */
+/* ..if student: only released exams will be sent   */
+/* ....tests stored in sLocalT                      */
+/* ..if instructor: all tests in DB will be sent    */
+/* ....tests stored in iLocalT                      */
+/* After updating localT, call updateDisplays       */
 function sendGetTests(source) {
 	var xhttp   = new XMLHttpRequest();
 	var jsonObj = {
@@ -56,18 +57,14 @@ function sendGetTests(source) {
 				console.log("Error: " + replyObj["Error"]);
 			}
 			else {
-				var localT = (source == "student")? sLocalT : iLocalT;
-				var DBT = replyObj["Tests"];
-				for(var i=0; i<DBT.length; i++){
-					if(uniqQuestion(DBT[i], localT)){
-						localT.push(DBT[i]);
+				var localT = (source == "student")? sLocalT : iLocalT; 
+				var DBT = replyObj["Tests"];          // Update the
+				for(var i=0; i<DBT.length; i++){      // relevant array
+					if(uniqQuestion(DBT[i], localT)){ // Only add
+						localT.push(DBT[i]);          // Uniq Qs
 					}
 				}
-				// clearArray(studLocalT);
-				// clearArray(studAvailT);
-				// addObjsToArray(replyObj["Tests"], studLocalT);
-				// addObjsToArray(replyObj["Tests"], studAvailT);
-				// updateDisplays( ["studTestNav", "studTestDisplay"] );
+				updateDisplays( ["sTestNav"] );       // Update the display of available tests
 			}
 	}
 	xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
