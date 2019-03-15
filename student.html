@@ -24,8 +24,33 @@
 	</main>
 	<script src="external.js"></script>
 	<script>
+		var testTest = {
+			"Id"        : 0,
+			"Desc"      : "My Practice Test",
+			"Rel"       : 1,
+			"Sub"       : 0,
+			"Questions" : [
+				{
+					"Desc"  : "Write an algorithm...",
+					"Topic" : "Practice",
+					"Id"    : 0,
+					"Diff"  : 4,
+					"Tests" : ["a()=b", "b()=c"],
+				},
+				{
+					"Desc"  : "Write an function...",
+					"Topic" : "Practice",
+					"Id"    : 1,
+					"Diff"  : 3,
+					"Tests" : ["a()=b", "b()=c"],
+				},
+
+			],
+		}
+		<!-- console.log(testTest); -->
 		var sLocalT  = []; // Always holds all known tests
 		var sActiveT = []; // Should only ever have one test inside of it
+		sLocalT.push(testTest);
 		sendGetTests("student"); // Get all released tests
 		console.log(sLocalT);
 		console.log(sActiveT);

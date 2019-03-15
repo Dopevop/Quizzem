@@ -98,6 +98,9 @@ function sendAddQ() {
 				console.log("Error: " + replyObj["Error"]);
 			}
 			else {
+				if(replyObj["Question"]["QId"]){
+					replyObj["Question"]["Id"] = replyObj["Question"]["QId"];
+				}
 				iLocalQ.push(replyObj["Question"]);  // Add to local Qs
 				iMatchQ.push(replyObj["Question"]); // Add to matched Qs
 				updateDisplays(["matchedList"]);     // Update matchedList
@@ -140,7 +143,7 @@ function sendAddT() {
 	xhttp.send(jsonStr);
 }
 
-/* Appends one question to the end of the question display */
+/* Appends one question to the end of the question display   */
 /* Takes a {Question} to add, & it's position on the display */
 function addQuestionToDisplay(Q, num) {
 	//console.log("addQuestionToDisplay");
@@ -151,34 +154,30 @@ function addQuestionToDisplay(Q, num) {
 	var ptsText	  = document.createTextNode("5 Pts");
 	var desc      = document.createElement("P");
 	var answer    = document.createElement("TEXTAREA");
-
-	     qDiv.setAttribute("class", "qDiv");
-	 leftMarg.setAttribute("class", "qLeftMargin");
-	 leftMarg.appendChild(numText);
-	rightMarg.setAttribute("class", "qRightMargin");
-	rightMarg.appendChild(ptsText);
-	     desc.setAttribute("class", "qDesc");
-	     desc.innerHTML = Q["Desc"];
-	   answer.setAttribute("class", "qAns");
-
-	qDiv.appendChild(leftMarg);
-	qDiv.appendChild(desc);
-	qDiv.appendChild(answer);
-	qDiv.appendChild(rightMarg);
-
-	qDisplay.appendChild(qDiv);
+	      qDiv.setAttribute("class", "qDiv");
+	  leftMarg.setAttribute("class", "qLeftMargin");
+	  leftMarg.appendChild(numText);
+	 rightMarg.setAttribute("class", "qRightMargin");
+	 rightMarg.appendChild(ptsText);
+	      desc.setAttribute("class", "qDesc");
+	      desc.innerHTML = Q["Desc"];
+	    answer.setAttribute("class", "qAns");
+	      qDiv.appendChild(leftMarg);
+	      qDiv.appendChild(desc);
+	      qDiv.appendChild(answer);
+	      qDiv.appendChild(rightMarg);
+	 sTestDisp.appendChild(qDiv);
 	
 }
 
 /* Adds a button to the end of the student's question display */
 function addSubmitToDisplay() {
-	//console.log("addSubmitToDisplay");
 	var theBtn = document.createElement("BUTTON");
 	theBtn.setAttribute("type","button");
 	theBtn.setAttribute("id", "testSub"); // <-- might have to change this
 	theBtn.addEventListener("click", function() { validateForm("SubmitTest") } );
 	theBtn.innerHTML = "Submit Exam";
-	qDisplay.appendChild(theBtn);
+	sTestDisp.appendChild(theBtn);
 }
 
 
@@ -283,7 +282,6 @@ function validateTests(tests) {
 /* Toggles whether the clicked on question is in iActiveQ 
  * listItemId: The id of the List Item that the question appears in */
 function toggleSelected(listItemId) {
-	//console.log("toggleSelected");
 	var id = listItemId.substring(1);
 	if(listItemId[0] == "t") {
 		// add test with id to sActiveT 
@@ -387,10 +385,10 @@ function resetDisplay(displayId) {
 		ul.appendChild(document.createTextNode("Tests"));
 	}
 	else if( displayId === "sTestDisp" ) {
-		if(sActiveT !== "none") {
+		if(sActiveT.length == 1) {
 			// A test has been selected
 			ul.setAttribute("id", "qList");
-			ul.appendChild(document.createTextNode(sActiveT["TestName"]));
+			ul.appendChild(document.createTextNode(sActiveT["Desc"]));
 		} 
 		else {
 			ul.setAttribute("id", "info");
@@ -450,8 +448,8 @@ function addItemToDisplay(newItem, displayId, num) {
 	}
 	else if(displayId === "sTestNav") {
 		var item     = document.createElement("LI");
-		var descText = document.createTextNode(newItem["TestName"]);
-		var numQText = document.createTextNode(""+newItem["QIds"].length+" Questions");
+		var descText = document.createTextNode(newItem["Desc"]);
+		var numQText = document.createTextNode(""+newItem["Questions"].length+" Questions");
 		var strObj   = getIdClassStrObj(newItem, displayId);
 		item.setAttribute("id", strObj["idStr"]);
 		item.setAttribute("class", strObj["classStr"]);
