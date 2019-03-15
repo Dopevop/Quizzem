@@ -76,7 +76,7 @@ function sendGetTests(source) {
 /* Sends a request to add a new Q into the DB             */
 /* Form is validated before this function will be called  */
 /* Server responds with newly added question upon success */
-/* Newly added Q is added to both iLocalQ and matchedQ    */
+/* Newly added Q is added to both iLocalQ and iMatchQ    */
 /* matchedList display is updated                         */
 /* Only instructor will be calling this method            */
 function sendAddQ() {
@@ -217,14 +217,14 @@ function localSearch(topic, diffs, keys) {
 }
 
 /* Called when searchSubmit button is clicked
- * Updates the matchedQ array with Q's matching new search criteria
- * Displays the matchedQ in the matches section */
+ * Updates the iMatchQ array with Q's matching new search criteria
+ * Displays the iMatchQ in the matches section */
 function displaySearchResults() {
 	//console.log("displaySearchResults");
 	var topic = searchTopic.value;
 	var diffs = getCheckedValues("searchDiff");
 	var keys  = getNonEmptyInputs("searchKeys");
-	matchedQ  = localSearch(topic, diffs, keys);
+	iMatchQ  = localSearch(topic, diffs, keys);
 	updateDisplays(["matchedList"]);
 }
 
@@ -298,26 +298,26 @@ function toggleSelected(listItemId) {
 		updateDisplays(["sTestNav", "sTestDisp"]);
 	}
 	else if ( listItemId[0] == "m") { // Selected Item is a matchList question
-		// add Q to iActiveQ, remove from matchedQ
-		for(var i=0; i<matchedQ.length; i++){
-			var thisQ = matchedQ[i];
+		// add Q to iActiveQ, remove from iMatchQ
+		for(var i=0; i<iMatchQ.length; i++){
+			var thisQ = iMatchQ[i];
 			if(thisQ["Id"] == id){ // Check if found the clicked on Q
 				if(uniqQuestion(thisQ, iActiveQ)){
 					iActiveQ.push(thisQ);
 				}
-				matchedQ = removeItemFromArray(thisQ["Id"], matchedQ);
+				iMatchQ = removeItemFromArray(thisQ["Id"], iMatchQ);
 				break;
 			}
 		}
 		updateDisplays(["previewList", "matchedList"]);
 	}
 	else if ( listItemId[0] == "p") { // Selected Item is a previewList question
-		// add Q to matchedQ, remove from iActiveQ
+		// add Q to iMatchQ, remove from iActiveQ
 		for(var i=0; i<iActiveQ.length; i++){
 			var thisQ = iActiveQ[i];
 			if(thisQ["Id"] == id){ // Check if found the clicked on Q
-				if(uniqQuestion(thisQ, matchedQ)){
-					matchedQ.push(thisQ);
+				if(uniqQuestion(thisQ, iMatchQ)){
+					iMatchQ.push(thisQ);
 				}
 				iActiveQ = removeItemFromArray(thisQ["Id"], iActiveQ);
 				break;
@@ -413,7 +413,7 @@ function resetDisplay(displayId) {
 	//console.log(sActiveT);
 }
 
-/* Called whenever matchedQ might change */
+/* Called whenever iMatchQ might change */
 function updateDisplays(displayIdArr) {
 	//console.log("updateDisplays");
 	//console.log(displayIdArr);
@@ -568,7 +568,7 @@ function getNonEmptyInputs(divId) {
 function getSelectedQs() {
 	var Qs = [];
 	for(var i=0; i<iActiveQ.length; i++){
-		ids.push(iActiveQ[i]);
+		Qs.push(iActiveQ[i]);
 	}
 	return Qs;
 }
@@ -631,12 +631,12 @@ function removeItemFromArray(id, A) {
 	return A;
 }
 
-/* Determines which array (iActiveQ or matchedQ) is associated with a display */
+/* Determines which array (iActiveQ or iMatchQ) is associated with a display */
 function getRelArr(displayId) {
 	//console.log("getRelArr");
 	var relArr;
 	if(displayId === "matchedList" || displayId[0] === "m"){
-		relArr = matchedQ;
+		relArr = iMatchQ;
 	} else if(displayId === "previewList" /*|| displayId[0] === "s"*/) {
 		relArr = iActiveQ;
 	} else if(displayId === "sTestNav") {
