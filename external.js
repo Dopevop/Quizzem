@@ -34,10 +34,10 @@ function sendRequest(reqType, option) {
 		//console.log("Invalid reqType passed to sendRequest()");
 	}
 	var jsonStr = JSON.stringify(jsonObj);
-	// //console.log("Sent:" + jsonStr);
+	console.log("Sent:" + jsonStr);
 	xhttp.onreadystatechange = function() {
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
-			// //console.log("Rcvd:"+xhttp.responseText);
+			console.log("Rcvd:"+xhttp.responseText);
 			var replyObj = JSON.parse(xhttp.responseText);
 			if( replyObj["Error"] != 0 ) {
 				//console.log("Error: " + replyObj["Error"]);
@@ -69,7 +69,6 @@ function sendRequest(reqType, option) {
 						clearArray(studAvailT);
 						addObjsToArray(replyObj["Tests"], studLocalT);
 						addObjsToArray(replyObj["Tests"], studAvailT);
-						// updateDisplays( ["studTestNav"/*, "studTestDisplay"*/] );
 						updateDisplays( ["studTestNav", "studTestDisplay"] );
 						//console.log(studLocalT);
 						//console.log(studAvailT);
@@ -449,7 +448,6 @@ function updateDisplays(displayIdArr) {
 		//console.log(thisId + JSON.stringify(relArr));
 		resetDisplay(thisId);
 		for(var j=0; j<relArr.length; j++) {
-			
 			addItemToDisplay(relArr[j], thisId, j);
 		}
 	}
@@ -478,7 +476,7 @@ function addItemToDisplay(newItem, displayId, num) {
 	else if(displayId === "studTestNav") {
 		var item     = document.createElement("LI");
 		var descText = document.createTextNode(newItem["TestName"]);
-		var numQText = document.createTextNode(""+newItem["QIds"].length+" Questions");
+		var numQText = document.createTextNode(""+newItem["Questions"].length+" Questions");
 		var strObj   = getIdClassStrObj(newItem, displayId);
 		item.setAttribute("id", strObj["idStr"]);
 		item.setAttribute("class", strObj["classStr"]);
@@ -486,11 +484,7 @@ function addItemToDisplay(newItem, displayId, num) {
 		item.appendChild(document.createElement("BR"));
 		item.appendChild(numQText);
 		item.appendChild(document.createElement("BR"));
-		item.addEventListener("click", function() { 
-			if(confirm("Are you sure you want to take the exam?")){
-				toggleSelected(strObj["idStr"]);
-			}
-		});
+		item.addEventListener("click", function() { toggleSelected(strObj["idStr"])	});
 	} 
 	else if(displayId === "studTestDisplay") {
 		var item      = document.createElement("LI");

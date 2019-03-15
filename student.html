@@ -30,7 +30,7 @@
 		var studLocalQ = [];
 		var studLocalT = [];
 		var studAvailT = [];
-		var studSelectedT = "none";
+		var studSelectedT = 0;
 		sendRequest("SearchQ" , "student"); // Will update studLocalQ 
 		sendRequest("GetTests", "student"); // Will update studLocalT, studAvailT 
 		console.log(studLocalQ);
