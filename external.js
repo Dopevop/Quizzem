@@ -12,12 +12,7 @@ function sendRequest(reqType, option) {
 		"Type"  : reqType,
 	}
 	// Fill in reqType-specific object fields
-	if(reqType === "AddQ"){
-		jsonObj["Desc"]  = addDesc.value;
-		jsonObj["Topic"] = addTopic.value;
-		jsonObj["Diff"]  = addRange.value;
-		jsonObj["Tests"] = getNonEmptyInputs("addTests");
-	} else if(reqType === "SearchQ") {
+	if(reqType === "SearchQ") {
 		jsonObj["Diffs"] = [1,2,3,4,5];
 		jsonObj["Topic"] = "";
 		jsonObj["Keys"]  = [];
@@ -43,15 +38,8 @@ function sendRequest(reqType, option) {
 				//console.log("Error: " + replyObj["Error"]);
 			}
 			else {
-				var localQ = (option == "student")? studLocalQ : instLocalQ;
-				if(replyObj["Type"] === "AddQ") {
-					alert("Question added successfully!");
-					localQ.push(replyObj["Question"]);
-					matchedQ.push(replyObj["Question"]);
-					updateDisplays(["matchedList"]);
-					// //console.log(matchedQ);
-				}
-				else if(replyObj["Type"] === "SearchQ") {
+				var localQ = (option == "student")? studLocalQ : iLocalQ;
+				if(replyObj["Type"] === "SearchQ") {
 					// Loop through DB Q's, adding each to local Q's
 					var DBQ = replyObj["Questions"];
 					for(var i=0; i<DBQ.length; i++){
@@ -88,6 +76,67 @@ function sendRequest(reqType, option) {
 	xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send(jsonStr);
+}
+
+function sendGetQ() {
+	var xhttp   = new XMLHttpRequest();
+	var jsonObj = {
+		"Type"  : "SearhQ",
+		"Topic" : "",
+		"Diff"  : [1,2,3,4,5],
+		"Keys"  : [],
+	}
+	var jsonStr = JSON.stringify(jsonObj);
+	console.log("Sent:"+jsonStr);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			console.log("Rcvd:"+xhttp.responseText);
+			var replyObj = JSON.parse(xhttp.responseText);
+			if( replyObj["Error"] != 0 ) {
+				console.log("Error: " + replyObj["Error"]);
+			}
+			else {
+				var DBQ = replyObj["Questions"];
+				for(var i=0; i<DBQ.length; i++){
+					if(uniqQuestion(DBQ[i], iLocalQ)){
+						iLocalQ.push(DBQ[i]);
+					}
+				}
+			}
+	}
+	xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send(jsonStr);
+}
+
+function sendAddQ() {
+	var xhttp   = new XMLHttpRequest();
+	var jsonObj = {
+		"Type"  : "AddQ",
+		"Desc"  : addDesc.value,
+		"Topic" : addTopic.value,
+		"Diff"  : addRange.value,
+		"Tests" : getNonEmptyInputs("addTests"),
+	}
+	var jsonStr = JSON.stringify(jsonObj);
+	console.log("Sent:"+jsonStr);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			console.log("Rcvd:"+xhttp.responseText);
+			var replyObj = JSON.parse(xhttp.responseText);
+			if( replyObj["Error"] != 0 ) {
+				console.log("Error: " + replyObj["Error"]);
+			}
+			else {
+				iLocalQ.push(replyObj["Question"]);
+				matchedQ.push(replyObj["Question"]);
+				updateDisplays(["matchedList"]);
+			}
+	}
+	xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send(jsonStr);
+	}
 }
 
 // /* Takes a list of tests and displays them to be selected for student */
@@ -217,8 +266,8 @@ function addSubmitToDisplay() {
 function localSearch(topic, diffs, keys) {
 	//console.log("localSearch");
 	var matches = [];
-	for(var i=0; i<instLocalQ.length; i++){
-		var thisQ = instLocalQ[i];
+	for(var i=0; i<iLocalQ.length; i++){
+		var thisQ = iLocal[i];
 		var thisTopic = thisQ["Topic"].toLowerCase();
 		if(topic === "" || thisTopic.match(topic.toLowerCase())){
 			// Topic matches, now check Diffs
@@ -267,7 +316,7 @@ function validateForm(type) {
 			if(nonEmpty("addDesc") && nonEmpty("addTopic")) {
 				var testsArray = getNonEmptyInputs("addTests");
 				if(validateTests(testsArray)){
-					sendRequest("AddQ");
+					sendAddQ();
 					clearForm("addForm");
 				} else {
 					alert("Need two test cases: e.g. func(a,b)=ans");
