@@ -18,7 +18,7 @@ request { type:searchQ, diffs:[int], topic:str, keys:[str] }
 reply	{ type:searchQ, error:str, questions:[{question}] }
 
 addTest:
-request { type:addTest, desc:str, release:int, questions:[{question}] }
+request { type:addTest, desc:str, rel:int, questions:[{question}] }
 reply	{ type:addTest, error:str, test:{test}}
 
 getTests:
