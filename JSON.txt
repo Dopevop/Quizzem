@@ -1,34 +1,34 @@
 JSON Messages:
 
-Question:
-{ Desc:Str, Topic:Str, Id:int, Diff:int, Tests:[Str] }
+question:
+{ desc:str, topic:str, id:int, diff:int, tests:[str] }
 
-Test:
-{ Id:int, Desc:Str, Rel:int, Sub:int, Questions:[{Question}] }
+test:
+{ id:int, desc:str, rel:int, sub:int, questions:[{question}] }
 
-Answer:
-{ Id:int, QId:int, Text:Str }
+answer:
+{ id:int, qId:int, text:str }
 
-AddQ:
-Request { Type:AddQ, Desc:Str, Topic:Str, Diff:int, Tests:[Str] }
-Reply 	{ Type:AddQ, Error:Str, {Question} }
+addQ:
+request { type:addQ, desc:str, topic:str, diff:int, tests:[str] }
+reply 	{ type:addQ, error:str, {question} }
 
-SearchQ:
-Request { Type:SearchQ, Diffs:[int], Topic:Str, Keys:[Str] }
-Reply	{ Type:SearchQ, Error:Str, Questions:[{Question}] }
+searchQ:
+request { type:searchQ, diffs:[int], topic:str, keys:[str] }
+reply	{ type:searchQ, error:str, questions:[{question}] }
 
-AddTest:
-Request { Type:AddTest, TestName:Str, Release:int, Questions:[{Question}] }
-Reply	{ Type:AddTest, Error:Str, Test:{Test}}
+addTest:
+request { type:addTest, desc:str, release:int, questions:[{question}] }
+reply	{ type:addTest, error:str, test:{test}}
 
-GetTests:
-Request { Type:GetTests, Rels:[int] }
-Reply	{ Type:GetTests, Error:Str, Tests:[{Test}] }
+getTests:
+request { type:getTests, rels:[int] }
+reply	{ type:getTests, error:str, tests:[{test}] }
 
-SubmitTest:
-Request { Type:SubmitTest, Answers:[{Answer}] }
-Reply   { Type:SubmitTest, ?????? }
+submitTest:
+request { type:submitTest, answers:[{answer}] }
+reply   { type:submitTest, ?????? }
 
-GetAnswers:
-Request { Type:GetAnswers, QIds:[int] }
-Reply	{ Type:GetAnswers, Error:Str, Answers:[{Answer}] }
+getAnswers:
+request { type:getAnswers, ids:[int] }
+reply	{ type:getAnswers, error:str, answers:[{answer}] }
