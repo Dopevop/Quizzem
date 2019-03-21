@@ -1,3 +1,93 @@
+/* Sends the given postBody to the server             */
+/* Calls the callback function after getting response */
+function fetchRemoteData(postBody, callback) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			console.log('Rcvd:'+xhttp.responseText);
+			var replyObj = JSON.parse(xhttp.responseText);
+			callback(replyObj);
+		}
+	};
+	xhttp.open('POST', 'https://web.njit.edu/~djo23/CS490/curlObj.php', true);
+	xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	xhttp.send(postBody);
+}
+
+function handleReply(replyObj) {
+	switch(replayObj['Type']) {
+		case 'AddQ':
+			if(replyObj["Question"]["QId"]){ // Make an Id field if absent
+				replyObj["Question"]["Id"] = replyObj["Question"]["QId"];
+			}
+			iLocalQ.push(replyObj["Question"]);  // Add to local Qs
+			iMatchQ.push(replyObj["Question"]); // Add to matched Qs
+			updateDisplays(["matchedList"]);     // Update matchedList
+			break;
+		case 'SearchQ':
+			var DBQ = replyObj["Questions"];       // Extract all Qs
+			for(var i=0; i<DBQ.length; i++){       // Put all uniq Qs in
+				if(uniqQuestion(DBQ[i], iLocalQ)){ //   instructor's local
+					iLocalQ.push(DBQ[i]);          //   Q array
+				}
+			}
+			break;
+		case 'GetTests':
+			var localT = (source == "student")? sLocalT : iLocalT; 
+			var DBT = replyObj["Tests"];          // Update the
+			for(var i=0; i<DBT.length; i++){      // relevant array
+				if(uniqQuestion(DBT[i], localT)){ // Only add
+					localT.push(DBT[i]);          // Uniq Qs
+				}
+			}
+			break;
+		case 'AddTest':
+			var newTest = replyObj["Test"];
+			iLocalT.push(newTest);
+			break;
+	}
+}
+
+/* Creates the JSON obj that will encapsulate the request to the server
+ * */
+function buildPostBody(type) {
+	var jsonObj;
+	switch(type) {
+		case 'AddQ':
+			var jsonObj = {
+				'Type'  : 'AddQ',
+				'Desc'  : addDesc.value,
+				'Topic' : addTopic.value,
+				'Diff'  : addRange.value,
+				'Tests' : getNonEmptyInputs('addTests'),
+			}
+			break;
+		case 'SearchQ':
+			var jsonObj = {
+				'Type'  : 'SearchQ',   // Build SearchQ req
+				'Topic' : '',          // Don't filter by topic
+				'Diffs' : [1,2,3,4,5], // Don't filter by diff
+				'Keys'  : [],          // Don't filter by keyword
+			}
+			break;
+		case 'GetTests':
+			var jsonObj = {
+				'Type' : 'GetTests',                         // Send a GetTests req
+				'Rels' : (source == 'student')? [1] : [0,1], // Only released tests for student
+			}
+			break;
+		case 'AddTest':
+			var jsonObj = {
+				'Type'      : 'AddTest',
+				'Desc'      : testDesc.value,
+				'Rel'       : getCheckedValue("testRelease"),
+				'Questions' : getSelectedQs(),
+			}
+			break;
+	}
+	return JSON.stringify(jsonObj);
+}
+
 /* Sends a request for all questions stored in database */
 /* These will be stored locally in the instructor's iLocalQ */
 /* instructor.html is only page that will be requesting Q's */
@@ -45,7 +135,7 @@ function sendGetTests(source) {
 	var xhttp   = new XMLHttpRequest();
 	var jsonObj = {
 		"Type" : "GetTests",                         // Send a GetTests req
-		"Rels" : (source == "student")? [1] : [0,1], // Only released tests for student
+		"Rels" : (source == "student")? [1, 0] : [0,1], // Only released tests for student
 	}
 	var jsonStr = JSON.stringify(jsonObj);
 	console.log("Sent:"+jsonStr);
