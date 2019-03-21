@@ -1,3 +1,55 @@
+function sendRequest(reqType, option) {
+	//console.log("sendRequest");
+	var xhttp   = new XMLHttpRequest();
+	var jsonObj = {
+		"Type"  : reqType,
+	}
+	// Fill in reqType-specific object fields
+	if(reqType === "AddQ"){
+		jsonObj["Desc"]  = addDesc.value;
+		jsonObj["Topic"] = addTopic.value;
+		jsonObj["Diff"]  = addRange.value;
+		jsonObj["Tests"] = getNonEmptyInputs("addTests");
+	} else if(reqType === "SearchQ") {
+		jsonObj["Diffs"] = [1,2,3,4,5];
+		jsonObj["Topic"] = "";
+		jsonObj["Keys"]  = [];
+	} else if(reqType === "AddTest") {
+		jsonObj["TestName"] = testDesc.value;
+		jsonObj["Rel"]      = getCheckedValue("testRelease");
+		jsonObj["QIds"]     = getSelectedIds();
+	} else if(reqType === "GetTests") {
+		if(option == "student")
+			jsonObj["Rels"] = [1, 0]; 		// Only get released tests for student page
+		else if(option == "instructor")
+			jsonObj["Rels"] = [0, 1]; 	// Get all tests for instructor page
+	} else {
+		//console.log("Invalid reqType passed to sendRequest()");
+	}
+	var jsonStr = JSON.stringify(jsonObj);
+	console.log("Sent:" + jsonStr);
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			console.log("Rcvd:"+xhttp.responseText);
+			var replyObj = JSON.parse(xhttp.responseText);
+			if( replyObj["Error"] != 0 ) {
+				//console.log("Error: " + replyObj["Error"]);
+			}
+			else {
+				var localQ = (option == "student")? studLocalQ : instLocalQ;
+				if(replyObj["Type"] === "AddQ") {
+					alert("Question added successfully!");
+					localQ.push(replyObj["Question"]);
+					matchedQ.push(replyObj["Question"]);
+					updateDisplays(["matchedList"]);
+					// //console.log(matchedQ);
+				}
+				else if(replyObj["Type"] === "SearchQ") {
+					// Loop through DB Q's, adding each to local Q's
+					var DBQ = replyObj["Questions"];
+					for(var i=0; i<DBQ.length; i++){
+
+
 /* Sends the given postBody to the server             */
 /* Calls the callback function after getting response */
 function fetchRemoteData(postBody, callback) {
