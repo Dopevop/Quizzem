@@ -1,69 +1,51 @@
+
+// var localQ = (option == "student")? studLocalQ : instLocalQ;
+// if(replyObj["Type"] === "AddQ") {
+// 	alert("Question added successfully!");
+// 	localQ.push(replyObj["Question"]);
+// 	matchedQ.push(replyObj["Question"]);
+// 	updateDisplays(["matchedList"]);
+// }
+// else if(replyObj["Type"] === "SearchQ") {
+// 	// Loop through DB Q's, adding each to local Q's
+// 	var DBQ = replyObj["Questions"];
+// 	for(var i=0; i<DBQ.length; i++){
+// 		if(uniqQuestion(DBQ[i], localQ)){
+// 			localQ.push(DBQ[i]);
+// 		}
+// 	}
+// }
+// else if(replyObj["Type"] === "AddTest") {
+// 	alert("Exam added successfully!");
+// }
+// else if(replyObj["Type"] === "GetTests") {
+// 	if(option == "student") {
+// 		clearArray(studLocalT);
+// 		clearArray(studAvailT);
+// 		addObjsToArray(replyObj["Tests"], studLocalT);
+// 		addObjsToArray(replyObj["Tests"], studAvailT);
+// 		updateDisplays( ["studTestNav", "studTestDisplay"] );
+// 	}
+// }
 function sendRequest(reqType, option) {
-	//console.log("sendRequest");
 	var xhttp   = new XMLHttpRequest();
-	var jsonObj = {
-		"Type"  : reqType,
-	}
-	// Fill in reqType-specific object fields
-	if(reqType === "AddQ"){
-		jsonObj["Desc"]  = addDesc.value;
-		jsonObj["Topic"] = addTopic.value;
-		jsonObj["Diff"]  = addRange.value;
-		jsonObj["Tests"] = getNonEmptyInputs("addTests");
-	} else if(reqType === "SearchQ") {
-		jsonObj["Diffs"] = [1,2,3,4,5];
-		jsonObj["Topic"] = "";
-		jsonObj["Keys"]  = [];
-	} else if(reqType === "AddTest") {
-		jsonObj["TestName"] = testDesc.value;
-		jsonObj["Rel"]      = getCheckedValue("testRelease");
-		jsonObj["QIds"]     = getSelectedIds();
-	} else if(reqType === "GetTests") {
-		if(option == "student")
-			jsonObj["Rels"] = [1, 0]; 		// Only get released tests for student page
-		else if(option == "instructor")
-			jsonObj["Rels"] = [0, 1]; 	// Get all tests for instructor page
-	} else {
-		//console.log("Invalid reqType passed to sendRequest()");
-	}
-	var jsonStr = JSON.stringify(jsonObj);
+	var jsonStr = buildPostBody(reqType);
 	console.log("Sent:" + jsonStr);
 	xhttp.onreadystatechange = function() {
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
 			console.log("Rcvd:"+xhttp.responseText);
 			var replyObj = JSON.parse(xhttp.responseText);
 			if( replyObj["Error"] != 0 ) {
-				//console.log("Error: " + replyObj["Error"]);
+				console.log("Error: " + replyObj["Error"]);
 			}
 			else {
-				var localQ = (option == "student")? studLocalQ : instLocalQ;
-				if(replyObj["Type"] === "AddQ") {
-					alert("Question added successfully!");
-					localQ.push(replyObj["Question"]);
-					matchedQ.push(replyObj["Question"]);
-					updateDisplays(["matchedList"]);
-					// //console.log(matchedQ);
-				}
-				else if(replyObj["Type"] === "SearchQ") {
-					// Loop through DB Q's, adding each to local Q's
-					var DBQ = replyObj["Questions"];
-					for(var i=0; i<DBQ.length; i++){
-
-
-/* Sends the given postBody to the server             */
-/* Calls the callback function after getting response */
-function fetchRemoteData(postBody, callback) {
-	var xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-		if (xhttp.readyState == 4 && xhttp.status == 200) {
-			console.log('Rcvd:'+xhttp.responseText);
-			var replyObj = JSON.parse(xhttp.responseText);
-			callback(replyObj);
+				handleReply(replyObj);
+			}
 		}
 	};
-	xhttp.open('POST', 'https://web.njit.edu/~djo23/CS490/curlObj.php', true);
-	xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	xhttp.send(postBody);
+	xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send(jsonStr);
 }
 
 function handleReply(replyObj) {
@@ -106,7 +88,7 @@ function buildPostBody(type) {
 	var jsonObj;
 	switch(type) {
 		case 'AddQ':
-			var jsonObj = {
+			jsonObj = {
 				'Type'  : 'AddQ',
 				'Desc'  : addDesc.value,
 				'Topic' : addTopic.value,
@@ -115,7 +97,7 @@ function buildPostBody(type) {
 			}
 			break;
 		case 'SearchQ':
-			var jsonObj = {
+			jsonObj = {
 				'Type'  : 'SearchQ',   // Build SearchQ req
 				'Topic' : '',          // Don't filter by topic
 				'Diffs' : [1,2,3,4,5], // Don't filter by diff
@@ -123,13 +105,13 @@ function buildPostBody(type) {
 			}
 			break;
 		case 'GetTests':
-			var jsonObj = {
+			jsonObj = {
 				'Type' : 'GetTests',                         // Send a GetTests req
 				'Rels' : (source == 'student')? [1] : [0,1], // Only released tests for student
 			}
 			break;
 		case 'AddTest':
-			var jsonObj = {
+			jsonObj = {
 				'Type'      : 'AddTest',
 				'Desc'      : testDesc.value,
 				'Rel'       : getCheckedValue("testRelease"),
