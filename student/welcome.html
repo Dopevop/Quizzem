@@ -6,22 +6,35 @@
 	<meta name="keywords"    content="Computer Science, Exam, Questions, Student, NJIT, Python">
 	<meta name="author"      content="Devon J O'Connor">
 	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet"   type="text/css" href="../styles/student.css">
+	<link rel="stylesheet"   type="text/css" href="../styles/mainstyle.css">
 	<title>Quizzem</title>
 </head>
 <body>
-	<main>
-		<nav id="sTestNav">
-			<ul>
-				<li>Tests</li>
-			</ul>	
-		</nav>
-		<article id="sTestDisp">
-			<ul>
-				<li>Select a test from the list</li>
-			</ul>
-		</article>
-	</main>
+  <header>
+    <a href='welcome.html'>Quizzem</a>
+  </header>
+	<div class="clearfix">
+    <!-- The navigation bar for the page -->
+    <nav class=box>
+      <ul id="navList">
+        Navigation
+        <li><a href='tests.html'>Tests</a></li>
+        <li>Submitted</li>
+        <li>Grades</li>
+      </ul>
+    </nav>
+    <!-- The list of questions for the page -->
+    <main id="mainDisplay" class="box">
+      <ul id="msgList">
+        Messages
+        <li>Welcome to Quizzem, the one-stop shop for all your quizzing needs!</li>
+      </ul>
+    </main>
+    <!-- The forms for the page -->
+    <aside id="quizBuilder" class="box">
+
+    </aside>
+	</div>
 	<script src="external.js"></script>
 	<script>
 		var testTest = {

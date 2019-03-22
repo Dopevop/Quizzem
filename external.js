@@ -505,15 +505,15 @@ function resetDisplay(displayId) {
 	var ul      = document.createElement("UL");
 	if( displayId === "previewList" ){
 		ul.setAttribute("id", "pList");
-		ul.appendChild(document.createTextNode("Selected"));
+		// ul.appendChild(document.createTextNode("Selected"));
 	} 
 	else if( displayId === "matchedList" ) {
 		ul.setAttribute("id", "mList");
-		ul.appendChild(document.createTextNode("Matches"));
+		// ul.appendChild(document.createTextNode("Matches"));
 	}
 	else if( displayId === "sTestNav" ) {
 		ul.setAttribute("id", "tList");
-		ul.appendChild(document.createTextNode("Tests"));
+		// ul.appendChild(document.createTextNode("Tests"));
 	}
 	else if( displayId === "sTestDisp" ) {
 		if(sActiveT.length == 1) {
