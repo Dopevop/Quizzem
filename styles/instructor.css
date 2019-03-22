@@ -3,12 +3,25 @@
 	margin            : 0px
 }
 .box {
+    outline: 1px solid red;
 	float             : left;
-	width             : 33.33%;
 	padding           : 50px 5px;
 	height            : 100vh;
 	overflow          : auto;
+}
+nav {
+    width : 150px;
+}
+#mainDisplay {
+    width : 500px;
+}
+fieldset {
 	background-color  : ghostwhite;
+}
+.clearfix {
+    width : 950px;
+    margin : auto;
+    background-color: aliceblue;
 }
 .clearfix::after {
 	content           : "";

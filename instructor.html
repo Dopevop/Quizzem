@@ -11,12 +11,58 @@
 </head>
 <body>
 	<div class="clearfix">
-		<div id="quizPreview" class="box">
-			<ul id="previewList">
+    <!-- The navigation bar for the page -->
+    <nav class=box>
+      <ul id="navList">
+        Navigation
+      </ul>
+    </nav>
+    <!-- The list of questions for the page -->
+		<div id="mainDisplay" class="box">
+      <ul id="previewList"> <!-- Selected Q's appear above matched Q's -->
 				Selected
 			</ul>
+			<ul id="matchedList">
+				Matches
+			</ul>
 		</div>
+    <!-- The forms for the page -->
 		<div id="quizBuilder" class="box">
+			<form id="testForm">
+				<fieldset>
+					<legend>Create Exam</legend>
+					Exam Name</br>
+					<input id="testDesc" type="text"> </br>
+					<div id="testRelease">
+						Release Exam Now:</br>
+						<label><input type="radio" name="release" value="1">Yes</label>
+						<label><input type="radio" name="release" value="0" checked>No</label></br>
+						</br>
+					</div>
+					<button id="testSub" type="button">Submit</button> 
+				</fieldset>
+			</form>
+
+			<form id="searchForm">
+				<fieldset>
+					<legend>Search for Questions</legend>
+					Topic </br>
+					<input id="searchTopic" type="text"> </br>
+					<div id="searchDiff">
+						Difficulty </br>
+						<label><input type ="checkbox" value="1">Very Easy</label></br>
+						<label><input type ="checkbox" value="2">Easy	    </label></br>
+						<label><input type ="checkbox" value="3">Medium   </label></br>
+						<label><input type ="checkbox" value="4">Hard	    </label></br>
+						<label><input type ="checkbox" value="5">Very Hard</label></br>
+					</div>
+					<div id   ="searchKeys" class="modular keys"></div>
+					</br>
+					<button id="searchSub" type="button">Search</button> 
+					<button id="searchReset" type="reset">Clear</button> 
+				</fieldset>
+			</form>
+
 			<form id="addForm">
 				<fieldset>
 					<legend>Create Question:</legend>
@@ -40,44 +86,6 @@
 					<button id="addSub"   type="button">Submit</button> 
 				</fieldset>
 			</form>	
-			<form id="searchForm">
-				<fieldset>
-					<legend>Search for Questions</legend>
-					Topic </br>
-					<input id="searchTopic" type="text"> </br>
-					<div id="searchDiff">
-						Difficulty </br>
-						<label><input type ="checkbox" value="1">Very Easy</label></br>
-						<label><input type ="checkbox" value="2">Easy	 </label></br>
-						<label><input type ="checkbox" value="3">Medium   </label></br>
-						<label><input type ="checkbox" value="4">Hard	 </label></br>
-						<label><input type ="checkbox" value="5">Very Hard</label></br>
-					</div>
-					<div id   ="searchKeys" class="modular keys"></div>
-					</br>
-					<button id="searchSub" type="button">Search</button> 
-					<button id="searchReset" type="reset">Clear</button> 
-				</fieldset>
-			</form>
-			<form id="testForm">
-				<fieldset>
-					<legend>Create Exam</legend>
-					Exam Name</br>
-					<input id="testDesc" type="text"> </br>
-					<div id="testRelease">
-						Release Exam Now:</br>
-						<label><input type="radio" name="release" value="1">Yes</label>
-						<label><input type="radio" name="release" value="0" checked>No</label></br>
-						</br>
-					</div>
-					<button id="testSub" type="button">Submit</button> 
-				</fieldset>
-			</form>
-		</div>
-		<div id="searchMatches" class="box">
-			<ul id="matchedList">
-				Matches
-			</ul>
 		</div>
 	</div>
 	<script type="text/javascript" src="external.js"></script>
