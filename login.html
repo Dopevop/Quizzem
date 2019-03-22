@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>Quizzem Login</title>	
-	<link rel="stylesheet" href="styles/mainstyle.css">
+	<link rel="stylesheet" href="styles/login.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -11,7 +11,7 @@
 		<fieldset>
 			<br/><div class="inputLabel">UCID:</div>
 			<input type="text" name="username" id="usrInput" autocomplete="on" >
-			<br><br><div class="inputLabel">Password:</div>
+			<br/><br/><div class="inputLabel">Password:</div>
 			<input type="password" name="password" id="pwdInput" autocomplete="off">
 			<br/><br/><div class="buttons">
 				<button class="button" type="button" id="btn">Submit</button>			
@@ -50,10 +50,10 @@
 				response.innerHTML = "[" + xhttp.responseText + "]";
 				if(jsonObj["username"] === "teacher" && jsonObj["password"] === "teach"){
 					alert("Welcome, Teacher");
-					window.location.href = "https://web.njit.edu/~djo23/CS490/instructor.html";
+					window.location.href = "https://web.njit.edu/~djo23/CS490/instructor/welcome.html";
 				} else if(jsonObj["username"] === "student" && jsonObj["password"] === "stu") {
 					alert("Welcome, Student");
-					window.location.href = "https://web.njit.edu/~djo23/CS490/student.html";
+					window.location.href = "https://web.njit.edu/~djo23/CS490/student/welcome.html";
 				} else {
 					alert("Unknown login!!");
 				}
