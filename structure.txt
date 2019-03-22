@@ -1,0 +1,19 @@
+public_html
+    └→ CS490
+        ├→ login.html
+        │
+        ├→ instructor
+        │   ├→ welcome.html
+        │   ├→ build.html
+        │   ├→ edit.html
+        │   └→ review.html
+        │
+        ├→ student
+        │   ├→ welcome.html
+        │   ├→ tests.html
+        │   ├→ review.html
+        │   └→ grades.html
+        │   
+        └→ styles
+            ├→ login.css
+            └→ mainstyle.css
