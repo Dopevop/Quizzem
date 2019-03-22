@@ -1,0 +1,59 @@
+<!DOCTYPE html5>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="description" content="Student's page for taking tests">
+	<meta name="keywords"    content="Computer Science, Exam, Questions, Student, NJIT, Python">
+	<meta name="author"      content="Devon J O'Connor">
+	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet"   type="text/css" href="styles/student.css">
+	<title>Quizzem</title>
+</head>
+<body>
+	<main>
+		<nav id="sTestNav">
+			<ul>
+				<li>Tests</li>
+			</ul>	
+		</nav>
+		<article id="sTestDisp">
+			<ul>
+				<li>Select a test from the list</li>
+			</ul>
+		</article>
+	</main>
+	<script src="external.js"></script>
+	<script>
+		var testTest = {
+			"Id"        : 0,
+			"Desc"      : "My Practice Test",
+			"Rel"       : 1,
+			"Sub"       : 0,
+			"Questions" : [
+				{
+					"Desc"  : "Write an algorithm...",
+					"Topic" : "Practice",
+					"Id"    : 0,
+					"Diff"  : 4,
+					"Tests" : ["a()=b", "b()=c"],
+				},
+				{
+					"Desc"  : "Write an function...",
+					"Topic" : "Practice",
+					"Id"    : 1,
+					"Diff"  : 3,
+					"Tests" : ["a()=b", "b()=c"],
+				},
+
+			],
+		}
+		var sLocalT  = []; // Always holds all known tests
+		var sActiveT = []; // Should only ever have one test inside of it
+		sLocalT.push(testTest);
+		sendGetTests("student"); // Get all released tests
+		console.log(sLocalT);
+		console.log(sActiveT);
+
+	</script>
+</body>
+</html>
