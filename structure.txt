@@ -14,6 +14,14 @@ public_html
         │   ├→ review.html
         │   └→ grades.html
         │   
-        └→ styles
-            ├→ login.css
-            └→ mainstyle.css
+        ├→ styles
+        │   ├→ login.css
+        │   └→ mainstyle.css
+        │
+        ├→ curlObj.php
+        ├→ external.js
+        ├→ structure.txt
+        ├→ todo.txt
+        ├→ README.md
+        ├→ JSON.txt
+        └→ tags
