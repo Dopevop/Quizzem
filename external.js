@@ -27,29 +27,36 @@
 // 		updateDisplays( ["studTestNav", "studTestDisplay"] );
 // 	}
 // }
+// var replyObj = JSON.parse(xhr.responseText);
+// if( replyObj["Error"] != 0 ) {
+// 	console.log("Error: " + replyObj["Error"]);
+// }
+// else {
+// 	handleReply(replyObj);
+// }
 function sendRequest(reqType, option) {
-	var xhttp   = new XMLHttpRequest();
-	var jsonStr = buildPostBody(reqType);
-	console.log("Sent:" + jsonStr);
-	xhttp.onreadystatechange = function() {
-		if (xhttp.readyState == 4 && xhttp.status == 200) {
-			console.log("Rcvd:"+xhttp.responseText);
-			var replyObj = JSON.parse(xhttp.responseText);
-			if( replyObj["Error"] != 0 ) {
-				console.log("Error: " + replyObj["Error"]);
+	return new Promise( (resolve, reject) => {
+		var xhr     = new XMLHttpRequest();
+		var jsonStr = buildPostBody(reqType);
+		xhr.onerror = () => { reject(Error('Network error.')); };
+		xhr.onload  = () => {
+			if (xhr.status === 200) {
+				console.log("Rcvd:"+xhr.responseText);
+				resolve(responseText);
+			} else {
+				reject(Error('Status != 200, '));
 			}
-			else {
-				handleReply(replyObj);
-			}
-		}
-	};
-	xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
-	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	xhttp.send(jsonStr);
+		};
+		xhr.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
+		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhr.send(jsonStr);
+		console.log("Sent:" + jsonStr);
+	});
 }
 
-function handleReply(replyObj) {
-	switch(replayObj['Type']) {
+function handleReply(replyText) {
+	var replyObj = JSON.parse(replyText);
+	switch(replyObj['Type']) {
 		case 'AddQ':
 			if(replyObj["Question"]["QId"]){ // Make an Id field if absent
 				replyObj["Question"]["Id"] = replyObj["Question"]["QId"];
