@@ -110,7 +110,7 @@
 			 addRange.addEventListener("mouseup"  , function() { updateDiff()                      } );
 			searchSub.addEventListener("click"    , function() { displaySearchResults()            } );
 		searchReset.addEventListener("click"    , function() { clearForm("searchForm")           } );
-		searchReset.addEventListener("click"    , function() { resetDisplay("matchedList")       } );
+		searchReset.addEventListener("click"    , function() { clearMatches()       } );
 				testSub.addEventListener("click"    , function() { validateForm("AddTest", sendAddT) } );
 				testSub.addEventListener("click"    , function() { clearArray(iActiveQ)              } );
 				testSub.addEventListener("click"    , function() { updateDisplays(["previewList"])   } );

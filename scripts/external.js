@@ -1,100 +1,3 @@
-// Promise-chainable async request to server
-function sendRequest(reqType, option) {
-	return new Promise( (resolve, reject) => {
-		var xhr     = new XMLHttpRequest();
-		var jsonStr = buildPostBody(reqType);
-		xhr.onerror = () => { reject(Error('Network error.')); };
-		xhr.onload  = () => {
-			if (xhr.status === 200) {
-				console.log("Rcvd:"+xhr.responseText);
-				resolve(responseText);
-			} else {
-				reject(Error('Status != 200, '));
-			}
-		};
-		xhr.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
-		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		xhr.send(jsonStr);
-		console.log("Sent:" + jsonStr);
-	});
-}
-
-// Will handle reply from server upon Promise resolve
-function handleReply(replyText) {
-	var replyObj = JSON.parse(replyText);
-	switch(replyObj['type']) {
-		case 'AddQ':
-			if(replyObj['que']['qId']){ // Make an Id field if absent
-				replyObj['que']['id'] = replyObj['que']['qId'];
-			}
-			iLocalQ.push(replyObj['que']);  // Add to local Qs
-			iMatchQ.push(replyObj['que']); // Add to matched Qs
-			updateDisplays(["matchedList"]);     // Update matchedList
-			break;
-		case 'SearchQ':
-			var DBQ = replyObj['ques'];       // Extract all Qs
-			for(var i=0; i<DBQ.length; i++){       // Put all uniq Qs in
-				if(uniqQuestion(DBQ[i], iLocalQ)){ //   instructor's local
-					iLocalQ.push(DBQ[i]);          //   Q array
-				}
-			}
-			break;
-		case 'GetTests':
-			var localT = (source == "student")? sLocalT : iLocalT; 
-			var DBT = replyObj['tests'];          // Update the
-			for(var i=0; i<DBT.length; i++){      // relevant array
-				if(uniqQuestion(DBT[i], localT)){ // Only add
-					localT.push(DBT[i]);          // Uniq Qs
-				}
-			}
-			break;
-		case 'AddTest':
-			var newTest = replyObj['test'];
-			iLocalT.push(newTest);
-			break;
-	}
-}
-
-/* Creates the JSON obj that will encapsulate the request to the server
- * */
-function buildPostBody(type) {
-	var jsonObj;
-	switch(type) {
-		case 'AddQ':
-			jsonObj = {
-				'type'  : 'AddQ',
-				'desc'  : addDesc.value,
-				'topic' : addTopic.value,
-				'diff'  : addRange.value,
-				'tests' : getNonEmptyInputs('addTests'),
-			}
-			break;
-		case 'SearchQ':
-			jsonObj = {
-				'type'  : 'SearchQ',   // Build SearchQ req
-				'topic' : '',          // Don't filter by topic
-				'diffs' : [1,2,3,4,5], // Don't filter by diff
-				'keys'  : [],          // Don't filter by keyword
-			}
-			break;
-		case 'GetTests':
-			jsonObj = {
-				'type' : 'GetTests',                         // Send a GetTests req
-				'rels' : (source == 'student')? [1] : [0,1], // Only released tests for student
-			}
-			break;
-		case 'AddTest':
-			jsonObj = {
-				'type'      : 'AddTest',
-				'desc'      : testDesc.value,
-				'rel'       : getCheckedValue("testRelease"),
-				'ques' : getSelectedQs(),
-			}
-			break;
-	}
-	return JSON.stringify(jsonObj);
-}
-
 /* Appends one question to the end of the question display   */
 /* Takes a {Question} to add, & it's position on the display */
 function addQuestionToDisplay(Q, num) {
@@ -175,7 +78,15 @@ function displaySearchResults() {
 	var topic = searchTopic.value;
 	var diffs = getCheckedValues("searchDiff");
 	var keys  = getNonEmptyInputs("searchKeys");
-	iMatchQ  = localSearch(topic, diffs, keys);
+	var M  = localSearch(topic, diffs, keys);
+	// Add only uniq theseMatches to iMatchesQ
+	iMatchQ.length = 0;
+	for(var i=0; i<M.length; i++) {
+		if( uniqQuestion(M[i], iMatchQ) && uniqQuestion(M[i], iActiveQ) ){
+			iMatchQ.push(M[i]);
+		}
+	}
+	iMatchQ.sort( (a,b) => { a['id'] < b['id'] } );
 	updateDisplays(["matchedList"]);
 }
 
@@ -235,7 +146,6 @@ function validateTests(tests) {
  * listItemId: The id of the List Item that the question appears in */
 function toggleSelected(listItemId) {
 	var id = listItemId.substring(1);
-	console.log("Toggling: "+listItemId);
 	if(listItemId[0] == "t") {
 		// add test with id to sActiveT 
 		sActiveT.length = 0;
@@ -271,7 +181,6 @@ function toggleSelected(listItemId) {
 					iMatchQ.push(thisQ);
 				}
 				iActiveQ = removeItemFromArray(thisQ['id'], iActiveQ);
-				console.log(iActiveQ);
 				break;
 			}
 		}
@@ -320,23 +229,24 @@ function clearForm(formId) {
 	}
 }
 
+function clearMatches() {
+	iMatchQ.length = 0;
+	updateDisplays(["matchedList"]);
+}
+
 /* Resets display and clears related array 
  * Display elements have a title, and an unorder list of Qs */
 function resetDisplay(displayId) {
-	console.log(displayId);
 	var display = document.getElementById(displayId);
 	var ul      = document.createElement("UL");
 	if( displayId === "activeList" ){
 		ul.setAttribute("id", "pList");
-		// ul.appendChild(document.createTextNode("Selected"));
 	} 
 	else if( displayId === "matchedList" ) {
 		ul.setAttribute("id", "mList");
-		// ul.appendChild(document.createTextNode("Matches"));
 	}
 	else if( displayId === "sTestNav" ) {
 		ul.setAttribute("id", "tList");
-		// ul.appendChild(document.createTextNode('tests'));
 	}
 	else if( displayId === "sTestDisp" ) {
 		if(sActiveT.length == 1) {
@@ -371,6 +281,7 @@ function updateDisplays(displayIdArr) {
 	}
 } 
 
+/* Addes a toggle-able item to the display */
 function addItemToDisplay(newItem, displayId, num) {
 	//console.log("addItemToDisplay");
 	if(displayId === "matchedList" || displayId === "activeList") {
