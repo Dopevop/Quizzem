@@ -235,6 +235,7 @@ function validateTests(tests) {
  * listItemId: The id of the List Item that the question appears in */
 function toggleSelected(listItemId) {
 	var id = listItemId.substring(1);
+	console.log("Toggling: "+listItemId);
 	if(listItemId[0] == "t") {
 		// add test with id to sActiveT 
 		sActiveT.length = 0;
@@ -259,9 +260,9 @@ function toggleSelected(listItemId) {
 				break;
 			}
 		}
-		updateDisplays(["previewList", "matchedList"]);
+		updateDisplays(["activeList", "matchedList"]);
 	}
-	else if ( listItemId[0] == "p") { // Selected Item is a previewList question
+	else if ( listItemId[0] == "a") { // Selected Item is a activeList question
 		// add Q to iMatchQ, remove from iActiveQ
 		for(var i=0; i<iActiveQ.length; i++){
 			var thisQ = iActiveQ[i];
@@ -270,10 +271,11 @@ function toggleSelected(listItemId) {
 					iMatchQ.push(thisQ);
 				}
 				iActiveQ = removeItemFromArray(thisQ['id'], iActiveQ);
+				console.log(iActiveQ);
 				break;
 			}
 		}
-		updateDisplays(["previewList", "matchedList"]);
+		updateDisplays(["activeList", "matchedList"]);
 	}
 	else {
 		//console.log("Shouldn't have gotten here");
@@ -321,10 +323,10 @@ function clearForm(formId) {
 /* Resets display and clears related array 
  * Display elements have a title, and an unorder list of Qs */
 function resetDisplay(displayId) {
-	//console.log("resetDisplay");
+	console.log(displayId);
 	var display = document.getElementById(displayId);
 	var ul      = document.createElement("UL");
-	if( displayId === "previewList" ){
+	if( displayId === "activeList" ){
 		ul.setAttribute("id", "pList");
 		// ul.appendChild(document.createTextNode("Selected"));
 	} 
@@ -371,7 +373,7 @@ function updateDisplays(displayIdArr) {
 
 function addItemToDisplay(newItem, displayId, num) {
 	//console.log("addItemToDisplay");
-	if(displayId === "matchedList" || displayId === "previewList") {
+	if(displayId === "matchedList" || displayId === "activeList") {
 		var item      = document.createElement("LI");
 		var descText  = document.createTextNode(newItem['desc']);
 		var diffText  = document.createTextNode("Difficulty: "+convertDiffFormat(newItem['diff']));
@@ -441,8 +443,8 @@ function getIdClassStrObj(newItem, displayId) {
 		strObj['idStr']    = "m" + newItem['id'];
 		strObj['classStr'] = "matched";
 	}
-	else if(displayId === "previewList") {
-		strObj['idStr']    = "p" + newItem['id'];
+	else if(displayId === "activeList") {
+		strObj['idStr']    = "a" + newItem['id'];
 		strObj['classStr'] = "selected";
 	}
 	else if(displayId === "sTestNav") {
@@ -561,10 +563,9 @@ function addObjsToArray(objs, array){
 
 /* Removes question with qId from the array qArr */
 function removeItemFromArray(id, A) {
-	//console.log("removeItemFromArray");
-	idStr = (A['id'])? 'id':'qId';
+	// idStr = (A['id'])? 'id':'id';
 	for(var i=0; i<A.length; i++){
-		if(A[i][idStr] === id) {
+		if(A[i]['id'] === id) {
 			A.splice(i, 1);
 			break;
 		}
@@ -578,7 +579,7 @@ function getRelArr(displayId) {
 	var relArr;
 	if(displayId === "matchedList"){
 		relArr = iMatchQ;
-	} else if(displayId === "previewList") {
+	} else if(displayId === "activeList") {
 		relArr = iActiveQ;
 	} else if(displayId === "sTestNav") {
 		relArr = sLocalT;
