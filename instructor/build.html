@@ -12,29 +12,29 @@
 <body>
   <header>
     <main>
-      <nav><h2><a href='welcome.html'>Quizzem</a></h2></nav>
-      <section><h4>Header Section</h4></section>
-      <aside>Header Aside</aside>
+      <nav id="HN"><h2><a href='welcome.html'>Quizzem</a></h2></nav>
+      <section id="HS"><h4>Header Section</h4></section>
+      <aside id="HA">Header Aside</aside>
     </main>
   </header>
   <main class="clearfix">
-    <!-- The navigation bar for the page -->
-    <nav class=box>
+
+    <nav id="MN" class=box>
       <ul id="navList">
         <li><a href='build.html'>Build</a></li>
         <li>Edit</li>
         <li>Review</li>
       </ul>
     </nav>
-    <!-- The list of questions for the page -->
-    <section id="mainDisplay" class="box">
-      <ul id="previewList"> <!-- Selected Q's appear above matched Q's -->
+
+    <section id="MS" class="box">
+      <ul id="activeList"> 
       </ul>
       <ul id="matchedList">
       </ul>
     </section>
-    <!-- The forms for the page -->
-    <aside id="quizBuilder" class="box">
+
+    <aside id="MA" class="box">
       <form id="testForm">
         <fieldset>
           <legend>Create Exam</legend>
@@ -93,6 +93,7 @@
           <button id="addSub"   type="button">Submit</button> 
         </fieldset>
       </form>	
+
     </aside>
   </main>
 	<!-- <script type="text/javascript" src="../scripts/external.js"></script> -->
