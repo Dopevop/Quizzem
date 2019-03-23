@@ -1,35 +1,35 @@
 
 // var localQ = (option == "student")? studLocalQ : instLocalQ;
-// if(replyObj["Type"] === "AddQ") {
+// if(replyObj['type'] === "AddQ") {
 // 	alert("Question added successfully!");
-// 	localQ.push(replyObj["Question"]);
-// 	matchedQ.push(replyObj["Question"]);
+// 	localQ.push(replyObj['que']);
+// 	matchedQ.push(replyObj['que']);
 // 	updateDisplays(["matchedList"]);
 // }
-// else if(replyObj["Type"] === "SearchQ") {
+// else if(replyObj['type'] === "SearchQ") {
 // 	// Loop through DB Q's, adding each to local Q's
-// 	var DBQ = replyObj["Questions"];
+// 	var DBQ = replyObj['ques'];
 // 	for(var i=0; i<DBQ.length; i++){
 // 		if(uniqQuestion(DBQ[i], localQ)){
 // 			localQ.push(DBQ[i]);
 // 		}
 // 	}
 // }
-// else if(replyObj["Type"] === "AddTest") {
+// else if(replyObj['type'] === "AddTest") {
 // 	alert("Exam added successfully!");
 // }
-// else if(replyObj["Type"] === "GetTests") {
+// else if(replyObj['type'] === "GetTests") {
 // 	if(option == "student") {
 // 		clearArray(studLocalT);
 // 		clearArray(studAvailT);
-// 		addObjsToArray(replyObj["Tests"], studLocalT);
-// 		addObjsToArray(replyObj["Tests"], studAvailT);
+// 		addObjsToArray(replyObj['tests'], studLocalT);
+// 		addObjsToArray(replyObj['tests'], studAvailT);
 // 		updateDisplays( ["studTestNav", "studTestDisplay"] );
 // 	}
 // }
 // var replyObj = JSON.parse(xhr.responseText);
-// if( replyObj["Error"] != 0 ) {
-// 	console.log("Error: " + replyObj["Error"]);
+// if( replyObj['Error'] != 0 ) {
+// 	console.log("Error: " + replyObj['Error']);
 // }
 // else {
 // 	handleReply(replyObj);
@@ -56,17 +56,17 @@ function sendRequest(reqType, option) {
 
 function handleReply(replyText) {
 	var replyObj = JSON.parse(replyText);
-	switch(replyObj['Type']) {
+	switch(replyObj['type']) {
 		case 'AddQ':
-			if(replyObj["Question"]["QId"]){ // Make an Id field if absent
-				replyObj["Question"]["Id"] = replyObj["Question"]["QId"];
+			if(replyObj['que']['qId']){ // Make an Id field if absent
+				replyObj['que']['id'] = replyObj['que']['qId'];
 			}
-			iLocalQ.push(replyObj["Question"]);  // Add to local Qs
-			iMatchQ.push(replyObj["Question"]); // Add to matched Qs
+			iLocalQ.push(replyObj['que']);  // Add to local Qs
+			iMatchQ.push(replyObj['que']); // Add to matched Qs
 			updateDisplays(["matchedList"]);     // Update matchedList
 			break;
 		case 'SearchQ':
-			var DBQ = replyObj["Questions"];       // Extract all Qs
+			var DBQ = replyObj['ques'];       // Extract all Qs
 			for(var i=0; i<DBQ.length; i++){       // Put all uniq Qs in
 				if(uniqQuestion(DBQ[i], iLocalQ)){ //   instructor's local
 					iLocalQ.push(DBQ[i]);          //   Q array
@@ -75,7 +75,7 @@ function handleReply(replyText) {
 			break;
 		case 'GetTests':
 			var localT = (source == "student")? sLocalT : iLocalT; 
-			var DBT = replyObj["Tests"];          // Update the
+			var DBT = replyObj['tests'];          // Update the
 			for(var i=0; i<DBT.length; i++){      // relevant array
 				if(uniqQuestion(DBT[i], localT)){ // Only add
 					localT.push(DBT[i]);          // Uniq Qs
@@ -83,7 +83,7 @@ function handleReply(replyText) {
 			}
 			break;
 		case 'AddTest':
-			var newTest = replyObj["Test"];
+			var newTest = replyObj['test'];
 			iLocalT.push(newTest);
 			break;
 	}
@@ -96,33 +96,33 @@ function buildPostBody(type) {
 	switch(type) {
 		case 'AddQ':
 			jsonObj = {
-				'Type'  : 'AddQ',
-				'Desc'  : addDesc.value,
-				'Topic' : addTopic.value,
-				'Diff'  : addRange.value,
-				'Tests' : getNonEmptyInputs('addTests'),
+				'type'  : 'AddQ',
+				'desc'  : addDesc.value,
+				'topic' : addTopic.value,
+				'diff'  : addRange.value,
+				'tests' : getNonEmptyInputs('addTests'),
 			}
 			break;
 		case 'SearchQ':
 			jsonObj = {
-				'Type'  : 'SearchQ',   // Build SearchQ req
-				'Topic' : '',          // Don't filter by topic
-				'Diffs' : [1,2,3,4,5], // Don't filter by diff
-				'Keys'  : [],          // Don't filter by keyword
+				'type'  : 'SearchQ',   // Build SearchQ req
+				'topic' : '',          // Don't filter by topic
+				'diffs' : [1,2,3,4,5], // Don't filter by diff
+				'keys'  : [],          // Don't filter by keyword
 			}
 			break;
 		case 'GetTests':
 			jsonObj = {
-				'Type' : 'GetTests',                         // Send a GetTests req
-				'Rels' : (source == 'student')? [1] : [0,1], // Only released tests for student
+				'type' : 'GetTests',                         // Send a GetTests req
+				'rels' : (source == 'student')? [1] : [0,1], // Only released tests for student
 			}
 			break;
 		case 'AddTest':
 			jsonObj = {
-				'Type'      : 'AddTest',
-				'Desc'      : testDesc.value,
-				'Rel'       : getCheckedValue("testRelease"),
-				'Questions' : getSelectedQs(),
+				'type'      : 'AddTest',
+				'desc'      : testDesc.value,
+				'rel'       : getCheckedValue("testRelease"),
+				'ques' : getSelectedQs(),
 			}
 			break;
 	}
@@ -135,10 +135,10 @@ function buildPostBody(type) {
 function sendGetQ() {
 	var xhttp   = new XMLHttpRequest();
 	var jsonObj = {
-		"Type"  : "SearchQ",   // Build SearchQ req
-		"Topic" : "",          // Don't filter by topic
-		"Diffs" : [1,2,3,4,5], // Don't filter by diff
-		"Keys"  : [],          // Don't filter by keyword
+		'type'  : "SearchQ",   // Build SearchQ req
+		'topic' : "",          // Don't filter by topic
+		'diffs' : [1,2,3,4,5], // Don't filter by diff
+		'keys'  : [],          // Don't filter by keyword
 	}
 	var jsonStr = JSON.stringify(jsonObj);
 	console.log("Sent:"+jsonStr);
@@ -146,11 +146,11 @@ function sendGetQ() {
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
 			console.log("Rcvd:"+xhttp.responseText);
 			var replyObj = JSON.parse(xhttp.responseText);
-			if( replyObj["Error"] != 0 ) {
-				console.log("Error: " + replyObj["Error"]);
+			if( replyObj['Error'] != 0 ) {
+				console.log("Error: " + replyObj['Error']);
 			}
 			else {
-				var DBQ = replyObj["Questions"];       // Extract all Qs
+				var DBQ = replyObj['ques'];       // Extract all Qs
 				for(var i=0; i<DBQ.length; i++){       // Put all uniq Qs in
 					if(uniqQuestion(DBQ[i], iLocalQ)){ //   instructor's local
 						iLocalQ.push(DBQ[i]);          //   Q array
@@ -175,8 +175,8 @@ function sendGetQ() {
 function sendGetTests(source) {
 	var xhttp   = new XMLHttpRequest();
 	var jsonObj = {
-		"Type" : "GetTests",                         // Send a GetTests req
-		"Rels" : (source == "student")? [1, 0] : [0,1], // Only released tests for student
+		'type' : "GetTests",                         // Send a GetTests req
+		'rels' : (source == "student")? [1, 0] : [0,1], // Only released tests for student
 	}
 	var jsonStr = JSON.stringify(jsonObj);
 	console.log("Sent:"+jsonStr);
@@ -184,12 +184,12 @@ function sendGetTests(source) {
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
 			console.log("Rcvd:"+xhttp.responseText);
 			var replyObj = JSON.parse(xhttp.responseText);
-			if( replyObj["Error"] != 0 ) {
-				console.log("Error: " + replyObj["Error"]);
+			if( replyObj['Error'] != 0 ) {
+				console.log("Error: " + replyObj['Error']);
 			}
 			else {
 				var localT = (source == "student")? sLocalT : iLocalT; 
-				var DBT = replyObj["Tests"];          // Update the
+				var DBT = replyObj['tests'];          // Update the
 				for(var i=0; i<DBT.length; i++){      // relevant array
 					if(uniqQuestion(DBT[i], localT)){ // Only add
 						localT.push(DBT[i]);          // Uniq Qs
@@ -213,11 +213,11 @@ function sendGetTests(source) {
 function sendAddQ() {
 	var xhttp   = new XMLHttpRequest();
 	var jsonObj = {
-		"Type"  : "AddQ",
-		"Desc"  : addDesc.value,
-		"Topic" : addTopic.value,
-		"Diff"  : addRange.value,
-		"Tests" : getNonEmptyInputs("addTests"),
+		'type'  : "AddQ",
+		'desc'  : addDesc.value,
+		'topic' : addTopic.value,
+		'diff'  : addRange.value,
+		'tests' : getNonEmptyInputs("addTests"),
 	}
 	var jsonStr = JSON.stringify(jsonObj);
 	console.log("Sent:"+jsonStr);
@@ -225,15 +225,15 @@ function sendAddQ() {
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
 			console.log("Rcvd:"+xhttp.responseText);
 			var replyObj = JSON.parse(xhttp.responseText);
-			if( replyObj["Error"] != 0 ) {
-				console.log("Error: " + replyObj["Error"]);
+			if( replyObj['Error'] != 0 ) {
+				console.log("Error: " + replyObj['Error']);
 			}
 			else {
-				if(replyObj["Question"]["QId"]){ // Make an Id field if absent
-					replyObj["Question"]["Id"] = replyObj["Question"]["QId"];
+				if(replyObj['que']['qId']){ // Make an Id field if absent
+					replyObj['que']['id'] = replyObj['que']['qId'];
 				}
-				iLocalQ.push(replyObj["Question"]);  // Add to local Qs
-				iMatchQ.push(replyObj["Question"]); // Add to matched Qs
+				iLocalQ.push(replyObj['que']);  // Add to local Qs
+				iMatchQ.push(replyObj['que']); // Add to matched Qs
 				updateDisplays(["matchedList"]);     // Update matchedList
 			}
 		}
@@ -249,10 +249,10 @@ function sendAddQ() {
 function sendAddT() {
 	var xhttp   = new XMLHttpRequest();
 	var jsonObj = {
-		"Type"      : "AddTest",
-		"Desc"      : testDesc.value,
-		"Rel"       : getCheckedValue("testRelease"),
-		"Questions" : getSelectedQs(),
+		'type'      : "AddTest",
+		'desc'      : testDesc.value,
+		'rel'       : getCheckedValue("testRelease"),
+		'ques' : getSelectedQs(),
 	}
 	var jsonStr = JSON.stringify(jsonObj);
 	console.log("Sent:"+jsonStr);
@@ -260,11 +260,11 @@ function sendAddT() {
 		if (xhttp.readyState == 4 && xhttp.status == 200) {
 			console.log("Rcvd:"+xhttp.responseText);
 			var replyObj = JSON.parse(xhttp.responseText);
-			if( replyObj["Error"] != 0 ) {
-				console.log("Error: " + replyObj["Error"]);
+			if( replyObj['Error'] != 0 ) {
+				console.log("Error: " + replyObj['Error']);
 			}
 			else {
-				var newTest = replyObj["Test"];
+				var newTest = replyObj['test'];
 				iLocalT.push(newTest);
 			}
 		}
@@ -291,7 +291,7 @@ function addQuestionToDisplay(Q, num) {
 	 rightMarg.setAttribute("class", "qRightMargin");
 	 rightMarg.appendChild(ptsText);
 	      desc.setAttribute("class", "qDesc");
-	      desc.innerHTML = Q["Desc"];
+	      desc.innerHTML = Q['desc'];
 	    answer.setAttribute("class", "qAns");
 	      qDiv.appendChild(leftMarg);
 	      qDiv.appendChild(desc);
@@ -321,13 +321,13 @@ function localSearch(topic, diffs, keys) {
 	var matches = [];
 	for(var i=0; i<iLocalQ.length; i++){
 		var thisQ = iLocalQ[i];
-		var thisTopic = thisQ["Topic"].toLowerCase();
+		var thisTopic = thisQ['topic'].toLowerCase();
 		if(topic === "" || thisTopic.match(topic.toLowerCase())){
 			// Topic matches, now check Diffs
-			var thisDiff = thisQ["Diff"];
+			var thisDiff = thisQ['diff'];
 			if( inArr(thisDiff, diffs) ){
 				// Topic and Diff matches, check Keys
-				var thisDesc = thisQ["Desc"].toLowerCase();
+				var thisDesc = thisQ['desc'].toLowerCase();
 				if(keys.length !== 0){
 					for(var j=0; j<keys.length; j++) {
 						var thisKey = keys[j].toLowerCase();
@@ -419,7 +419,7 @@ function toggleSelected(listItemId) {
 		sActiveT.length = 0;
 		for(var i=0; i<sLocalT.length; i++) {
 			var thisT = sLocalT[i];
-			if(thisT["Id"] == id) {
+			if(thisT['id'] == id) {
 				sActiveT.push(thisT);
 				break;
 			}
@@ -430,11 +430,11 @@ function toggleSelected(listItemId) {
 		// add Q to iActiveQ, remove from iMatchQ
 		for(var i=0; i<iMatchQ.length; i++){
 			var thisQ = iMatchQ[i];
-			if(thisQ["Id"] == id){ // Check if found the clicked on Q
+			if(thisQ['id'] == id){ // Check if found the clicked on Q
 				if(uniqQuestion(thisQ, iActiveQ)){
 					iActiveQ.push(thisQ);
 				}
-				iMatchQ = removeItemFromArray(thisQ["Id"], iMatchQ);
+				iMatchQ = removeItemFromArray(thisQ['id'], iMatchQ);
 				break;
 			}
 		}
@@ -444,11 +444,11 @@ function toggleSelected(listItemId) {
 		// add Q to iMatchQ, remove from iActiveQ
 		for(var i=0; i<iActiveQ.length; i++){
 			var thisQ = iActiveQ[i];
-			if(thisQ["Id"] == id){ // Check if found the clicked on Q
+			if(thisQ['id'] == id){ // Check if found the clicked on Q
 				if(uniqQuestion(thisQ, iMatchQ)){
 					iMatchQ.push(thisQ);
 				}
-				iActiveQ = removeItemFromArray(thisQ["Id"], iActiveQ);
+				iActiveQ = removeItemFromArray(thisQ['id'], iActiveQ);
 				break;
 			}
 		}
@@ -489,7 +489,7 @@ function clearForm(formId) {
 	// Reset all modular elements
 	for(var i=0; i<elems.length; i++) {
 		var classes = elems[i].classList;
-		if(classes.contains("tests")) {
+		if(classes.contains('tests')) {
 			resetModal("Test Cases", elems[i].id, 'addInput("'+elems[i].id+'")');
 		} else {
 			resetModal("Keywords"  , elems[i].id, 'addInput("'+elems[i].id+'")');
@@ -513,18 +513,18 @@ function resetDisplay(displayId) {
 	}
 	else if( displayId === "sTestNav" ) {
 		ul.setAttribute("id", "tList");
-		// ul.appendChild(document.createTextNode("Tests"));
+		// ul.appendChild(document.createTextNode('tests'));
 	}
 	else if( displayId === "sTestDisp" ) {
 		if(sActiveT.length == 1) {
 			// A test has been selected
 			ul.setAttribute("id", "qList");
-			ul.appendChild(document.createTextNode(sActiveT["Desc"]));
+			ul.appendChild(document.createTextNode(sActiveT['desc']));
 			ul.appendChild(document.createTextNode("sActiveT.len == 1"));
 		} 
 		else {
 			ul.setAttribute("id", "info");
-			ul.appendChild(document.createTextNode(sActiveT["Desc"]));
+			ul.appendChild(document.createTextNode(sActiveT['desc']));
 			ul.appendChild(document.createTextNode("sActiveT.len != 1"));
 		}
 	}
@@ -552,13 +552,13 @@ function addItemToDisplay(newItem, displayId, num) {
 	//console.log("addItemToDisplay");
 	if(displayId === "matchedList" || displayId === "previewList") {
 		var item      = document.createElement("LI");
-		var descText  = document.createTextNode(newItem["Desc"]);
-		var diffText  = document.createTextNode("Difficulty: "+convertDiffFormat(newItem["Diff"]));
-		var topicText = document.createTextNode("Topic: "+newItem["Topic"]);
+		var descText  = document.createTextNode(newItem['desc']);
+		var diffText  = document.createTextNode("Difficulty: "+convertDiffFormat(newItem['diff']));
+		var topicText = document.createTextNode("Topic: "+newItem['topic']);
 		var strObj    = getIdClassStrObj(newItem, displayId);
-		item.setAttribute("id", strObj["idStr"]);
-		item.setAttribute("class", strObj["classStr"]);
-		item.addEventListener("click", function() { toggleSelected( strObj["idStr"] ) });
+		item.setAttribute("id", strObj['idStr']);
+		item.setAttribute("class", strObj['classStr']);
+		item.addEventListener("click", function() { toggleSelected( strObj['idStr'] ) });
 		item.appendChild(descText);
 		item.appendChild(document.createElement("BR"));
 		item.appendChild(diffText);
@@ -567,16 +567,19 @@ function addItemToDisplay(newItem, displayId, num) {
 	}
 	else if(displayId === "sTestNav") {
 		var item     = document.createElement("LI");
-		var descText = document.createTextNode(newItem["Desc"]);
-		var numQText = document.createTextNode(""+newItem["Questions"].length+" Questions");
+		var descText = document.createTextNode(newItem['desc']);
+		var numQText = document.createTextNode(""+newItem['ques'].length+" Questions");
 		var strObj   = getIdClassStrObj(newItem, displayId);
-		item.setAttribute("id", strObj["idStr"]);
-		item.setAttribute("class", strObj["classStr"]);
+		item.setAttribute("id", strObj['idStr']);
+		item.setAttribute("class", strObj['classStr']);
+		// var idStr, classStr = getIdClassStrObj(newItem, displayId); <-- Destructuring an obj
+		// item.setAttribute('id', idStr);
+		// item.setAttribute("class", classStr);
 		item.appendChild(descText);
 		item.appendChild(document.createElement("BR"));
 		item.appendChild(numQText);
 		item.appendChild(document.createElement("BR"));
-		item.addEventListener("click", function() { toggleSelected(strObj["idStr"])	});
+		item.addEventListener("click", function() { toggleSelected(strObj['idStr'])	});
 	} 
 	else if(displayId === "sTestDisp") {
 		var item      = document.createElement("LI");
@@ -594,7 +597,7 @@ function addItemToDisplay(newItem, displayId, num) {
 		rightMarg.setAttribute("class", "qRightMargin");
 		rightMarg.appendChild(ptsText);
 			 desc.setAttribute("class", "qDesc");
-			 desc.innerHTML = newItem["Desc"];
+			 desc.innerHTML = newItem['desc'];
 		   answer.setAttribute("class", "qAns");
 		     qDiv.appendChild(leftMarg);
 		     qDiv.appendChild(desc);
@@ -614,20 +617,20 @@ function getIdClassStrObj(newItem, displayId) {
 	//console.log("getIdClassStrObj");
 	var strObj = [];
 	     if(displayId === "matchedList") {
-		strObj["idStr"]    = "m" + newItem["Id"];
-		strObj["classStr"] = "matched";
+		strObj['idStr']    = "m" + newItem['id'];
+		strObj['classStr'] = "matched";
 	}
 	else if(displayId === "previewList") {
-		strObj["idStr"]    = "p" + newItem["Id"];
-		strObj["classStr"] = "selected";
+		strObj['idStr']    = "p" + newItem['id'];
+		strObj['classStr'] = "selected";
 	}
 	else if(displayId === "sTestNav") {
-		strObj["idStr"]    = "t" + newItem["Id"];
-		strObj["classStr"] = "available";
+		strObj['idStr']    = "t" + newItem['id'];
+		strObj['classStr'] = "available";
 	}
 	else {
-		strObj["idStr"] = "?" + newItem["Id"];
-		strObj["classStr"] = "?" + "unknown";
+		strObj['idStr'] = "?" + newItem['id'];
+		strObj['classStr'] = "?" + "unknown";
 	}
 	return strObj;
 }
@@ -694,7 +697,7 @@ function getSelectedQs() {
 function getSelectedIds(){
 	var ids = [];
 	for(var i=0; i<iActiveQ.length; i++){
-		ids.push(iActiveQ[i]["Id"]);
+		ids.push(iActiveQ[i]['id']);
 	}
 	return ids;
 }
@@ -738,7 +741,7 @@ function addObjsToArray(objs, array){
 /* Removes question with qId from the array qArr */
 function removeItemFromArray(id, A) {
 	//console.log("removeItemFromArray");
-	idStr = (A["Id"])? "Id":"Id";
+	idStr = (A['id'])? 'id':'qId';
 	for(var i=0; i<A.length; i++){
 		if(A[i][idStr] === id) {
 			A.splice(i, 1);
@@ -761,15 +764,15 @@ function getRelArr(displayId) {
 	} else if(displayId === "sTestDisp") {
 		relArr = [];
 		if(sActiveT.length == 1){
-			relArr = sActiveT["Questions"];
+			relArr = sActiveT['ques'];
 		} 
 		else {
-			relArr = [{ "Desc":"sActiveT.len != 1", "Topic":"Fail", "Id":"Fail", "Diff":"Fail",
-						"Tests":["a()=b", "a()=c"] }];
+			relArr = [{ 'desc':"sActiveT.len != 1", 'topic':"Fail", 'id':"Fail", 'diff':"Fail",
+						'tests':["a()=b", "a()=c"] }];
 		}
 	} else {
-		relArr = [{ "Desc":"Invalid Display Id", "Topic":"Fail", "Id":"Fail", "Diff":"Fail",
-					"Tests":["a()=b", "a()=c"] }];
+		relArr = [{ 'desc':"Invalid Display Id", 'topic':"Fail", 'id':"Fail", 'diff':"Fail",
+					'tests':["a()=b", "a()=c"] }];
 	}
 	return relArr;
 }
@@ -779,9 +782,9 @@ function getRelArr(displayId) {
 function uniqQuestion(question, qArr){
 	//console.log("uniqQuestion");
 	var uniq = true;
-	var thisId = question["Id"];
+	var thisId = question['id'];
 	for(var i=0; i<qArr.length; i++){
-		if( qArr[i]["Id"] === thisId ) {
+		if( qArr[i]['id'] === thisId ) {
 			uniq = false;
 			break;
 		}
