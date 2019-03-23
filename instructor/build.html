@@ -105,15 +105,15 @@
 		var iLocalT  = [];
 		
 		/* Adding event listeners to submit and clear buttons  */
-				 addSub.addEventListener("click"    , function() { validateForm("AddQ", sendAddQ)    } );
-				addForm.addEventListener("mousemove", function() { updateDiff()                      } );
-			 addRange.addEventListener("mouseup"  , function() { updateDiff()                      } );
-			searchSub.addEventListener("click"    , function() { displaySearchResults()            } );
-		searchReset.addEventListener("click"    , function() { clearForm("searchForm")           } );
-		searchReset.addEventListener("click"    , function() { clearMatches()       } );
-				testSub.addEventListener("click"    , function() { validateForm("AddTest", sendAddT) } );
-				testSub.addEventListener("click"    , function() { clearArray(iActiveQ)              } );
-				testSub.addEventListener("click"    , function() { updateDisplays(["previewList"])   } );
+				 addSub.addEventListener("click"    , () => { validateForm("AddQ", sendAddQ)    } );
+        addForm.addEventListener("mousemove", () => { updateDiff()                      } );
+       addRange.addEventListener("mouseup"  , () => { updateDiff()                      } );
+      searchSub.addEventListener("click"    , () => { displaySearchResults()            } );
+    searchReset.addEventListener("click"    , () => { clearForm("searchForm")           } );
+    searchReset.addEventListener("click"    , () => { clearMatches()                    } );
+        testSub.addEventListener("click"    , () => { validateForm("AddTest", sendAddT) } );
+        testSub.addEventListener("click"    , () => { clearArray(iActiveQ)              } );
+        testSub.addEventListener("click"    , () => { updateDisplays(["previewList"])   } );
 
 		/* Initializes the modular elements */
 		resetModal("Test Cases", "addTests"  , 'addInput("addTests")');

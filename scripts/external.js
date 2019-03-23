@@ -74,12 +74,10 @@ function localSearch(topic, diffs, keys) {
  * Updates the iMatchQ array with Q's matching new search criteria
  * Displays the iMatchQ in the matches section */
 function displaySearchResults() {
-	//console.log("displaySearchResults");
 	var topic = searchTopic.value;
 	var diffs = getCheckedValues("searchDiff");
 	var keys  = getNonEmptyInputs("searchKeys");
 	var M  = localSearch(topic, diffs, keys);
-	// Add only uniq theseMatches to iMatchesQ
 	iMatchQ.length = 0;
 	for(var i=0; i<M.length; i++) {
 		if( uniqQuestion(M[i], iMatchQ) && uniqQuestion(M[i], iActiveQ) ){
@@ -92,7 +90,6 @@ function displaySearchResults() {
 
 /* Checks that all fields are correct in form being submitted */
 function validateForm(type, callback) {
-	//console.log("validateForm");
 	switch(type) {
 		case "AddQ":
 			if(nonEmpty("addDesc") && nonEmpty("addTopic")) {
@@ -127,15 +124,10 @@ function validateForm(type, callback) {
 /* Makes sure there are at least two non-empty tests
  * Makes sure all tests are in the form of func([a][,b]...)=answer */
 function validateTests(tests) {
-	//console.log("validateTests");
-	if(tests.length < 2){
-		//console.log("Too few tests");
-		return false;
-	}
+	if(tests.length < 2) return false;	
 	var pattern = /[a-zA-Z][a-zA-Z0-9]*\( *([^, (]+ *(, *[^,( ]+)*)|\) *\) *= *.*/;
 	for(var i=0; i<tests.length; i++){
 		if(!tests[i].match(pattern)){
-			//console.log("test " + i + " {"+ tests[i] +"} didn't match pattern");
 			return false;
 		}
 	}
