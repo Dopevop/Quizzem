@@ -1,39 +1,4 @@
-
-// var localQ = (option == "student")? studLocalQ : instLocalQ;
-// if(replyObj['type'] === "AddQ") {
-// 	alert("Question added successfully!");
-// 	localQ.push(replyObj['que']);
-// 	matchedQ.push(replyObj['que']);
-// 	updateDisplays(["matchedList"]);
-// }
-// else if(replyObj['type'] === "SearchQ") {
-// 	// Loop through DB Q's, adding each to local Q's
-// 	var DBQ = replyObj['ques'];
-// 	for(var i=0; i<DBQ.length; i++){
-// 		if(uniqQuestion(DBQ[i], localQ)){
-// 			localQ.push(DBQ[i]);
-// 		}
-// 	}
-// }
-// else if(replyObj['type'] === "AddTest") {
-// 	alert("Exam added successfully!");
-// }
-// else if(replyObj['type'] === "GetTests") {
-// 	if(option == "student") {
-// 		clearArray(studLocalT);
-// 		clearArray(studAvailT);
-// 		addObjsToArray(replyObj['tests'], studLocalT);
-// 		addObjsToArray(replyObj['tests'], studAvailT);
-// 		updateDisplays( ["studTestNav", "studTestDisplay"] );
-// 	}
-// }
-// var replyObj = JSON.parse(xhr.responseText);
-// if( replyObj['Error'] != 0 ) {
-// 	console.log("Error: " + replyObj['Error']);
-// }
-// else {
-// 	handleReply(replyObj);
-// }
+// Promise-chainable async request to server
 function sendRequest(reqType, option) {
 	return new Promise( (resolve, reject) => {
 		var xhr     = new XMLHttpRequest();
@@ -54,6 +19,7 @@ function sendRequest(reqType, option) {
 	});
 }
 
+// Will handle reply from server upon Promise resolve
 function handleReply(replyText) {
 	var replyObj = JSON.parse(replyText);
 	switch(replyObj['type']) {
