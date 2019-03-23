@@ -4,7 +4,7 @@ let iLocalQ  = [q0,q1,q2,q3,q4]; // Holds all questions
 let iLocalT  = [];
 
 /* Get all questions in database */
-sendGetQ();
+// sendGetQ();
 
 /* Adding event listeners to submit and clear buttons  */
 	 addSub.addEventListener("click"    , function() { validateForm("AddQ", sendAddQ)    } );
