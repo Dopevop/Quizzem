@@ -38,54 +38,54 @@ var t0 = {
 	'desc'      : "Test One",
 	'rel'       : 1,
 	'sub'       : 0,
-	'questions' : [q1],
+	'questions' : [q0],
 };
 var t1 = {
 	'id'        : 1001,
 	'desc'      : "Test Two",
 	'rel'       : 1,
 	'sub'       : 0,
-	'questions' : [q1, q2],
+	'questions' : [q0, q1],
 };
 var t2 = {
 	'id'        : 1002,
 	'desc'      : "Test Three",
 	'rel'       : 1,
 	'sub'       : 0,
-	'questions' : [q1, q2, q3],
+	'questions' : [q0, q1, q2],
 };
 var t3 = {
 	'id'        : 1003,
 	'desc'      : "Test Four",
 	'rel'       : 1,
 	'sub'       : 0,
-	'questions' : [q1, q2, q3, q4],
+	'questions' : [q0, q1, q2, q3],
 };
 var t4 = {
 	'id'        : 1004,
 	'desc'      : "Test Five",
 	'rel'       : 1,
 	'sub'       : 0,
-	'questions' : [q1, q2, q3, q4, q5],
+	'questions' : [q0, q1, q2, q3, q4],
 };
 var t5 = {
 	'id'        : 1005,
 	'desc'      : "Test Six",
 	'rel'       : 1,
 	'sub'       : 1,
-	'questions' : [q2, q3, q4, q5],
+	'questions' : [q1, q2, q3, q4],
 };
 var t6 = {
 	'id'        : 1006,
 	'desc'      : "Test Seven",
 	'rel'       : 0,
 	'sub'       : 1,
-	'questions' : [q3, q4, q5],
+	'questions' : [q2, q3, q4],
 };
 var t7 = {
 	'id'        : 1007,
 	'desc'      : "Test Eight",
 	'rel'       : 0,
 	'sub'       : 0,
-	'questions' : [q4, q5],
+	'questions' : [q3, q4],
 };
