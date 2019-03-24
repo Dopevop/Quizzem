@@ -223,7 +223,7 @@ function updateDisplays(displayIdArr) {
 /* Addes a toggle-able item to the display */
 function addItemToDisplay(newItem, displayId, num) {
 	//console.log("addItemToDisplay");
-	if(displayId === "matchedList" || displayId === "activeList") {
+	if(displayId === "matchedList" /*|| displayId === "activeList"*/) {
 		var item      = document.createElement("LI");
 		var descText  = document.createTextNode(newItem['desc']);
 		var diffText  = document.createTextNode("Difficulty: "+convertDiffFormat(newItem['diff']));
@@ -237,6 +237,54 @@ function addItemToDisplay(newItem, displayId, num) {
 		item.appendChild(diffText);
 		item.appendChild(topicText);
 	}
+    else if(displayId === "activeList") {
+
+        var thisDesc = newItem['desc']; // Variables specific
+        var thisNum  = num + 1;         // to this quetion
+        var thisPts  = 5;               //
+		var strObj   = getIdClassStrObj(newItem, displayId);
+        var idStr    = strObj['idStr'];
+
+		var item      = document.createElement("LI");  // Build the elements
+		var qDiv      = document.createElement("DIV"); // that will go into
+		var qTop      = document.createElement("DIV"); // this question
+		var qTopLeft  = document.createElement("DIV");
+		var qTopMid   = document.createElement("DIV");
+		var qTopRight = document.createElement("DIV");
+		var qBot      = document.createElement("DIV");
+        var qBtn      = document.createElement("BUTTON");
+        var qBtnText  = document.createTextNode("X");
+		var qNum      = document.createTextNode(thisNum + ".)");
+		var qDesc     = document.createTextNode(thisDesc);
+        var qPtsInput = document.createElement("INPUT");
+		var qPtsText  = document.createTextNode(" Pts");
+        
+             qDiv.setAttribute("class", "qDiv"); // Set attributes of
+             qDiv.setAttribute("id", idStr); // Set attributes of
+             qDiv.appendChild(qTop);             // and append children to
+             qDiv.appendChild(qBot);             // the elements
+             qTop.setAttribute("class", "qTop"); 
+             qTop.appendChild(qTopLeft);
+             qTop.appendChild(qTopMid);
+             qTop.appendChild(qTopRight);
+         qTopLeft.setAttribute("class", "qTopLeft");
+         qTopLeft.appendChild(qNum);
+          qTopMid.setAttribute("class", "qTopMid");
+          qTopMid.appendChild(qDesc);
+        qTopRight.setAttribute("class", "qTopRight");
+        qTopRight.appendChild(qPtsInput);
+        qTopRight.appendChild(qPtsText);
+             qBtn.setAttribute("class", "qXBtn");
+             qBtn.setAttribute("click", () => { toggleSelected(idStr) });
+             qBtn.appendChild(qBtnText);
+        qPtsInput.setAttribute("class", "qPts");
+        qPtsInput.setAttribute("maxlength", "3");
+        qPtsInput.setAttribute("size", "1");
+             qBot.setAttribute("class", "qBot");
+             qBot.appendChild(qBtn);
+
+			 item.appendChild(qDiv);
+    }
 	else if(displayId === "sTestDisp" && sActiveT.length === 0) {
 		var item     = document.createElement("LI");
 		var descText = document.createTextNode(newItem['desc']);

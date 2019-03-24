@@ -149,8 +149,9 @@ section li {
     box-shadow: 0px 1px 8px darkgrey;
 }
 .selected {
-    box-shadow: 0px 5px 3px -3px #F00,
-				0px 3px 4px -2px #400;
+    box-shadow: 0px 5px 3px -3px darkgrey,
+				0px 3px 4px -2px darkgrey,
+                0px 0px 5px red inset;
 				
 }
 .qDiv {
@@ -180,7 +181,7 @@ section li {
     padding: 1%;
     right: 0px;
     top: 0px;
-    width: 10%;
+    /* width: 10%; */
     float: right;
 }
 .qBot {
