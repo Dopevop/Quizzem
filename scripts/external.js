@@ -149,7 +149,9 @@ function toggleSelected(listItemId) {
 				break;
 			}
 		}
-		updateDisplays(["sTestNav", "sTestDisp"]);
+        console.log("Just toggled ");
+        console.log( JSON.stringify(sActiveT) );
+		updateDisplays(["sTestDisp"]);
 	}
 	else if ( listItemId[0] == "m") { // Selected Item is a matchList question
 		// add Q to iActiveQ, remove from iMatchQ
@@ -227,46 +229,19 @@ function clearMatches() {
 	updateDisplays(["matchedList"]);
 }
 
-/* Resets display and clears related array 
- * Display elements have a title, and an unorder list of Qs */
 function resetDisplay(displayId) {
-	var display = document.getElementById(displayId);
-	var ul      = document.createElement("UL");
-	if( displayId === "activeList" ){
-		ul.setAttribute("id", "pList");
-	} 
-	else if( displayId === "matchedList" ) {
-		ul.setAttribute("id", "mList");
-	}
-	else if( displayId === "sTestNav" ) {
-		ul.setAttribute("id", "tList");
-	}
-	else if( displayId === "sTestDisp" ) {
-		if(sActiveT.length == 1) {
-			// A test has been selected
-			ul.setAttribute("id", "qList");
-			ul.appendChild(document.createTextNode(sActiveT['desc']));
-			ul.appendChild(document.createTextNode("sActiveT.len == 1"));
-		} 
-		else {
-			ul.setAttribute("id", "info");
-			ul.appendChild(document.createTextNode(sActiveT['desc']));
-			ul.appendChild(document.createTextNode("sActiveT.len != 1"));
-		}
-	}
-	else {
-		ul.setAttribute("id", "?List");
-		ul.appendChild(document.createTextNode("??? Questions"));
-	}
-	display.innerHTML = "";
-	display.appendChild(ul);
+	document.getElementById(displayId).innerHTML = "";
 }
 
 /* Called whenever iMatchQ might change */
 function updateDisplays(displayIdArr) {
+    console.log("In updateDisplays, sActiveT:");
+    console.log( JSON.stringify(sActiveT) );
 	for(var i = 0; i<displayIdArr.length; i++){
 		var thisId = displayIdArr[i];
+        console.log("thisId", thisId);
 		var relArr = getRelArr(thisId);
+        console.log(relArr);
 		resetDisplay(thisId);
 		for(var j=0; j<relArr.length; j++) {
 			addItemToDisplay(relArr[j], thisId, j);
@@ -289,26 +264,21 @@ function addItemToDisplay(newItem, displayId, num) {
 		item.appendChild(descText);
 		item.appendChild(document.createElement("BR"));
 		item.appendChild(diffText);
-		item.appendChild(document.createElement("BR"));
 		item.appendChild(topicText);
 	}
-	else if(displayId === "sTestNav") {
+	else if(displayId === "sTestDisp" && sActiveT.length === 0) {
 		var item     = document.createElement("LI");
 		var descText = document.createTextNode(newItem['desc']);
 		var numQText = document.createTextNode(""+newItem['ques'].length+" Questions");
 		var strObj   = getIdClassStrObj(newItem, displayId);
 		item.setAttribute("id", strObj['idStr']);
 		item.setAttribute("class", strObj['classStr']);
-		// var idStr, classStr = getIdClassStrObj(newItem, displayId); <-- Destructuring an obj
-		// item.setAttribute('id', idStr);
-		// item.setAttribute("class", classStr);
 		item.appendChild(descText);
 		item.appendChild(document.createElement("BR"));
 		item.appendChild(numQText);
-		item.appendChild(document.createElement("BR"));
 		item.addEventListener("click", function() { toggleSelected(strObj['idStr'])	});
 	} 
-	else if(displayId === "sTestDisp") {
+	else if(displayId === "sTestDisp" && sActiveT.length === 1) {
 		var item      = document.createElement("LI");
 		var qDiv      = document.createElement("DIV");
 		var leftMarg  = document.createElement("DIV");
@@ -342,7 +312,7 @@ function addItemToDisplay(newItem, displayId, num) {
  * Used for constructing a new list item to add to displays */
 function getIdClassStrObj(newItem, displayId) {
 	//console.log("getIdClassStrObj");
-	var strObj = [];
+	var strObj = {};
 	     if(displayId === "matchedList") {
 		strObj['idStr']    = "m" + newItem['id'];
 		strObj['classStr'] = "matched";
@@ -351,9 +321,13 @@ function getIdClassStrObj(newItem, displayId) {
 		strObj['idStr']    = "a" + newItem['id'];
 		strObj['classStr'] = "selected";
 	}
-	else if(displayId === "sTestNav") {
+	else if(displayId === "sTestDisp" && sActiveT.length === 0) {
 		strObj['idStr']    = "t" + newItem['id'];
 		strObj['classStr'] = "available";
+	}
+	else if(displayId === "sTestDisp" && sActiveT.length === 1) {
+		strObj['idStr']    = "q" + newItem['id'];
+		strObj['classStr'] = "question";
 	}
 	else {
 		strObj['idStr'] = "?" + newItem['id'];
@@ -479,22 +453,20 @@ function removeItemFromArray(id, A) {
 
 /* Determines which array (iActiveQ or iMatchQ) is associated with a display */
 function getRelArr(displayId) {
-	//console.log("getRelArr");
+    console.log("In getRelArr, sActiveT:");
+    console.log( JSON.stringify(sActiveT) );
 	var relArr;
 	if(displayId === "matchedList"){
 		relArr = iMatchQ;
 	} else if(displayId === "activeList") {
 		relArr = iActiveQ;
-	} else if(displayId === "sTestNav") {
-		relArr = sLocalT;
 	} else if(displayId === "sTestDisp") {
-		relArr = [];
 		if(sActiveT.length == 1){
-			relArr = sActiveT['ques'];
+            console.log("getRelArr", JSON.stringify(sActiveT[0]['ques']));
+			relArr = sActiveT[0]['ques'];
 		} 
 		else {
-			relArr = [{ 'desc':"sActiveT.len != 1", 'topic':"Fail", 'id':"Fail", 'diff':"Fail",
-						'tests':["a()=b", "a()=c"] }];
+			relArr = sLocalT;
 		}
 	} else {
 		relArr = [{ 'desc':"Invalid Display Id", 'topic':"Fail", 'id':"Fail", 'diff':"Fail",

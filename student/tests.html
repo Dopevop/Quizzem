@@ -26,12 +26,10 @@
       </ul>
     </nav>
 
-    <section id="mainDisplay" class="box">
-      <ul id="testList">
+    <section class="box">
+      <ul id="sTestDisp">
       </ul>
     </section>
-
-    
     
     <aside id="quizBuilder" class="box">
     </aside>
@@ -41,10 +39,10 @@
   <script src="../scripts/testdata.js"></script>
   <script>
     var sLocalT  = [t0, t1, t2, t3, t4, t5]; // Always holds all known tests
-    var sActiveT = []; // Should only ever have one test inside of it
+    var sActiveT = []; // Should only ever have at most one test inside of it
     console.log(sLocalT);
     console.log(sActiveT); 
-    updateDisplays(["testList"]);
+    updateDisplays(["sTestDisp"]);
   </script>
 </body>
 </html>
