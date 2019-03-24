@@ -3,25 +3,29 @@
 /* Takes a {Question} to add, & it's position on the display */
 function addQuestionToDisplay(Q, num) {
 	//console.log("addQuestionToDisplay");
-	var qDiv      = document.createElement("DIV");
-	var leftMarg  = document.createElement("DIV");
-	var numText   = document.createTextNode("" + ( num + 1 ) + ".)");
-	var rightMarg = document.createElement("DIV");
-	var ptsText	  = document.createTextNode("5 Pts");
-	var desc      = document.createElement("P");
-	var answer    = document.createElement("TEXTAREA");
+	var qDiv     = document.createElement("DIV");
+	var leftDiv  = document.createElement("DIV");
+    var midDiv   = document.createElement("DIV");
+	var rightDiv = document.createElement("DIV");
+	var numText  = document.createTextNode("" + ( num + 1 ) + ".)");
+	var ptsText  = document.createTextNode("5 Pts");
+	var desc     = document.createElement("P");
+	var answer   = document.createElement("TEXTAREA");
+
 	      qDiv.setAttribute("class", "qDiv");
-	  leftMarg.setAttribute("class", "qLeftMargin");
-	  leftMarg.appendChild(numText);
-	 rightMarg.setAttribute("class", "qRightMargin");
-	 rightMarg.appendChild(ptsText);
+	   leftDiv.setAttribute("class", "qLeft");
+	   leftDiv.appendChild(numText);
+	  rightDiv.setAttribute("class", "qRight");
+	  rightDiv.appendChild(ptsText);
+        midDiv.setAttribute("class", "qMid");
+        midDiv.appendChild(desc);
+        midDiv.appendChild(answer);
 	      desc.setAttribute("class", "qDesc");
 	      desc.innerHTML = Q['desc'];
 	    answer.setAttribute("class", "qAns");
-	      qDiv.appendChild(leftMarg);
-	      qDiv.appendChild(desc);
-	      qDiv.appendChild(answer);
-	      qDiv.appendChild(rightMarg);
+	      qDiv.appendChild(leftDiv);
+	      qDiv.appendChild(midDiv);
+	      qDiv.appendChild(rightDiv);
 	 sTestDisp.appendChild(qDiv);
 	
 }
@@ -279,27 +283,31 @@ function addItemToDisplay(newItem, displayId, num) {
 		item.addEventListener("click", function() { toggleSelected(strObj['idStr'])	});
 	} 
 	else if(displayId === "sTestDisp" && sActiveT.length === 1) {
-		var item      = document.createElement("LI");
-		var qDiv      = document.createElement("DIV");
-		var leftMarg  = document.createElement("DIV");
-		var numText   = document.createTextNode("" + (num+1) + ".)");
-		var rightMarg = document.createElement("DIV");
-		var ptsText	  = document.createTextNode("5 Pts");
-		var desc      = document.createElement("P");
-		var answer    = document.createElement("TEXTAREA");
+
+		var item     = document.createElement("LI");
+		var qDiv     = document.createElement("DIV");
+		var midDiv   = document.createElement("DIV");
+		var leftDiv  = document.createElement("DIV");
+		var rightDiv = document.createElement("DIV");
+		var desc     = document.createElement("P");
+		var answer   = document.createElement("TEXTAREA");
+		var numText  = document.createTextNode("" + (num+1) + ".)");
+		var ptsText  = document.createTextNode("5 Pts");
 
 			 qDiv.setAttribute("class", "qDiv");
-		 leftMarg.setAttribute("class", "qLeftMargin");
-		 leftMarg.appendChild(numText);
-		rightMarg.setAttribute("class", "qRightMargin");
-		rightMarg.appendChild(ptsText);
+		  leftDiv.setAttribute("class", "qLeft");
+           midDiv.setAttribute("class", "qMid");
+		 rightDiv.setAttribute("class", "qRight");
 			 desc.setAttribute("class", "qDesc");
-			 desc.innerHTML = newItem['desc'];
 		   answer.setAttribute("class", "qAns");
-		     qDiv.appendChild(leftMarg);
-		     qDiv.appendChild(desc);
-		     qDiv.appendChild(answer);
-		     qDiv.appendChild(rightMarg);
+			 desc.innerHTML = newItem['desc'];
+		  leftDiv.appendChild(numText);
+		 rightDiv.appendChild(ptsText);
+           midDiv.appendChild(desc);
+           midDiv.appendChild(answer);
+		     qDiv.appendChild(leftDiv);
+		     qDiv.appendChild(midDiv);
+		     qDiv.appendChild(rightDiv);
 			 item.appendChild(qDiv);
 	}
 	else {
