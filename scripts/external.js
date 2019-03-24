@@ -1,35 +1,4 @@
 
-/* Appends one question to the end of the question display   */
-/* Takes a {Question} to add, & it's position on the display */
-function addQuestionToDisplay(Q, num) {
-	//console.log("addQuestionToDisplay");
-	var qDiv     = document.createElement("DIV");
-	var leftDiv  = document.createElement("DIV");
-    var midDiv   = document.createElement("DIV");
-	var rightDiv = document.createElement("DIV");
-	var numText  = document.createTextNode("" + ( num + 1 ) + ".)");
-	var ptsText  = document.createTextNode("5 Pts");
-	var desc     = document.createElement("P");
-	var answer   = document.createElement("TEXTAREA");
-
-	      qDiv.setAttribute("class", "qDiv");
-	   leftDiv.setAttribute("class", "qLeft");
-	   leftDiv.appendChild(numText);
-	  rightDiv.setAttribute("class", "qRight");
-	  rightDiv.appendChild(ptsText);
-        midDiv.setAttribute("class", "qMid");
-        midDiv.appendChild(desc);
-        midDiv.appendChild(answer);
-	      desc.setAttribute("class", "qDesc");
-	      desc.innerHTML = Q['desc'];
-	    answer.setAttribute("class", "qAns");
-	      qDiv.appendChild(leftDiv);
-	      qDiv.appendChild(midDiv);
-	      qDiv.appendChild(rightDiv);
-	 sTestDisp.appendChild(qDiv);
-	
-}
-
 /* Adds a button to the end of the student's question display */
 function addSubmitToDisplay() {
 	var theBtn = document.createElement("BUTTON");
@@ -239,8 +208,6 @@ function resetDisplay(displayId) {
 
 /* Called whenever iMatchQ might change */
 function updateDisplays(displayIdArr) {
-    console.log("In updateDisplays, sActiveT:");
-    console.log( JSON.stringify(sActiveT) );
 	for(var i = 0; i<displayIdArr.length; i++){
 		var thisId = displayIdArr[i];
         console.log("thisId", thisId);
@@ -283,31 +250,40 @@ function addItemToDisplay(newItem, displayId, num) {
 		item.addEventListener("click", function() { toggleSelected(strObj['idStr'])	});
 	} 
 	else if(displayId === "sTestDisp" && sActiveT.length === 1) {
+        thisDesc = newItem['desc']; // Variables specific
+        thisNum  = num + 1;         // to this quetion
+        thisPts  = 5;               //
 
-		var item     = document.createElement("LI");
-		var qDiv     = document.createElement("DIV");
-		var midDiv   = document.createElement("DIV");
-		var leftDiv  = document.createElement("DIV");
-		var rightDiv = document.createElement("DIV");
-		var desc     = document.createElement("P");
-		var answer   = document.createElement("TEXTAREA");
-		var numText  = document.createTextNode("" + (num+1) + ".)");
-		var ptsText  = document.createTextNode("5 Pts");
+		var item      = document.createElement("LI");  // Build the elements
+		var qDiv      = document.createElement("DIV"); // that will go into
+		var qTop      = document.createElement("DIV"); // this question
+		var qTopLeft  = document.createElement("DIV");
+		var qTopMid   = document.createElement("DIV");
+		var qTopRight = document.createElement("DIV");
+		var qBot      = document.createElement("DIV");
+		var qAns      = document.createElement("DIV");
+		var qNum      = document.createTextNode(thisNum + ".)");
+		var qDesc     = document.createTextNode(thisDesc);
+		var qPoints   = document.createTextNode(thisPts + " Pts");
+        
+             qDiv.setAttribute("class", "qDiv"); // Set attributes of
+             qDiv.appendChild(qTop);             // and append children to
+             qDiv.appendChild(qBot);             // the elements
+             qTop.setAttribute("class", "qTop"); 
+             qTop.appendChild(qTopLeft);
+             qTop.appendChild(qTopMid);
+             qTop.appendChild(qTopRight);
+         qTopLeft.setAttribute("class", "qTopLeft");
+         qTopLeft.appendChild(qNum);
+          qTopMid.setAttribute("class", "qTopMid");
+          qTopMid.appendChild(qDesc);
+        qTopRight.setAttribute("class", "qTopRight");
+        qTopRight.appendChild(qPoints);
+             qBot.setAttribute("class", "qBot");
+             qBot.appendChild(qAns);
+             qAns.setAttribute("class", "qAns");
+             qAns.setAttribute("contenteditable", "true");
 
-			 qDiv.setAttribute("class", "qDiv");
-		  leftDiv.setAttribute("class", "qLeft");
-           midDiv.setAttribute("class", "qMid");
-		 rightDiv.setAttribute("class", "qRight");
-			 desc.setAttribute("class", "qDesc");
-		   answer.setAttribute("class", "qAns");
-			 desc.innerHTML = newItem['desc'];
-		  leftDiv.appendChild(numText);
-		 rightDiv.appendChild(ptsText);
-           midDiv.appendChild(desc);
-           midDiv.appendChild(answer);
-		     qDiv.appendChild(leftDiv);
-		     qDiv.appendChild(midDiv);
-		     qDiv.appendChild(rightDiv);
 			 item.appendChild(qDiv);
 	}
 	else {
@@ -461,8 +437,6 @@ function removeItemFromArray(id, A) {
 
 /* Determines which array (iActiveQ or iMatchQ) is associated with a display */
 function getRelArr(displayId) {
-    console.log("In getRelArr, sActiveT:");
-    console.log( JSON.stringify(sActiveT) );
 	var relArr;
 	if(displayId === "matchedList"){
 		relArr = iMatchQ;

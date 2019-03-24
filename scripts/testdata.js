@@ -7,14 +7,14 @@ var q0 = {
 };
 var q1 = {
 	'id'    : 1001,
-	'desc'  : 'Make a functino called "ghi" that takes one parameter and returns the number 2',
+	'desc'  : 'This is going to be a rather long question telling you to construct a method that will take three parameters, all of which should be integers, and the first one should be added to the second one and then that sum should be multiplied by the square of the third parameter. This answer should be turned into a string representation of the resulting number. Multi-word numbers should be connected by hyphens (e.g. "twenty-two").',
 	'topic' : 'Return Statement',
 	'diff'  : 2,
-	'tests' : [ 'ghi(3)=2', 'ghi(1)=2' ],
+	'tests' : [ 'ghi(1, 1, 1)="two"', 'ghi(3,8,2)="fourty-four"' ],
 };
 var q2 = {
 	'id'    : 1002,
-	'desc'  : 'Make a function "klm" that takes no parameters and returns the number 3',
+	'desc'  : 'Make a function "klm" that takes no parameters and returns the number 3.',
 	'topic' : 'Return Statement',
 	'diff'  : 3,
 	'tests' : [ 'klm()=3', 'klm()=3' ],

@@ -13,6 +13,7 @@ body>header{
     z-index: 1;
     height : 40px;
     width : 100vw;
+    min-width: 950px;
     text-align : center;
     color: ghostwhite;
     text-shadow: 0px 0px 1px black;
@@ -95,6 +96,13 @@ body>main aside {
     padding: 50px 5px;
     width : 300px;
 }
+#activeList {
+    /* background: gainsboro; */
+    box-shadow: 0px 0px 3px darkgrey, 0px 0px 8px darkgrey inset;
+    border-radius: 5px;
+    overflow: auto;
+    max-height: 50vh;
+}
 fieldset {
     margin: 10px 5px;
 	background-color  : ghostwhite;
@@ -119,29 +127,30 @@ ul {
 	padding           : 0;
 }
 section li {
-    width: 450px;
-    margin: auto;
+    /* margin: 20px auto; */
+    border-radius: 5px;
+}
+.available {
+    width: 95%;
     padding: 10px;
+    background-color: ghostwhite;
+    box-shadow: 0px 1px 3px darkgrey;
+    border-radius: 5px;
 
 }
-.matched {
+.matched, .selected {
 	text-align        : left;
 	list-style-type   : none;
 	background        : ghostwhite;
 	margin            : 15px;
 	padding           : 10px;
-	/* box-shadow        : 0px 0px 5px lightgrey; */
-    box-shadow: 0px 1px 3px lightgrey, 0px 1px 8px darkgrey;
+    border-radius: 5px;
+    box-shadow: 0px 1px 8px darkgrey;
 }
 .selected {
-	text-align        : left;
-	list-style-type   : none;
-	background        : ghostwhite;
-	margin            : 15px;
-	padding           : 10px;
-    box-shadow: 0px 5px 6px -3px #F00,
-				0px 3px 4px -2px #400,
-				0px 1px 8px darkgrey;
+    box-shadow: 0px 5px 3px -3px #F00,
+				0px 3px 4px -2px #400;
+				
 }
 .qDiv {
     position: relative;
@@ -149,31 +158,53 @@ section li {
     padding: 5px;
     background-color: ghostwhite;
     box-shadow: 0px 1px 8px darkgrey;
-    
+    border-radius: 5px;
 }
-.qLeft {
+.qTop {
+    padding: 1% 5%;
+}
+.qTopLeft {
     padding: 0px 5px;
     float: left;
 }
-.qMid {
+.qTopMid {
     width: 100%;
-}
-.qDesc {
-    padding: 5px;
+    /* float: left; */
+    width: 90%;
+    margin: 0px;
     text-align: left;
-    width: 90%
 }
-.qAns {
-    width: 95%;
-    height: 100px;
-    margin: 5px;
-}
-.qRight {
+.qTopRight {
     position: absolute;
-    padding: 2px;
+    padding: 1%;
     right: 0px;
     top: 0px;
     width: 10%;
     float: right;
 }
-
+.qBot {
+    width: 100%;
+    /* min-height: 150px; */
+    /* margin: auto; */
+}
+.qAns {
+    width: 95%;
+    min-height: 150px;
+    margin: 10px auto;
+    background-color: white;
+    box-shadow: 0px 0px 5px lightgrey inset;
+    text-align: left;
+    padding: 2%;
+    resize: vertical;
+    overflow: hidden;
+}
+*::-webkit-scrollbar {
+    width: 5px;
+    background-color: ghostwhite;
+    outline: 1px solid darkgrey;
+    box-shadow: 0px 0px 3px lightgrey inset;
+}
+*::-webkit-scrollbar-thumb {
+    box-shadow: 0px 0px 5px darkgrey inset;
+    border-radius: 15px;
+}
