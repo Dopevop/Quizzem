@@ -127,7 +127,8 @@ ul {
 	padding           : 0;
 }
 section li {
-    /* margin: 20px auto; */
+    width: 95%;
+    margin: 20px auto;
     border-radius: 5px;
 }
 .available {
@@ -155,13 +156,13 @@ section li {
 .qDiv {
     position: relative;
     overflow: hidden;
-    padding: 5px;
+    padding: 2% 5%;
     background-color: ghostwhite;
     box-shadow: 0px 1px 8px darkgrey;
     border-radius: 5px;
 }
 .qTop {
-    padding: 1% 5%;
+    /* padding: 5% 0%; */
 }
 .qTopLeft {
     padding: 0px 5px;
@@ -188,7 +189,7 @@ section li {
     /* margin: auto; */
 }
 .qAns {
-    width: 95%;
+    width: 100%;
     min-height: 150px;
     margin: 10px auto;
     background-color: white;
