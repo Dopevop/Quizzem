@@ -4,7 +4,7 @@
 }
 .box {
 	float             : left;
-	height            : 100vh;
+	height            : calc(100vh - 40px);
 	overflow          : auto;
 
 }
@@ -54,10 +54,14 @@ body>header a:hover {
     color: white;
     text-shadow: 0px 0px 2px black, 0px 0px 3px white;
 }
+body>main {
+    position: relative;
+    top: 40px;
+}
 body>main nav {
     width : 150px;
     background-color : whitesmoke;
-    padding: 50px 0px;
+    /* padding: 50px 0px; */
     margin: 0px;
 }
 body>main nav ul {
@@ -84,8 +88,10 @@ body>main nav li a:hover {
     color: inherit;
 }
 body>main section {
-    padding: 50px 5px;
+    position: relative;
+    padding: 0px 5px;
     width : 500px;
+    overflow: hidden;
 }
 body>main section p { /* Styles the welcome page messages */
     background: ghostwhite;
@@ -96,15 +102,26 @@ body>main section p { /* Styles the welcome page messages */
     box-shadow: 0px 0px 5px darkgrey;
 }
 body>main aside {
-    padding: 50px 5px;
+    padding: 0px 5px;
     width : 300px;
 }
 #activeList {
-    /* background: gainsboro; */
-    box-shadow: 0px 0px 6px darkgrey, 0px 0px 4px darkgrey inset;
+    /* box-shadow: 0px 0px 6px darkgrey, 0px 0px 4px darkgrey inset; */
+    width: 475px;
+    margin: 10px;
+    box-shadow: 0px 0px 6px darkgrey, 0px 0px 5px gold inset;
     border-radius: 5px;
     overflow: auto;
-    max-height: 50vh;
+    max-height: 45vh;
+}
+#matchedList {
+    position: absolute;
+    bottom: 0px;
+    box-shadow: 0px 0px 6px darkgrey, 0px 0px 4px darkgrey inset;
+    margin: 10px;
+    border-radius: 5px;
+    overflow: auto;
+    max-height: 45vh;
 }
 fieldset {
     margin: 10px 5px;
