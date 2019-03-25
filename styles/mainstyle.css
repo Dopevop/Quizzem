@@ -8,6 +8,8 @@
 	overflow          : auto;
 
 }
+ 
+                            /* Header elements */
 body>header{
     position: absolute;
     z-index: 1;
@@ -31,12 +33,12 @@ body>header nav {
     background-color: inherit;
     margin: 0px;
     padding: 0px;
-    width : 150px;
+    width : 120px;
 }
 body>header section {
     position: absolute;
     left: 150px;
-    width: 500px;
+    width: 530px;
     margin: 0px;
 }
 body>header aside {
@@ -59,38 +61,47 @@ body>main {
     top: 40px;
 }
 body>main nav {
-    width : 150px;
-    background-color : whitesmoke;
-    /* padding: 50px 0px; */
+    width : 120px;
     margin: 0px;
 }
 body>main nav ul {
     list-style-type: none;
-    margin: 0;
-    padding: 0;
-    background-color : gainsboro;
     text-align: center;
+    padding: 5px;
+    width: 100px;
+    margin: auto;
+}
+body>main nav li {
+    height: 30px;
+    line-height: 30px;
+    margin: 10px 0px;
+    border-radius: 8px;
+    box-shadow: 0px 1px 3px darkgrey;
+    background-color: whitesmoke;
+    color: darkgrey;
+}
+body>main nav li:hover {
+    box-shadow: 0px 1px 3px darkgrey;
+    background-color: snow;
+    color: black;
 }
 body>main nav li a {
     display: block;
     text-decoration: none;
     color: inherit;
-    background-color: gainsboro;
-    padding: 0px;
-    margin: 0px;
-    height: 40px;
-    line-height: 40px;
 }
-body>main nav li a:hover {
-    text-decoration: none;
+.currTab,
+.currTab:hover {
+    color: white;
     font-weight: bold;
-    background-color: aliceblue;
-    color: inherit;
+    box-shadow: 0px 1px 2px #880000, 0px 1px 5px darkgrey;
+    text-shadow: 0px 0px 1px black;
+    background-color: #719FCF;
 }
 body>main section {
     position: relative;
     padding: 0px 5px;
-    width : 500px;
+    width : 530px;
     overflow: hidden;
 }
 body>main section p { /* Styles the welcome page messages */
@@ -144,22 +155,22 @@ section li {
     margin: 20px auto;
     border-radius: 5px;
 }
-#activeList, #matchedList {
-    width: 475px;
+#activeList,
+#matchedList {
+    width: 505px;
     margin: 6px;
     border-radius: 5px;
     overflow: auto;
     max-height: 46.5vh;
 }
 #activeList {
-    box-shadow: 0px 0px 6px darkgrey,
-                0px 0px 3px yellow inset,
-                0px 0px 5px gold inset;
+    box-shadow: 0px 1px 2px #880000, 0px 1px 5px darkgrey;
 }
 #matchedList {
     position: absolute;
     bottom: 0px;
-    box-shadow: 0px 0px 6px darkgrey, 0px 0px 4px darkgrey inset;
+    box-shadow: 0px 1px 2px #888, 0px 1px 5px darkgrey;
+    /* box-shadow: 0px 0px 6px darkgrey, 0px 0px 4px darkgrey inset; */
 }
 .available {
     width: 95%;
@@ -168,11 +179,13 @@ section li {
     box-shadow: 0px 1px 3px darkgrey;
     border-radius: 5px;
 }
-.available:hover, .matched:hover {
-    box-shadow: 0 0 3px green inset, 0 0 3px darkgrey;
+.available:hover,
+.matched:hover {
+    /* box-shadow: 0 0 3px green inset, 0 0 3px darkgrey; */
     background-color: snow;
 }
-.matched, .selected {
+.matched,
+.selected {
 	text-align        : left;
 	list-style-type   : none;
 	background        : whitesmoke;
@@ -181,7 +194,8 @@ section li {
     border-radius: 5px;
     box-shadow: 0px 1px 8px darkgrey;
 }
-.active, .qDiv {
+.active,
+.qDiv {
     position: relative;
     overflow: hidden;
     padding: 3%;
@@ -230,6 +244,7 @@ section li {
     padding: 2%;
     resize: vertical;
     overflow: hidden;
+    font-family: monospace;
 }
 .qBtn {
     position:absolute;
@@ -237,18 +252,15 @@ section li {
     bottom: 3px;
     background-color: ghostwhite;
     border-radius: 50px;
-    box-shadow: -1px -1px 3px darkgrey;
-    border: 2px outset silver;
-    color: #B00;
-    /* font-weight: bold; */
+    box-shadow: 0px 1px 3px darkgrey;
+    border: 1px outset silver;
+    color: #A00;
 }
 .qBtn:hover {
     background-color: white;
     border-radius: 50px;
-    box-shadow: 0px 0px 4px #900;
-    border: 2px outset silver;
+    box-shadow: 0px 1px 2px #880000, 0px 1px 3px darkgrey;
     color: #F00;
-    font-weight: bold;
 }
 *::-webkit-scrollbar {
     width: 5px;
