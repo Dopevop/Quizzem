@@ -112,7 +112,6 @@ function validateTests(tests) {
  * listItemId: The id of the List Item that the question appears in */
 function toggleSelected(listItemId) {
 	var id = listItemId.substring(1);
-    console.log(listItemId + " clicked, iActiveQ: ", JSON.stringify(iActiveQ));
 	if(listItemId[0] == "t") {
 		// add test with id to sActiveT 
 		sActiveT.length = 0;
