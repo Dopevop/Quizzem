@@ -153,8 +153,8 @@ section li {
     border-radius: 5px;
 }
 .available:hover, .matched:hover {
-    box-shadow: 0 0 5px green inset, 0 0 5px darkgrey;
-    background-color: ghostwhite;
+    box-shadow: 0 0 3px green inset, 0 0 3px darkgrey;
+    background-color: snow;
 }
 .matched, .selected {
 	text-align        : left;
@@ -169,12 +169,15 @@ section li {
     position: relative;
     overflow: hidden;
     padding: 3%;
-    background-color: ghostwhite;
+    /* background-color: ghostwhite; */
+    background-color: whitesmoke;
     box-shadow: 0px 1px 8px darkgrey;
     border-radius: 5px;
 }
 .active {
-    box-shadow: 0px 1px 8px darkgrey, 0px 0px 5px green inset;
+    /* box-shadow: 0px 1px 8px darkgrey, 0px 0px 5px green inset; */
+    background-color: snow;
+    box-shadow: 0px 0px 5px darkgrey;
     padding: 3% 5%;
 }
 .qTopLeft {
