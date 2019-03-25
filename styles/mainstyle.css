@@ -140,7 +140,7 @@ section li {
     box-shadow: 0px 1px 3px darkgrey;
     border-radius: 5px;
 }
-.available:hover {
+.available:hover, .matched:hover {
     box-shadow: 0 0 5px green, 0 0 5px lightgrey inset;
     font-weight: bold;
     background-color: white;
