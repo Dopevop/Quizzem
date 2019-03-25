@@ -107,6 +107,7 @@
 				 addSub.addEventListener("click"    , () => { validateForm("AddQ", sendAddQ)    } );
         addForm.addEventListener("mousemove", () => { updateDiff()                      } );
        addRange.addEventListener("mouseup"  , () => { updateDiff()                      } );
+       addRange.addEventListener("keyup"    , () => { updateDiff()                      } );
       searchSub.addEventListener("click"    , () => { displaySearchResults()            } );
     searchReset.addEventListener("click"    , () => { clearForm("searchForm")           } );
     searchReset.addEventListener("click"    , () => { clearMatches()                    } );

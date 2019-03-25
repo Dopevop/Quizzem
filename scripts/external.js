@@ -259,7 +259,7 @@ function addItemToDisplay(newItem, displayId, num) {
         var qPtsInput = document.createElement("INPUT");
 		var qPtsText  = document.createTextNode(" Pts");
         
-             qDiv.setAttribute("class", "qDiv"); // Set attributes of
+             qDiv.setAttribute("class", "qDiv active"); // Set attributes of
              qDiv.setAttribute("id", idStr);     // and append children to
              qDiv.appendChild(qTop);             // the elements
              qDiv.appendChild(qBot);             
@@ -287,16 +287,70 @@ function addItemToDisplay(newItem, displayId, num) {
 			 item.appendChild(qDiv); // Finally, add new question div to list of questions
     }
 	else if(displayId === "sTestDisp" && sActiveT.length === 0) {
-		var item     = document.createElement("LI");
-		var descText = document.createTextNode(newItem['desc']);
-		var numQText = document.createTextNode(""+newItem['ques'].length+" Questions");
-		var strObj   = getIdClassStrObj(newItem, displayId);
-		item.setAttribute("id", strObj['idStr']);
+
+        var thisDesc  = newItem['desc'];        // Get the variables
+        var thisQues  = newItem['ques'];        // specific to this test
+        var thisNum   = newItem['ques'].length; // Figure out the number of questions
+		var strObj    = getIdClassStrObj(newItem, displayId);
+        var uniqTops  = [];                     // Figure out the topics of these questions
+        var uniqDiffs = [];                     // Figure out the difficulties of these questions
+        var lowerCaseTops = [];
+        for(var i=0; i<thisNum; i++) {
+            var thisQ    = thisQues[i];
+            var thisTop  = thisQ['topic'];
+            var thisDiff = thisQ['diff'];
+            if( !inArr(thisTop.toLowerCase(), lowerCaseTops) ) {
+                uniqTops.push( thisTop );
+                lowerCaseTops.push( thisTop.toLowerCase() );
+            }
+            if( !inArr(thisDiff, uniqDiffs) ) {
+                uniqDiffs.push( thisDiff );
+            }
+        }
+        uniqDiffs.sort();                       // Sort the difficulties
+        var uniqDiffsText = [];                 // and turn them into strings
+        for(var i=0; i<uniqDiffs.length; i++) { //
+            uniqDiffsText.push( convertDiffFormat(uniqDiffs[i]) );
+        }
+        var topicStr = "";
+        var diffStr = "";
+        for(var i=0; i<uniqTops.length; i++) {
+            var leadStr = (i===0)? "" : (i===uniqTops.length-1)? " & " : ", ";
+            topicStr += leadStr + uniqTops[i];
+        }
+        for(var i=0; i<uniqDiffsText.length; i++) {
+            var leadStr = (i===0)? "" : (i===(uniqDiffsText.length-1))? " & " : ", ";
+            diffStr += leadStr + uniqDiffsText[i];
+        }
+        var queStr = (thisNum === 1)? " Question" : " Questions";
+
+		var item    = document.createElement("LI");  // Create the elements that
+		var tTop    = document.createElement("DIV"); // will go into the new item
+		var tBot    = document.createElement("DIV"); 
+		var tDesc   = document.createTextNode(thisDesc);
+		var tNumQ   = document.createTextNode(thisNum + queStr);
+        var tTopics = document.createTextNode("Topics: " + topicStr);
+        var tDiffs  = document.createTextNode("Difficulties: " + diffStr);
+
+        tTop.setAttribute("class", "tTop");
+        tTop.appendChild(tDesc);
+        tBot.setAttribute("class", "tBot");
+        tBot.appendChild(tNumQ);
+		tBot.appendChild(document.createElement("BR"));
+        tBot.appendChild(tTopics);
+		tBot.appendChild(document.createElement("BR"));
+        tBot.appendChild(tDiffs);
+		item.setAttribute("id",    strObj['idStr']);
 		item.setAttribute("class", strObj['classStr']);
-		item.appendChild(descText);
-		item.appendChild(document.createElement("BR"));
-		item.appendChild(numQText);
 		item.addEventListener("click", function() { toggleSelected(strObj['idStr'])	});
+		item.appendChild(tTop);
+		item.appendChild(tBot);
+
+		// item.appendChild(tNumQ);
+		// item.appendChild(document.createElement("BR"));
+		// item.appendChild(tTopics);
+		// item.appendChild(document.createElement("BR"));
+		// item.appendChild(tDiffs);
 	} 
 	else if(displayId === "sTestDisp" && sActiveT.length === 1) {
         thisDesc = newItem['desc']; // Variables specific

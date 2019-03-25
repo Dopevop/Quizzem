@@ -56,7 +56,7 @@ body>header a:hover {
 }
 body>main nav {
     width : 150px;
-    background-color : gainsboro;
+    background-color : whitesmoke;
     padding: 50px 0px;
     margin: 0px;
 }
@@ -64,7 +64,8 @@ body>main nav ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    background-color : darkgrey;
+    background-color : gainsboro;
+    text-align: center;
 }
 body>main nav li a {
     display: block;
@@ -100,7 +101,7 @@ body>main aside {
 }
 #activeList {
     /* background: gainsboro; */
-    box-shadow: 0px 0px 3px darkgrey, 0px 0px 8px darkgrey inset;
+    box-shadow: 0px 0px 6px darkgrey, 0px 0px 4px darkgrey inset;
     border-radius: 5px;
     overflow: auto;
     max-height: 50vh;
@@ -123,10 +124,21 @@ fieldset {
 	display           : table;
 }
 ul {
-	text-align        : center;
+	/* text-align        : center; */
 	list-style-type   : none;
 	margin            : 0;
 	padding           : 0;
+}
+.tTop {
+    text-align: center;
+    font-weight: bold;
+    padding: 5px;
+    /* background-color: gainsboro; */
+}
+.tBot {
+    padding: 5px 15px;
+    box-shadow: 0px 0px 5px darkgrey inset;
+    background-color: ghostwhite;
 }
 section li {
     width: 95%;
@@ -136,40 +148,34 @@ section li {
 .available {
     width: 95%;
     padding: 10px;
-    background-color: ghostwhite;
+    background-color: whitesmoke;
     box-shadow: 0px 1px 3px darkgrey;
     border-radius: 5px;
 }
 .available:hover, .matched:hover {
-    box-shadow: 0 0 5px green, 0 0 5px lightgrey inset;
-    font-weight: bold;
-    background-color: white;
+    box-shadow: 0 0 5px green inset, 0 0 5px darkgrey;
+    background-color: ghostwhite;
 }
 .matched, .selected {
 	text-align        : left;
 	list-style-type   : none;
-	background        : ghostwhite;
+	background        : whitesmoke;
 	margin            : 15px;
 	padding           : 10px;
     border-radius: 5px;
     box-shadow: 0px 1px 8px darkgrey;
 }
-.selected {
-    box-shadow: 0px 5px 3px -3px darkgrey,
-				0px 3px 4px -2px darkgrey,
-                0px 0px 5px red inset;
-				
-}
-.qDiv {
+.active, .qDiv {
     position: relative;
     overflow: hidden;
-    padding: 3% 5%;
+    padding: 3%;
     background-color: ghostwhite;
     box-shadow: 0px 1px 8px darkgrey;
     border-radius: 5px;
 }
-.qTop {
-    /* padding: 5% 0%; */
+.active {
+    box-shadow: 0px 1px 8px darkgrey, 0px 0px 5px green inset;
+    padding: 3% 5%;
 }
 .qTopLeft {
     padding: 0px 5px;
