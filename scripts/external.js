@@ -112,6 +112,7 @@ function validateTests(tests) {
  * listItemId: The id of the List Item that the question appears in */
 function toggleSelected(listItemId) {
 	var id = listItemId.substring(1);
+    console.log(listItemId + " clicked, iActiveQ: ", JSON.stringify(iActiveQ));
 	if(listItemId[0] == "t") {
 		// add test with id to sActiveT 
 		sActiveT.length = 0;
@@ -223,7 +224,7 @@ function updateDisplays(displayIdArr) {
 /* Addes a toggle-able item to the display */
 function addItemToDisplay(newItem, displayId, num) {
 	//console.log("addItemToDisplay");
-	if(displayId === "matchedList" /*|| displayId === "activeList"*/) {
+	if(displayId === "matchedList") {
 		var item      = document.createElement("LI");
 		var descText  = document.createTextNode(newItem['desc']);
 		var diffText  = document.createTextNode("Difficulty: "+convertDiffFormat(newItem['diff']));
@@ -241,7 +242,7 @@ function addItemToDisplay(newItem, displayId, num) {
 
         var thisDesc = newItem['desc']; // Variables specific
         var thisNum  = num + 1;         // to this quetion
-        var thisPts  = 5;               //
+        var thisPts  = 5;               
 		var strObj   = getIdClassStrObj(newItem, displayId);
         var idStr    = strObj['idStr'];
 
@@ -260,9 +261,10 @@ function addItemToDisplay(newItem, displayId, num) {
 		var qPtsText  = document.createTextNode(" Pts");
         
              qDiv.setAttribute("class", "qDiv"); // Set attributes of
-             qDiv.setAttribute("id", idStr); // Set attributes of
-             qDiv.appendChild(qTop);             // and append children to
-             qDiv.appendChild(qBot);             // the elements
+             qDiv.setAttribute("id", idStr);     // and append children to
+             qDiv.appendChild(qTop);             // the elements
+             qDiv.appendChild(qBot);             
+             qDiv.appendChild(qBtn);             
              qTop.setAttribute("class", "qTop"); 
              qTop.appendChild(qTopLeft);
              qTop.appendChild(qTopMid);
@@ -274,16 +276,16 @@ function addItemToDisplay(newItem, displayId, num) {
         qTopRight.setAttribute("class", "qTopRight");
         qTopRight.appendChild(qPtsInput);
         qTopRight.appendChild(qPtsText);
-             qBtn.setAttribute("class", "qXBtn");
-             qBtn.setAttribute("click", () => { toggleSelected(idStr) });
+             qBtn.setAttribute("class", "qBtn");
+             qBtn.addEventListener("click", () => { toggleSelected(idStr); });
              qBtn.appendChild(qBtnText);
         qPtsInput.setAttribute("class", "qPts");
         qPtsInput.setAttribute("maxlength", "3");
         qPtsInput.setAttribute("size", "1");
-             qBot.setAttribute("class", "qBot");
-             qBot.appendChild(qBtn);
+        qPtsInput.setAttribute("tabindex", thisNum);
+             qBot.setAttribute("class", "qBot"); // currently unused, may add add'l Q info here
 
-			 item.appendChild(qDiv);
+			 item.appendChild(qDiv); // Finally, add new question div to list of questions
     }
 	else if(displayId === "sTestDisp" && sActiveT.length === 0) {
 		var item     = document.createElement("LI");
