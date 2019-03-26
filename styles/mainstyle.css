@@ -92,11 +92,12 @@ body>main nav li a {
 }
 .currTab,
 .currTab:hover {
-    color: white;
-    font-weight: bold;
+    color: black;
     box-shadow: 0px 1px 2px #880000, 0px 1px 5px darkgrey;
-    text-shadow: 0px 0px 1px black;
-    background-color: #719FCF;
+    background-color: #BADCEE;
+}
+.currTab:hover {
+    font-weight: bold;
 }
 body>main section {
     position: relative;
@@ -165,12 +166,12 @@ section li {
 }
 #activeList {
     box-shadow: 0px 1px 2px #880000, 0px 1px 5px darkgrey;
+    background-color: #BADCEE;
 }
 #matchedList {
     position: absolute;
     bottom: 0px;
     box-shadow: 0px 1px 2px #888, 0px 1px 5px darkgrey;
-    /* box-shadow: 0px 0px 6px darkgrey, 0px 0px 4px darkgrey inset; */
 }
 .available {
     width: 95%;
@@ -181,7 +182,6 @@ section li {
 }
 .available:hover,
 .matched:hover {
-    /* box-shadow: 0 0 3px green inset, 0 0 3px darkgrey; */
     background-color: snow;
 }
 .matched,
@@ -199,13 +199,11 @@ section li {
     position: relative;
     overflow: hidden;
     padding: 3%;
-    /* background-color: ghostwhite; */
     background-color: whitesmoke;
     box-shadow: 0px 1px 8px darkgrey;
     border-radius: 5px;
 }
 .active {
-    /* box-shadow: 0px 1px 8px darkgrey, 0px 0px 5px green inset; */
     background-color: snow;
     box-shadow: 0px 0px 5px darkgrey;
     padding: 3% 5%;
@@ -264,11 +262,12 @@ section li {
 }
 *::-webkit-scrollbar {
     width: 5px;
-    background-color: ghostwhite;
     outline: 1px solid darkgrey;
     box-shadow: 0px 0px 3px darkgrey inset;
 }
 *::-webkit-scrollbar-thumb {
-    box-shadow: 0px 0px 5px darkgrey inset;
+    box-shadow: 0px 0px 3px #880000;
+    background-color: ghostwhite;
+    width: 5px;
     border-radius: 15px;
 }
