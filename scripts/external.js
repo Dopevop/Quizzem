@@ -6,12 +6,15 @@ function timeout(delay) {
 }
 
 const fetch = (options = {method:'post'}) => new Promise((resolve,reject) => {
+    timeout(3000).then(()=>{console.log("3 Seconds have passed")});
     let request = new XMLHttpRequest();
     let url = "https://web.njit.edu/~djo23/CS490/curlObj.php";
-    request.onload = resolve;
+    let jsonStr = buildPostBody("addQ");
+    request.onload = resolve(request.responseText);
     request.onerror = reject;
     request.open(options.method, url, true);
-    request.send();
+    request.send(jsonStr);
+    console.log("Sent:",jsonStr);
 });
 
 function sendRequest(reqType) {
@@ -227,9 +230,8 @@ function validateForm(type, callback) {
 			if(nonEmpty("addDesc") && nonEmpty("addTopic")) {
 				var testsArray = getNonEmptyInputs("addTests");
 				if(validateTests(testsArray)){
-					// callback(type).then((reply)=>{handleReply(reply)}).catch();
-                    // timeout(2000).then(()=>{console.log("2 seconds have passed")});
-                    fetch().then(()=>{console.log("2 seconds have passed")});
+                    fetch().then((x)=>{console.log(x)});
+                    // fetch().then(()=>{                    });
 					clearForm("addForm");
 				} else {
 					alert("Need two test cases: e.g. func(a,b)=ans");
