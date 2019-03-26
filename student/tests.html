@@ -12,31 +12,31 @@
 <body>
   <header>
     <main>
-      <nav><a href='welcome.html'><h2>Quizzem</h2></a></nav>
-      <section><h4>Header Section</h4></section>
-      <aside>Header Aside</aside>
+      <nav id="sHeadNav"><a href='welcome.html'><h2>Quizzem</h2></a></nav>
+      <section id="sHeadSection"><h4>Header Section</h4></section>
+      <aside id="sHeadAside">Header Aside</aside>
     </main>
   </header>
   <main class="clearfix">
 
-    <nav class=box>
+    <nav id="sMainNav" class=box>
       <ul id="navList">
         <li class="currTab"><a href='tests.html'>Tests</a></li>
         <li>Grades</li>
       </ul>
     </nav>
 
-    <section class="box">
+    <section id="sMainSection" class="box">
       <ul id="sTestDisp">
       </ul>
     </section>
     
-    <aside id="quizBuilder" class="box">
+    <aside id="sMainAside" id="quizBuilder" class="box">
       <form>
         <fieldset>
           <legend>Finish Attempt</legend>
           Comments: </br>
-          <textarea style="width:250; height:100"></textarea> </br>
+          <textarea style="width:250; height:80"></textarea> </br>
           <button type="button">Submit</button>
         </fieldset>
       </form>

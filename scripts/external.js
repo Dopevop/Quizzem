@@ -222,176 +222,190 @@ function updateDisplays(displayIdArr) {
 
 /* Addes a toggle-able item to the display */
 function addItemToDisplay(newItem, displayId, num) {
-	//console.log("addItemToDisplay");
-	if(displayId === "matchedList") {
-		var item      = document.createElement("LI");
-		var descText  = document.createTextNode(newItem['desc']);
-		var diffText  = document.createTextNode("Difficulty: "+convertDiffFormat(newItem['diff']));
-		var topicText = document.createTextNode("Topic: "+newItem['topic']);
-		var strObj    = getIdClassStrObj(newItem, displayId);
-		item.setAttribute("id", strObj['idStr']);
-		item.setAttribute("class", strObj['classStr']);
-		item.addEventListener("click", function() { toggleSelected( strObj['idStr'] ) });
-		item.appendChild(descText);
-		item.appendChild(document.createElement("BR"));
-		item.appendChild(diffText);
-		item.appendChild(topicText);
-	}
-    else if(displayId === "activeList") {
-
-        var thisDesc = newItem['desc']; // Variables specific
-        var thisNum  = num + 1;         // to this quetion
-        var thisPts  = 5;               
-		var strObj   = getIdClassStrObj(newItem, displayId);
-        var idStr    = strObj['idStr'];
-
-		var item      = document.createElement("LI");  // Build the elements
-		var qDiv      = document.createElement("DIV"); // that will go into
-		var qTop      = document.createElement("DIV"); // this question
-		var qTopLeft  = document.createElement("DIV");
-		var qTopMid   = document.createElement("DIV");
-		var qTopRight = document.createElement("DIV");
-		var qBot      = document.createElement("DIV");
-        var qBtn      = document.createElement("BUTTON");
-        var qBtnText  = document.createTextNode("X");
-		var qNum      = document.createTextNode(thisNum + ".)");
-		var qDesc     = document.createTextNode(thisDesc);
-        var qPtsInput = document.createElement("INPUT");
-		var qPtsText  = document.createTextNode(" Pts");
-        
-             qDiv.setAttribute("class", "qDiv active"); // Set attributes of
-             qDiv.setAttribute("id", idStr);     // and append children to
-             qDiv.appendChild(qTop);             // the elements
-             qDiv.appendChild(qBot);             
-             qDiv.appendChild(qBtn);             
-             qTop.setAttribute("class", "qTop"); 
-             qTop.appendChild(qTopLeft);
-             qTop.appendChild(qTopMid);
-             qTop.appendChild(qTopRight);
-         qTopLeft.setAttribute("class", "qTopLeft");
-         qTopLeft.appendChild(qNum);
-          qTopMid.setAttribute("class", "qTopMid");
-          qTopMid.appendChild(qDesc);
-        qTopRight.setAttribute("class", "qTopRight");
-        qTopRight.appendChild(qPtsInput);
-        qTopRight.appendChild(qPtsText);
-             qBtn.setAttribute("class", "qBtn");
-             qBtn.addEventListener("click", () => { toggleSelected(idStr); });
-             qBtn.appendChild(qBtnText);
-        qPtsInput.setAttribute("class", "qPts");
-        qPtsInput.setAttribute("maxlength", "3");
-        qPtsInput.setAttribute("size", "1");
-        qPtsInput.setAttribute("tabindex", thisNum);
-             qBot.setAttribute("class", "qBot"); // currently unused, may add add'l Q info here
-
-			 item.appendChild(qDiv); // Finally, add new question div to list of questions
+    var item;
+    switch(displayId) {
+        case "matchedList":
+            item = buildMatchedQuestionItem(newItem, displayId, num);
+            break;
+        case "activeList":
+            item = buildActiveQuestionItem(newItem, displayId, num);
+            break;
+        case "sTestDisp":
+            if(sActiveT.length === 0)
+                item = buildTestSummaryItem(newItem, displayId, num);
+            else if(sActiveT.length === 1) 
+                item = buildQuestionItem(newItem, displayId, num);
+            else
+                item = document.createTextNode("sActiveT has "+sActiveT.length+" tests in it!");
+            break;
+        default:
+            item = document.createTextNode(displayId + " not handled by addItemToDisplay!");
     }
-	else if(displayId === "sTestDisp" && sActiveT.length === 0) {
-
-        var thisDesc  = newItem['desc'];        // Get the variables
-        var thisQues  = newItem['ques'];        // specific to this test
-        var thisNum   = newItem['ques'].length; // Figure out the number of questions
-		var strObj    = getIdClassStrObj(newItem, displayId);
-        var uniqTops  = [];                     // Figure out the topics of these questions
-        var uniqDiffs = [];                     // Figure out the difficulties of these questions
-        var lowerCaseTops = [];
-        for(var i=0; i<thisNum; i++) {
-            var thisQ    = thisQues[i];
-            var thisTop  = thisQ['topic'];
-            var thisDiff = thisQ['diff'];
-            if( !inArr(thisTop.toLowerCase(), lowerCaseTops) ) {
-                uniqTops.push( thisTop );
-                lowerCaseTops.push( thisTop.toLowerCase() );
-            }
-            if( !inArr(thisDiff, uniqDiffs) ) {
-                uniqDiffs.push( thisDiff );
-            }
-        }
-        uniqDiffs.sort();                       // Sort the difficulties
-        var uniqDiffsText = [];                 // and turn them into strings
-        for(var i=0; i<uniqDiffs.length; i++) { //
-            uniqDiffsText.push( convertDiffFormat(uniqDiffs[i]) );
-        }
-        var topicStr = "";
-        var diffStr = "";
-        for(var i=0; i<uniqTops.length; i++) {
-            var leadStr = (i===0)? "" : (i===uniqTops.length-1)? " & " : ", ";
-            topicStr += leadStr + uniqTops[i];
-        }
-        for(var i=0; i<uniqDiffsText.length; i++) {
-            var leadStr = (i===0)? "" : (i===(uniqDiffsText.length-1))? " & " : ", ";
-            diffStr += leadStr + uniqDiffsText[i];
-        }
-        var queStr = (thisNum === 1)? " Question" : " Questions";
-
-		var item    = document.createElement("LI");  // Create the elements that
-		var tTop    = document.createElement("DIV"); // will go into the new item
-		var tBot    = document.createElement("DIV"); 
-		var tDesc   = document.createTextNode(thisDesc);
-		var tNumQ   = document.createTextNode(thisNum + queStr);
-        var tTopics = document.createTextNode("Topics: " + topicStr);
-        var tDiffs  = document.createTextNode("Difficulties: " + diffStr);
-
-        tTop.setAttribute("class", "tTop");
-        tTop.appendChild(tDesc);
-        tBot.setAttribute("class", "tBot");
-        tBot.appendChild(tNumQ);
-		tBot.appendChild(document.createElement("BR"));
-        tBot.appendChild(tTopics);
-		tBot.appendChild(document.createElement("BR"));
-        tBot.appendChild(tDiffs);
-		item.setAttribute("id",    strObj['idStr']);
-		item.setAttribute("class", strObj['classStr']);
-        item.setAttribute("tabindex", thisNum);
-		item.addEventListener("click", () => { toggleSelected(strObj['idStr'])	});
-		item.addEventListener("keyup", (e) => { if(e.keyCode==13) toggleSelected(strObj['idStr'])});
-		item.appendChild(tTop);
-		item.appendChild(tBot);
-	} 
-	else if(displayId === "sTestDisp" && sActiveT.length === 1) {
-        var item = buildQuestionItem(newItem, num);
-	}
-	else {
-	}
 	document.getElementById(displayId).appendChild(item);
 }
 
-function buildQuestionItem(newItem, num) {
-        thisDesc = newItem['desc']; // Variables specific
-        thisNum  = num + 1;         // to this quetion
-        thisPts  = 5;               //
+function buildMatchedQuestionItem(newItem, displayId, num) {
+    var item      = document.createElement("LI");
+    var descText  = document.createTextNode(newItem['desc']);
+    var diffText  = document.createTextNode("Difficulty: "+convertDiffFormat(newItem['diff']));
+    var topicText = document.createTextNode("Topic: "+newItem['topic']);
+    var strObj    = getIdClassStrObj(newItem, displayId);
+    item.setAttribute("id", strObj['idStr']);
+    item.setAttribute("class", strObj['classStr']);
+    item.addEventListener("click", function() { toggleSelected( strObj['idStr'] ) });
+    item.appendChild(descText);
+    item.appendChild(document.createElement("BR"));
+    item.appendChild(diffText);
+    item.appendChild(topicText);
+    return item;
+}
 
-		var item      = document.createElement("LI");  // Build the elements
-		var qDiv      = document.createElement("DIV"); // that will go into
-		var qTop      = document.createElement("DIV"); // this question
-		var qTopLeft  = document.createElement("DIV");
-		var qTopMid   = document.createElement("DIV");
-		var qTopRight = document.createElement("DIV");
-		var qBot      = document.createElement("DIV");
-		var qAns      = document.createElement("DIV");
-		var qNum      = document.createTextNode(thisNum + ".)");
-		var qDesc     = document.createTextNode(thisDesc);
-		var qPoints   = document.createTextNode(thisPts + " Pts");
-        
-             qDiv.setAttribute("class", "qDiv"); // Set attributes of
-             qDiv.appendChild(qTop);             // and append children to
-             qDiv.appendChild(qBot);             // the elements
-             qTop.setAttribute("class", "qTop"); 
-             qTop.appendChild(qTopLeft);
-             qTop.appendChild(qTopMid);
-             qTop.appendChild(qTopRight);
-         qTopLeft.setAttribute("class", "qTopLeft");
-         qTopLeft.appendChild(qNum);
-          qTopMid.setAttribute("class", "qTopMid");
-          qTopMid.appendChild(qDesc);
-        qTopRight.setAttribute("class", "qTopRight");
-        qTopRight.appendChild(qPoints);
-             qBot.setAttribute("class", "qBot");
-             qBot.appendChild(qAns);
-             qAns.setAttribute("class", "qAns");
-             qAns.setAttribute("contenteditable", "true");
+function buildActiveQuestionItem(newItem, displayId, num) {
+    var thisDesc = newItem['desc'];                          // Variables specific
+    var thisNum  = num + 1;                                  // to this quetion
+    var thisPts  = 5;
+    var strObj   = getIdClassStrObj(newItem, displayId);
+    var idStr    = strObj['idStr'];
 
-			 item.appendChild(qDiv);
+    var item      = document.createElement("LI");            // Build the elements
+    var qDiv      = document.createElement("DIV");           // that will go into
+    var qTop      = document.createElement("DIV");           // this question
+    var qTopLeft  = document.createElement("DIV");
+    var qTopMid   = document.createElement("DIV");
+    var qTopRight = document.createElement("DIV");
+    var qBot      = document.createElement("DIV");
+    var qBtn      = document.createElement("BUTTON");
+    var qBtnText  = document.createTextNode("X");
+    var qNum      = document.createTextNode(thisNum + ".)");
+    var qDesc     = document.createTextNode(thisDesc);
+    var qPtsInput = document.createElement("INPUT");
+    var qPtsText  = document.createTextNode(" Pts");
+         qDiv.setAttribute("class", "qDiv active");          // Set attributes of
+         qDiv.setAttribute("id", idStr);                     // and append children to
+         qDiv.appendChild(qTop);                             // the elements
+         qDiv.appendChild(qBot);             
+         qDiv.appendChild(qBtn);             
+         qTop.setAttribute("class", "qTop"); 
+         qTop.appendChild(qTopLeft);
+         qTop.appendChild(qTopMid);
+         qTop.appendChild(qTopRight);
+     qTopLeft.setAttribute("class", "qTopLeft");
+     qTopLeft.appendChild(qNum);
+      qTopMid.setAttribute("class", "qTopMid");
+      qTopMid.appendChild(qDesc);
+    qTopRight.setAttribute("class", "qTopRight");
+    qTopRight.appendChild(qPtsInput);
+    qTopRight.appendChild(qPtsText);
+         qBtn.setAttribute("class", "qBtn");
+         qBtn.addEventListener("click", () => { toggleSelected(idStr); });
+         qBtn.appendChild(qBtnText);
+    qPtsInput.setAttribute("class", "qPts");
+    qPtsInput.setAttribute("maxlength", "3");
+    qPtsInput.setAttribute("size", "1");
+    qPtsInput.setAttribute("tabindex", thisNum);
+         qBot.setAttribute("class", "qBot"); 
+         item.appendChild(qDiv); 
+    return item;
+}
+
+function buildTestSummaryItem(newItem, displayId, num) {
+    var thisDesc  = newItem['desc'];        // Get the variables
+    var thisQues  = newItem['ques'];        // specific to this test
+    var thisNum   = newItem['ques'].length; // Figure out the number of questions
+    var strObj    = getIdClassStrObj(newItem, displayId);
+    var uniqTops  = [];                     // Figure out the topics of these questions
+    var uniqDiffs = [];                     // Figure out the difficulties of these questions
+    var lowerCaseTops = [];
+    for(var i=0; i<thisNum; i++) {
+        var thisQ    = thisQues[i];
+        var thisTop  = thisQ['topic'];
+        var thisDiff = thisQ['diff'];
+        if( !inArr(thisTop.toLowerCase(), lowerCaseTops) ) {
+            uniqTops.push( thisTop );
+            lowerCaseTops.push( thisTop.toLowerCase() );
+        }
+        if( !inArr(thisDiff, uniqDiffs) ) {
+            uniqDiffs.push( thisDiff );
+        }
+    }
+    uniqDiffs.sort();                       // Sort the difficulties
+    var uniqDiffsText = [];                 // and turn them into strings
+    for(var i=0; i<uniqDiffs.length; i++) { //
+        uniqDiffsText.push( convertDiffFormat(uniqDiffs[i]) );
+    }
+    var topicStr = "";
+    var diffStr = "";
+    for(var i=0; i<uniqTops.length; i++) {
+        var leadStr = (i===0)? "" : (i===uniqTops.length-1)? " & " : ", ";
+        topicStr += leadStr + uniqTops[i];
+    }
+    for(var i=0; i<uniqDiffsText.length; i++) {
+        var leadStr = (i===0)? "" : (i===(uniqDiffsText.length-1))? " & " : ", ";
+        diffStr += leadStr + uniqDiffsText[i];
+    }
+    var queStr  = (thisNum === 1)? " Question" : " Questions";
+    var item    = document.createElement("LI");  // Create the elements that
+    var tTop    = document.createElement("DIV"); // will go into the new item
+    var tBot    = document.createElement("DIV");
+    var tDesc   = document.createTextNode(thisDesc);
+    var tNumQ   = document.createTextNode(thisNum + queStr);
+    var tTopics = document.createTextNode("Topics: " + topicStr);
+    var tDiffs  = document.createTextNode("Difficulties: " + diffStr);
+
+    tTop.setAttribute("class", "tTop");
+    tTop.appendChild(tDesc);
+    tBot.setAttribute("class", "tBot");
+    tBot.appendChild(tNumQ);
+    tBot.appendChild(document.createElement("BR"));
+    tBot.appendChild(tTopics);
+    tBot.appendChild(document.createElement("BR"));
+    tBot.appendChild(tDiffs);
+    item.setAttribute("id",    strObj['idStr']);
+    item.setAttribute("class", strObj['classStr']);
+    item.setAttribute("tabindex", num+1);
+    item.addEventListener("click", () => { toggleSelected(strObj['idStr'])  });
+    item.addEventListener("keyup", (e) => { if(e.keyCode==13) toggleSelected(strObj['idStr'])});
+    item.appendChild(tTop);
+    item.appendChild(tBot);
+    return item;
+}
+
+function buildQuestionItem(newItem, displayId, num) {
+    thisDesc = newItem['desc']; // Variables specific
+    thisNum  = num + 1;         // to this quetion
+    thisPts  = 5;               //
+
+    var item      = document.createElement("LI");  // Build the elements
+    var qDiv      = document.createElement("DIV"); // that will go into
+    var qTop      = document.createElement("DIV"); // this question
+    var qTopLeft  = document.createElement("DIV");
+    var qTopMid   = document.createElement("DIV");
+    var qTopRight = document.createElement("DIV");
+    var qBot      = document.createElement("DIV");
+    var qAns      = document.createElement("DIV");
+    var qNum      = document.createTextNode(thisNum + ".)");
+    var qDesc     = document.createTextNode(thisDesc);
+    var qPoints   = document.createTextNode(thisPts + " Pts");
+    
+         qDiv.setAttribute("class", "qDiv"); // Set attributes of
+         qDiv.appendChild(qTop);             // and append children to
+         qDiv.appendChild(qBot);             // the elements
+         qTop.setAttribute("class", "qTop"); 
+         qTop.appendChild(qTopLeft);
+         qTop.appendChild(qTopMid);
+         qTop.appendChild(qTopRight);
+     qTopLeft.setAttribute("class", "qTopLeft");
+     qTopLeft.appendChild(qNum);
+      qTopMid.setAttribute("class", "qTopMid");
+      qTopMid.appendChild(qDesc);
+    qTopRight.setAttribute("class", "qTopRight");
+    qTopRight.appendChild(qPoints);
+         qBot.setAttribute("class", "qBot");
+         qBot.appendChild(qAns);
+         qAns.setAttribute("class", "qAns");
+         qAns.setAttribute("contenteditable", "true");
+         item.appendChild(qDiv);
+
     return item;
 }
 
