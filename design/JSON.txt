@@ -13,22 +13,22 @@ addQ:
 request { type:addQ, desc:STR, topic:STR, diff:INT, tests:[STR] }
 reply 	{ type:addQ, error:STR, que:{QUESTION} }
 
-searchQ:
-request { type:searchQ, diffs:[INT], topic:STR, keys:[STR] }
-reply	{ type:searchQ, error:STR, ques:[{QUESTION}] }
+getQ:
+request { type:getQ, topic:STR, diffs:[INT], keys:[STR] }
+reply	{ type:getQ, error:STR, ques:[{QUESTION}] }
 
-addTest:
-request { type:addTest, desc:STR, rel:INT, ques:[{QUESTION}] }
-reply	{ type:addTest, error:STR, test:{TEST}}
+addT:
+request { type:addT, desc:STR, rel:INT, ques:[{QUESTION}] }
+reply	{ type:addT, error:STR, test:{TEST}}
 
-getTests:
-request { type:getTests, rels:[INT] }
-reply	{ type:getTests, error:STR, tests:[{TEST}] }
+getT:
+request { type:getT, rels:[INT] }
+reply	{ type:getT, error:STR, tests:[{TEST}] }
 
-submitTest:
-request { type:submitTest, id:INT, answers:[{ANSWER}] }
-reply   { type:submitTest, error:INT, id:INT, sub:INT, answers:[{ANSWER}] }
+addA:
+request { type:addA, id:INT, comment:STR, answers:[{ANSWER}] }
+reply   { type:addA, error:INT, id:INT, sub:INT, answers:[{ANSWER}] }
 
-getAnswers:
-request { type:getAnswers, ids:[INT] }
-reply	{ type:getAnswers, error:STR, answers:[{ANSWER}] }
+getA:
+request { type:getA, ids:[INT] }
+reply	{ type:getA, error:STR, answers:[{ANSWER}] }

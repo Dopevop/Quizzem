@@ -1,3 +1,112 @@
+function sendRequest(reqType, option) {
+	return new Promise( (resolve, reject) => {
+		var xhr     = new XMLHttpRequest();
+		var jsonStr = buildPostBody(reqType);
+		xhr.onerror = () => { reject(Error('Network error.')); };
+		xhr.onload  = () => {
+			if (xhr.status === 200) {
+				console.log("Rcvd:"+xhr.responseText);
+				resolve(responseText);
+			} else {
+				reject(Error('Status != 200, '));
+			}
+		};
+		xhr.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
+		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhr.send(jsonStr);
+		console.log("Sent:" + jsonStr);
+	});
+}
+
+function handleReply(replyText) {
+	var replyObj = JSON.parse(replyText);
+	switch(replyObj['type']) {
+		case 'addQ':
+			if(replyObj["Question"]["QId"]){ // Make an Id field if absent
+				replyObj["Question"]["Id"] = replyObj["Question"]["QId"];
+			}
+			iLocalQ.push(replyObj["Question"]);  // Add to local Qs
+			iMatchQ.push(replyObj["Question"]); // Add to matched Qs
+			updateDisplays(["matchedList"]);     // Update matchedList
+			break;
+		case 'getQ':
+			var DBQ = replyObj["Questions"];       // Extract all Qs
+			for(var i=0; i<DBQ.length; i++){       // Put all uniq Qs in
+				if(uniqQuestion(DBQ[i], iLocalQ)){ //   instructor's local
+					iLocalQ.push(DBQ[i]);          //   Q array
+				}
+			}
+			break;
+		case 'getT':
+			var localT = (source == "student")? sLocalT : iLocalT; 
+			var DBT = replyObj["Tests"];          // Update the
+			for(var i=0; i<DBT.length; i++){      // relevant array
+				if(uniqQuestion(DBT[i], localT)){ // Only add
+					localT.push(DBT[i]);          // Uniq Qs
+				}
+			}
+			break;
+		case 'addT':
+			var newTest = replyObj["Test"];
+			iLocalT.push(newTest);
+			break;
+	}
+}
+
+/* Creates the JSON obj that will encapsulate the request to the server
+ * */
+function buildPostBody(type) {
+	var jsonObj;
+	switch(type) {
+		case 'addQ':
+			jsonObj = {
+				'type'  : 'addQ',
+				'desc'  : addDesc.value,
+				'topic' : addTopic.value,
+				'diff'  : addRange.value,
+				'tests' : getNonEmptyInputs('addTests'),
+			}
+			break;
+		case 'getQ':
+			jsonObj = {
+				'type'  : 'getQ',   // Build SearchQ req
+				'topic' : '',          // Don't filter by topic
+				'diffs' : [1,2,3,4,5], // Don't filter by diff
+				'keys'  : [],          // Don't filter by keyword
+			}
+			break;
+		case 'addT':
+			jsonObj = {
+				'type' : 'addT',
+				'desc' : testDesc.value,
+				'rel'  : getCheckedValue("testRelease"),
+				'ques' : getSelectedQs(),
+			}
+			break;
+		case 'getT':
+			jsonObj = {
+				'type' : 'getT',                         // Send a GetTests req
+				'rels' : (source == 'student')? [1] : [0,1], // Only released tests for student
+			}
+			break;
+        case 'addA':
+            jsonObj = {
+                'type'    : 'addA',
+                'id'      : getActiveTestId(),
+                'comment' : getStudentComment(),
+                'answers' : getStudentAnswers(),
+            }
+            break;
+        case 'getA':
+            jsonObj = {
+                'type' : 'getA',
+                'ids'  : [],
+            }
+            break;
+	}
+	return JSON.stringify(jsonObj);
+}
+
 function insertTab(e) {
     if (e.keyCode === 9) {
         document.execCommand('insertHTML', false, '    ');
