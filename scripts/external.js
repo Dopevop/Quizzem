@@ -1,4 +1,20 @@
-function sendRequest(reqType, option) {
+// Just for testing promises
+function timeout(delay) {
+    return new Promise((resolve,reject) => {
+        setTimeout(resolve, delay);
+    });
+}
+
+const fetch = (options = {method:'post'}) => new Promise((resolve,reject) => {
+    let request = new XMLHttpRequest();
+    let url = "https://web.njit.edu/~djo23/CS490/curlObj.php";
+    request.onload = resolve;
+    request.onerror = reject;
+    request.open(options.method, url, true);
+    request.send();
+});
+
+function sendRequest(reqType) {
 	return new Promise( (resolve, reject) => {
 		var xhr     = new XMLHttpRequest();
 		var jsonStr = buildPostBody(reqType);
@@ -6,7 +22,7 @@ function sendRequest(reqType, option) {
 		xhr.onload  = () => {
 			if (xhr.status === 200) {
 				console.log("Rcvd:"+xhr.responseText);
-				resolve(responseText);
+				resolve(xhr.responseText);
 			} else {
 				reject(Error('Status != 200, '));
 			}
@@ -18,19 +34,46 @@ function sendRequest(reqType, option) {
 	});
 }
 
+function testSendRequest(reqType) {
+	return new Promise( (resolve, reject) => {
+		var jsonStr = buildPostBody(reqType);
+        var jsonObj = JSON.parse(jsonStr);
+		console.log("Sent:" + jsonStr);
+        // var replyObj = asyncReturnTestObj(jsonObj);
+        var replyStr = JSON.stringify(asyncReturnTestObj(jsonObj));
+        console.log("Rcvd:"+replyStr);
+        resolve(replyStr);
+	});
+}
+
+function asyncReturnTestObj(jsonObj) {
+    var replyObj = { // expected reply from server upon addQ request
+        'type':'addQ',
+        'error':0,
+        'que':{
+            'id':9000,
+            'desc':jsonObj['desc'],
+            'topic':jsonObj['topic'],
+            'diff':jsonObj['diff'],
+            'tests':jsonObj['tests']
+        },
+    };
+    window.setTimeout(() => replyObj, 3000);
+}
+
 function handleReply(replyText) {
 	var replyObj = JSON.parse(replyText);
 	switch(replyObj['type']) {
 		case 'addQ':
-			if(replyObj["Question"]["QId"]){ // Make an Id field if absent
-				replyObj["Question"]["Id"] = replyObj["Question"]["QId"];
+			if(replyObj['que']["QId"]){ // Make an Id field if absent
+				replyObj['que']['id'] = replyObj['que']["QId"];
 			}
-			iLocalQ.push(replyObj["Question"]);  // Add to local Qs
-			iMatchQ.push(replyObj["Question"]); // Add to matched Qs
+			iLocalQ.push(replyObj['que']);  // Add to local Qs
+			iMatchQ.push(replyObj['que']); // Add to matched Qs
 			updateDisplays(["matchedList"]);     // Update matchedList
 			break;
 		case 'getQ':
-			var DBQ = replyObj["Questions"];       // Extract all Qs
+			var DBQ = replyObj['ques'];       // Extract all Qs
 			for(var i=0; i<DBQ.length; i++){       // Put all uniq Qs in
 				if(uniqQuestion(DBQ[i], iLocalQ)){ //   instructor's local
 					iLocalQ.push(DBQ[i]);          //   Q array
@@ -39,7 +82,7 @@ function handleReply(replyText) {
 			break;
 		case 'getT':
 			var localT = (source == "student")? sLocalT : iLocalT; 
-			var DBT = replyObj["Tests"];          // Update the
+			var DBT = replyObj['tests'];          // Update the
 			for(var i=0; i<DBT.length; i++){      // relevant array
 				if(uniqQuestion(DBT[i], localT)){ // Only add
 					localT.push(DBT[i]);          // Uniq Qs
@@ -47,7 +90,7 @@ function handleReply(replyText) {
 			}
 			break;
 		case 'addT':
-			var newTest = replyObj["Test"];
+			var newTest = replyObj['test'];
 			iLocalT.push(newTest);
 			break;
 	}
@@ -180,11 +223,13 @@ function displaySearchResults() {
 /* Checks that all fields are correct in form being submitted */
 function validateForm(type, callback) {
 	switch(type) {
-		case "AddQ":
+		case "addQ":
 			if(nonEmpty("addDesc") && nonEmpty("addTopic")) {
 				var testsArray = getNonEmptyInputs("addTests");
 				if(validateTests(testsArray)){
-					callback();
+					// callback(type).then((reply)=>{handleReply(reply)}).catch();
+                    // timeout(2000).then(()=>{console.log("2 seconds have passed")});
+                    fetch().then(()=>{console.log("2 seconds have passed")});
 					clearForm("addForm");
 				} else {
 					alert("Need two test cases: e.g. func(a,b)=ans");
@@ -193,7 +238,7 @@ function validateForm(type, callback) {
 				alert("Make sure Description and Topic are filled out!");
 			}
 			break;
-		case "AddTest":
+		case "addT":
 			if(nonEmpty("testDesc")) {
 				callback();
 				clearForm("testForm");
@@ -202,8 +247,8 @@ function validateForm(type, callback) {
 				alert("Make sure you've named the exam!");
 			}
 			break;
-		case "SubmitTest":
-			alert("Submitting Test!");
+		case "addA":
+			alert("Adding Answer!");
 			break;
 		default:
 			//console.log("Invalid type to validate");
@@ -325,9 +370,7 @@ function resetDisplay(displayId) {
 function updateDisplays(displayIdArr) {
 	for(var i = 0; i<displayIdArr.length; i++){
 		var thisId = displayIdArr[i];
-        console.log("thisId", thisId);
 		var relArr = getRelArr(thisId);
-        console.log(relArr);
 		resetDisplay(thisId);
 		for(var j=0; j<relArr.length; j++) {
 			addItemToDisplay(relArr[j], thisId, j);
@@ -597,8 +640,8 @@ function getNonEmptyInputs(divId) {
 	var result = [];
 	var elems = document.getElementById(divId).children;
 	for(var i = 0; i < elems.length; i++) {
-		if(elems[i].tagName == "INPUT")
-			if(elems[i].value != "")
+		if(elems[i].tagName === "INPUT")
+			if(elems[i].value !== "")
 				result.push(elems[i].value);
 	}
 	return result;

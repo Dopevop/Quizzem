@@ -104,14 +104,14 @@
 		var iLocalQ  = [q0, q1, q2, q3, q4, q5, q6];
 		
 		/* Adding event listeners to submit and clear buttons  */
-				 addSub.addEventListener("click"    , () => { validateForm("AddQ", sendAddQ)    } );
+         addSub.addEventListener("click"    , () => { validateForm("addQ", testSendRequest)    } );
         addForm.addEventListener("mousemove", () => { updateDiff()                      } );
        addRange.addEventListener("mouseup"  , () => { updateDiff()                      } );
        addRange.addEventListener("keyup"    , () => { updateDiff()                      } );
       searchSub.addEventListener("click"    , () => { displaySearchResults()            } );
     searchReset.addEventListener("click"    , () => { clearForm("searchForm")           } );
     searchReset.addEventListener("click"    , () => { clearMatches()                    } );
-        testSub.addEventListener("click"    , () => { validateForm("AddTest", sendAddT) } );
+        testSub.addEventListener("click"    , () => { validateForm("addT", sendAddT) } );
         testSub.addEventListener("click"    , () => { clearArray(iActiveQ)              } );
         testSub.addEventListener("click"    , () => { updateDisplays(["previewList"])   } );
 
