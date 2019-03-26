@@ -342,17 +342,21 @@ function addItemToDisplay(newItem, displayId, num) {
         tBot.appendChild(tDiffs);
 		item.setAttribute("id",    strObj['idStr']);
 		item.setAttribute("class", strObj['classStr']);
-		item.addEventListener("click", function() { toggleSelected(strObj['idStr'])	});
+        item.setAttribute("tabindex", thisNum);
+		item.addEventListener("click", () => { toggleSelected(strObj['idStr'])	});
+		item.addEventListener("keyup", (e) => { if(e.keyCode==13) toggleSelected(strObj['idStr'])});
 		item.appendChild(tTop);
 		item.appendChild(tBot);
-
-		// item.appendChild(tNumQ);
-		// item.appendChild(document.createElement("BR"));
-		// item.appendChild(tTopics);
-		// item.appendChild(document.createElement("BR"));
-		// item.appendChild(tDiffs);
 	} 
 	else if(displayId === "sTestDisp" && sActiveT.length === 1) {
+        var item = buildQuestionItem(newItem, num);
+	}
+	else {
+	}
+	document.getElementById(displayId).appendChild(item);
+}
+
+function buildQuestionItem(newItem, num) {
         thisDesc = newItem['desc']; // Variables specific
         thisNum  = num + 1;         // to this quetion
         thisPts  = 5;               //
@@ -388,10 +392,7 @@ function addItemToDisplay(newItem, displayId, num) {
              qAns.setAttribute("contenteditable", "true");
 
 			 item.appendChild(qDiv);
-	}
-	else {
-	}
-	document.getElementById(displayId).appendChild(item);
+    return item;
 }
 
 

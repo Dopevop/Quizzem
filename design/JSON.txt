@@ -31,4 +31,4 @@ reply   { type:submitTest, ?????? }
 
 getAnswers:
 request { type:getAnswers, ids:[INT] }
-reply	{ type:getAnswers, error:STR, answers:[{answer}] }
+reply	{ type:getAnswers, error:STR, answers:[{ANSWER}] }
