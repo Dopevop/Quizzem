@@ -27,7 +27,7 @@ reply	{ type:getTests, error:STR, tests:[{TEST}] }
 
 submitTest:
 request { type:submitTest, id:INT, answers:[{ANSWER}] }
-reply   { type:submitTest, ?????? }
+reply   { type:submitTest, error:INT, id:INT, sub:INT, answers:[{ANSWER}] }
 
 getAnswers:
 request { type:getAnswers, ids:[INT] }

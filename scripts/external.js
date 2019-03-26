@@ -1,3 +1,9 @@
+function insertTab(e) {
+    if (e.keyCode === 9) {
+        document.execCommand('insertHTML', false, '    ');
+        e.preventDefault();
+    }
+}
 
 /* Adds a button to the end of the student's question display */
 function addSubmitToDisplay() {
@@ -382,7 +388,7 @@ function buildQuestionItem(newItem, displayId, num) {
     var qTopMid   = document.createElement("DIV");
     var qTopRight = document.createElement("DIV");
     var qBot      = document.createElement("DIV");
-    var qAns      = document.createElement("DIV");
+    var qAns      = document.createElement("TEXTAREA");
     var qNum      = document.createTextNode(thisNum + ".)");
     var qDesc     = document.createTextNode(thisDesc);
     var qPoints   = document.createTextNode(thisPts + " Pts");
@@ -403,6 +409,7 @@ function buildQuestionItem(newItem, displayId, num) {
          qBot.setAttribute("class", "qBot");
          qBot.appendChild(qAns);
          qAns.setAttribute("class", "qAns");
+         qAns.addEventListener("keydown", (e) => { insertTab(e) });
          qAns.setAttribute("contenteditable", "true");
          item.appendChild(qDiv);
 
