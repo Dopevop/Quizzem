@@ -6,11 +6,12 @@ function timeout(delay) {
 }
 
 const fetch = (options = {method:'post'}) => new Promise((resolve,reject) => {
-    timeout(3000).then(()=>{console.log("3 Seconds have passed")});
+
+    let url     = "https://web.njit.edu/~djo23/CS490/curlObj.php";
     let request = new XMLHttpRequest();
-    let url = "https://web.njit.edu/~djo23/CS490/curlObj.php";
     let jsonStr = buildPostBody("addQ");
-    request.onload = resolve(request.responseText);
+    
+    request.onload = () => resolve(request.responseText); 
     request.onerror = reject;
     request.open(options.method, url, true);
     request.send(jsonStr);
@@ -68,9 +69,8 @@ function handleReply(replyText) {
 	var replyObj = JSON.parse(replyText);
 	switch(replyObj['type']) {
 		case 'addQ':
-			if(replyObj['que']["QId"]){ // Make an Id field if absent
-				replyObj['que']['id'] = replyObj['que']["QId"];
-			}
+            if(replyObj['question'])
+                replyObj['que'] = replyObj['question'];
 			iLocalQ.push(replyObj['que']);  // Add to local Qs
 			iMatchQ.push(replyObj['que']); // Add to matched Qs
 			updateDisplays(["matchedList"]);     // Update matchedList
@@ -224,14 +224,17 @@ function displaySearchResults() {
 }
 
 /* Checks that all fields are correct in form being submitted */
-function validateForm(type, callback) {
+function validateForm(type) {
 	switch(type) {
 		case "addQ":
 			if(nonEmpty("addDesc") && nonEmpty("addTopic")) {
 				var testsArray = getNonEmptyInputs("addTests");
 				if(validateTests(testsArray)){
-                    fetch().then((x)=>{console.log(x)});
-                    // fetch().then(()=>{                    });
+                    // fetch().then((x)=>{console.log(x)});
+                    fetch().then((x)=>{
+                        console.log("responseText:", x);
+                        handleReply(x);
+                    });
 					clearForm("addForm");
 				} else {
 					alert("Need two test cases: e.g. func(a,b)=ans");
