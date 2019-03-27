@@ -1,3 +1,4 @@
+// Heres a test line 
 function sendRequest(reqType, option) {
 	return new Promise( (resolve, reject) => {
 		var xhr     = new XMLHttpRequest();
