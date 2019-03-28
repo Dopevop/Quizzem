@@ -5,72 +5,22 @@ function timeout(delay) {
     });
 }
 
-const fetch = (options = {method:'post'}) => new Promise((resolve,reject) => {
-
+const fetch = (type) => new Promise((resolve,reject) => {
     let url     = "https://web.njit.edu/~djo23/CS490/curlObj.php";
-    let request = new XMLHttpRequest();
-    let jsonStr = buildPostBody("addQ");
-    
-    request.onload = () => resolve(request.responseText); 
-    request.onerror = reject;
-    request.open(options.method, url, true);
-    request.send(jsonStr);
+    let xhr     = new XMLHttpRequest();
+    let source  = (document.getElementById("sHeadNav"))? "student" : "instructor";
+    let jsonStr = buildPostBody(type, source);
+    xhr.onload  = () => resolve(xhr.responseText);
+    xhr.onerror = () => reject("Network Error");
+    xhr.open('post', url, true);
+    xhr.send(jsonStr);
     console.log("Sent:",jsonStr);
 });
 
-function sendRequest(reqType) {
-	return new Promise( (resolve, reject) => {
-		var xhr     = new XMLHttpRequest();
-		var jsonStr = buildPostBody(reqType);
-		xhr.onerror = () => { reject(Error('Network error.')); };
-		xhr.onload  = () => {
-			if (xhr.status === 200) {
-				console.log("Rcvd:"+xhr.responseText);
-				resolve(xhr.responseText);
-			} else {
-				reject(Error('Status != 200, '));
-			}
-		};
-		xhr.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
-		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		xhr.send(jsonStr);
-		console.log("Sent:" + jsonStr);
-	});
-}
-
-function testSendRequest(reqType) {
-	return new Promise( (resolve, reject) => {
-		var jsonStr = buildPostBody(reqType);
-        var jsonObj = JSON.parse(jsonStr);
-		console.log("Sent:" + jsonStr);
-        // var replyObj = asyncReturnTestObj(jsonObj);
-        var replyStr = JSON.stringify(asyncReturnTestObj(jsonObj));
-        console.log("Rcvd:"+replyStr);
-        resolve(replyStr);
-	});
-}
-
-function asyncReturnTestObj(jsonObj) {
-    var replyObj = { // expected reply from server upon addQ request
-        'type':'addQ',
-        'error':0,
-        'que':{
-            'id':9000,
-            'desc':jsonObj['desc'],
-            'topic':jsonObj['topic'],
-            'diff':jsonObj['diff'],
-            'tests':jsonObj['tests']
-        },
-    };
-    window.setTimeout(() => replyObj, 3000);
-}
-
-function handleReply(replyText) {
+function handleReply(replyText, source) {
 	var replyObj = JSON.parse(replyText);
 	switch(replyObj['type']) {
 		case 'addQ':
-            if(replyObj['question'])
-                replyObj['que'] = replyObj['question'];
 			iLocalQ.push(replyObj['que']);  // Add to local Qs
 			iMatchQ.push(replyObj['que']); // Add to matched Qs
 			updateDisplays(["matchedList"]);     // Update matchedList
@@ -91,6 +41,7 @@ function handleReply(replyText) {
 					localT.push(DBT[i]);          // Uniq Qs
 				}
 			}
+            updateDisplays(["sTestDisp"]);
 			break;
 		case 'addT':
 			var newTest = replyObj['test'];
@@ -101,7 +52,7 @@ function handleReply(replyText) {
 
 /* Creates the JSON obj that will encapsulate the request to the server
  * */
-function buildPostBody(type) {
+function buildPostBody(type, source) {
 	var jsonObj;
 	switch(type) {
 		case 'addQ':
@@ -138,7 +89,7 @@ function buildPostBody(type) {
         case 'addA':
             jsonObj = {
                 'type'    : 'addA',
-                'id'      : getActiveTestId(),
+                'id'      : sActiveT[0]['id'],
                 'comment' : getStudentComment(),
                 'answers' : getStudentAnswers(),
             }
@@ -151,6 +102,10 @@ function buildPostBody(type) {
             break;
 	}
 	return JSON.stringify(jsonObj);
+}
+
+function getActiveTest() {
+    return 
 }
 
 function insertTab(e) {
@@ -176,7 +131,6 @@ function addSubmitToDisplay() {
  * Diffs[] : An array of difficulties to filter by
  * Keys[]  : An array of words to search through descriptions by */
 function localSearch(topic, diffs, keys) {
-	//console.log("localSearch");
 	var matches = [];
 	for(var i=0; i<iLocalQ.length; i++){
 		var thisQ = iLocalQ[i];
@@ -190,7 +144,8 @@ function localSearch(topic, diffs, keys) {
 				if(keys.length !== 0){
 					for(var j=0; j<keys.length; j++) {
 						var thisKey = keys[j].toLowerCase();
-						if( thisDesc.match(thisKey)){
+                        var thisRE = new RegExp(thisKey);
+						if( thisDesc.match(thisRE)){
 							// Topic, Diff, & Key matches, add to matches
 							matches.push(thisQ);
 							break;
@@ -230,14 +185,16 @@ function validateForm(type) {
 			if(nonEmpty("addDesc") && nonEmpty("addTopic")) {
 				var testsArray = getNonEmptyInputs("addTests");
 				if(validateTests(testsArray)){
-                    // fetch().then((x)=>{console.log(x)});
-                    fetch().then((x)=>{
-                        console.log("responseText:", x);
-                        handleReply(x);
-                    });
-					clearForm("addForm");
+                    fetch(type)
+                        .then( (replyText) => { 
+                            console.log("Rcvd:", replyText); 
+                            handleReply(replyText);
+                        })
+                        .then(() => timeout(2000))
+                        .then(() => clearForm("addForm"))
+                        .catch("Some error happened");
 				} else {
-					alert("Need two test cases: e.g. func(a,b)=ans");
+                    alert("Need two test cases: e.g. func(a,b)=ans");
 				}
 			} else {
 				alert("Make sure Description and Topic are filled out!");
@@ -245,8 +202,12 @@ function validateForm(type) {
 			break;
 		case "addT":
 			if(nonEmpty("testDesc")) {
-				callback();
-				clearForm("testForm");
+                fetch( type )
+                .then( (x) => {
+                    console.log(x);
+                    handleReply(x);
+                })
+                .then( ( ) => clearForm("testForm") ) ;
 			}
 			else {
 				alert("Make sure you've named the exam!");
@@ -256,7 +217,7 @@ function validateForm(type) {
 			alert("Adding Answer!");
 			break;
 		default:
-			//console.log("Invalid type to validate");
+			console.log("Invalid type to validate");
 	}
 }
 
@@ -382,6 +343,15 @@ function updateDisplays(displayIdArr) {
 		}
 	}
 } 
+
+function updateDisplay(displayId) {
+    switch(displayId) {
+        case "iMainSection":
+            updateMatchedList();
+            updateActiveList();
+            break;
+    }
+}
 
 /* Addes a toggle-able item to the display */
 function addItemToDisplay(newItem, displayId, num) {
