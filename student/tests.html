@@ -50,8 +50,17 @@
     var sActiveT = []; // Should only ever have at most one test inside of it
     console.log(sLocalT);
     console.log(sActiveT); 
-    fetch('getT').then(x => handleReply(x, "student"));
-    finTestBtn.addEventListener("click", () => { fetch('addA').then((x)=>handleReply(x)) });
+    fetch('getT').then( x => { // As soon as page is accessed, download all tests
+      console.log("Rcvd:", x);
+      handleReply(x, "student") 
+    } );
+    finTestBtn.addEventListener("click", () => { 
+        fetch('addA')
+        .then( x => { 
+          console.log("Rcvd:", x);
+          handleReply(x) 
+        } ) 
+    });
   </script>
 </body>
 </html>

@@ -13,6 +13,7 @@ const fetch = (type) => new Promise((resolve,reject) => {
     xhr.onload  = () => resolve(xhr.responseText);
     xhr.onerror = () => reject("Network Error");
     xhr.open('post', url, true);
+    xhr.timeout = 10000;
     xhr.send(jsonStr);
     console.log("Sent:",jsonStr);
 });
