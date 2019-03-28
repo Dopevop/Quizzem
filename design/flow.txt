@@ -1,0 +1,53 @@
+State A: User is at the login page.
+    │
+    └→ User enter's instructor username/password
+        │
+        ├─┤Failed Login├─→ Go to State A
+        │
+        ├─┤Instructor├─→ Go to State B
+        │
+        └─┤Student├─→ Go to State ????
+
+
+State B: Instructor is at Welcome page.
+    │
+    ├→ User clicks on Build tab
+    │   └→ Go to State C
+    │
+    └→ User clicks on "Quizzem" logo
+        └→ Go to State B
+
+
+State C: Instructor is at Build page
+    │
+    ├→ User searches for questions
+    │   └→ Go to State D
+    │
+    ├→ User creates new question
+    │   └→ Go to State D
+    │
+    ├→ User clicks "Quizzem" logo
+    │   └→ Go to State B
+    │
+    └→ User clicks "Build" tab
+        └→ Go to State C
+
+
+State D: Instructor is building test
+    │
+    ├→ User submits selected questions as new test
+    │   └→ Go to State C
+    │
+    ├→ User searches for questions
+    │   └→ Go to State D
+    │
+    ├→ User creates new question
+    │   └→ Go to State D
+    │
+    ├→ User clicks "Quizzem" logo
+    │   └→ Go to State B
+    │
+    └→ User clicks "Build" tab
+        └→ Go to State C
+
+
