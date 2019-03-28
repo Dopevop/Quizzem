@@ -9,15 +9,15 @@
 	<form id="loginForm">
 		<legend>Log in to Quizzem</legend>		
 		<fieldset>
-			<br/><div class="inputLabel">UCID:</div>
-			<input type="text" name="username" id="usrInput" autocomplete="on" >
+			<br/><div class="inputLabel">Username:</div>
+			<input type="text" name="username" id="usrInput" autocomplete="on" autofocus>
 			<br/><br/><div class="inputLabel">Password:</div>
 			<input type="password" name="password" id="pwdInput" autocomplete="off">
 			<br/><br/><div class="buttons">
 				<button class="button" type="button" id="btn">Submit</button>			
 				<input  class="button" type="reset"  id="clr" value="Clear">
 			</div>
-			<p id=Result></p>			
+			<p id="result"></p>			
 		</fieldset>
 	</form>
   <script src="scripts/external.js"></script>
@@ -33,10 +33,10 @@
 			postForm();
 	} );
 	function clearResult() {
-		document.getElementById("Result").innerHTML = "";
+		document.getElementById("result").innerHTML = "";
 	}
 	function postForm() {
-		var response = document.getElementById("Result");
+		var response = document.getElementById("result");
 		response.innerHTML = "Checking...";
 		var xhttp  = new XMLHttpRequest();
 		var jsonObj = {
@@ -49,19 +49,29 @@
     xhttp.onload = () => {
       console.log( "Rcvd: [" + xhttp.responseText + "]" );
       if(jsonObj["username"] === "teacher" && jsonObj["password"] === "teach"){
-        result.innerHTML = "Welcome, Teacher";
-        timeout(3000).then( () => {
-          window.location.href = "https://web.njit.edu/~djo23/CS490/instructor/welcome.html";
+        result.innerHTML = "Welcome, Teacher!";
+        timeout(1500)
+          .then( () => result.insertAdjacentHTML('beforeend', "</br>Redirecting..") )
+          .then( () => timeout(600) )
+          .then( () => {
+            window.location.href = "https://web.njit.edu/~djo23/CS490/instructor/welcome.html";
         });
       } else if(jsonObj["username"] === "student" && jsonObj["password"] === "stu") {
-        result.innerHTML = "Welcome, Student";
-        timeout(3000).then( () => {
-          window.location.href = "https://web.njit.edu/~djo23/CS490/student/welcome.html";
+        result.innerHTML = "Welcome, Student!";
+        timeout(1500)
+          .then( () => result.insertAdjacentHTML('beforeend', "</br>Redirecting..") )
+          .then( () => timeout(600) )
+          .then( () => {
+            window.location.href = "https://web.njit.edu/~djo23/CS490/student/welcome.html";
         });
       } else {
-        result.innerHTML = "Unknown Login";
-        timeout(3000).then( () => {
-          window.location.href = "https://web.njit.edu/~djo23/CS490/login.html";
+        <!-- result.innerHTML = "Unknown Login!"; -->
+        result.insertAdjacentHTML('beforeend', "</br>Unknown Login!")
+        timeout(800)
+          .then( () => result.insertAdjacentHTML('beforeend', "</br>Try again..") )
+          .then( () => timeout(1000) )
+          .then( () => {
+            window.location.href = "https://web.njit.edu/~djo23/CS490/login.html";
         });
       }
 		};
