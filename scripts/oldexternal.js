@@ -1,39 +1,4 @@
-
-// var localQ = (option == "student")? studLocalQ : instLocalQ;
-// if(replyObj["Type"] === "AddQ") {
-// 	alert("Question added successfully!");
-// 	localQ.push(replyObj["Question"]);
-// 	matchedQ.push(replyObj["Question"]);
-// 	updateDisplays(["matchedList"]);
-// }
-// else if(replyObj["Type"] === "SearchQ") {
-// 	// Loop through DB Q's, adding each to local Q's
-// 	var DBQ = replyObj["Questions"];
-// 	for(var i=0; i<DBQ.length; i++){
-// 		if(uniqQuestion(DBQ[i], localQ)){
-// 			localQ.push(DBQ[i]);
-// 		}
-// 	}
-// }
-// else if(replyObj["Type"] === "AddTest") {
-// 	alert("Exam added successfully!");
-// }
-// else if(replyObj["Type"] === "GetTests") {
-// 	if(option == "student") {
-// 		clearArray(studLocalT);
-// 		clearArray(studAvailT);
-// 		addObjsToArray(replyObj["Tests"], studLocalT);
-// 		addObjsToArray(replyObj["Tests"], studAvailT);
-// 		updateDisplays( ["studTestNav", "studTestDisplay"] );
-// 	}
-// }
-// var replyObj = JSON.parse(xhr.responseText);
-// if( replyObj["Error"] != 0 ) {
-// 	console.log("Error: " + replyObj["Error"]);
-// }
-// else {
-// 	handleReply(replyObj);
-// }
+// Heres a test line 
 function sendRequest(reqType, option) {
 	return new Promise( (resolve, reject) => {
 		var xhr     = new XMLHttpRequest();

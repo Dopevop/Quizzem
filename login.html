@@ -2,24 +2,25 @@
 <html>
 <head>
 	<title>Quizzem Login</title>	
-	<link rel="stylesheet" href="styles/mainstyle.css">
+	<link rel="stylesheet" href="styles/login.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 	<form id="loginForm">
 		<legend>Log in to Quizzem</legend>		
 		<fieldset>
-			<br/><div class="inputLabel">UCID:</div>
-			<input type="text" name="username" id="usrInput" autocomplete="on" >
-			<br><br><div class="inputLabel">Password:</div>
+			<br/><div class="inputLabel">Username:</div>
+			<input type="text" name="username" id="usrInput" autocomplete="on" autofocus>
+			<br/><br/><div class="inputLabel">Password:</div>
 			<input type="password" name="password" id="pwdInput" autocomplete="off">
 			<br/><br/><div class="buttons">
 				<button class="button" type="button" id="btn">Submit</button>			
 				<input  class="button" type="reset"  id="clr" value="Clear">
 			</div>
-			<p id=Result></p>			
+			<p id="result"></p>			
 		</fieldset>
 	</form>
+  <script src="scripts/external.js"></script>
 	<script>
 	document.getElementById("btn").addEventListener("click", postForm);
 	document.getElementById("clr").addEventListener("click", clearResult);
@@ -32,10 +33,10 @@
 			postForm();
 	} );
 	function clearResult() {
-		document.getElementById("Result").innerHTML = "";
+		document.getElementById("result").innerHTML = "";
 	}
 	function postForm() {
-		var response = document.getElementById("Result");
+		var response = document.getElementById("result");
 		response.innerHTML = "Checking...";
 		var xhttp  = new XMLHttpRequest();
 		var jsonObj = {
@@ -45,19 +46,34 @@
 		}
 		var jsonStr = JSON.stringify(jsonObj);
 		console.log(jsonStr);
-		xhttp.onreadystatechange = function() {
-			if (xhttp.readyState == 4 && xhttp.status == 200) {
-				response.innerHTML = "[" + xhttp.responseText + "]";
-				if(jsonObj["username"] === "teacher" && jsonObj["password"] === "teach"){
-					alert("Welcome, Teacher");
-					window.location.href = "https://web.njit.edu/~djo23/CS490/instructor.html";
-				} else if(jsonObj["username"] === "student" && jsonObj["password"] === "stu") {
-					alert("Welcome, Student");
-					window.location.href = "https://web.njit.edu/~djo23/CS490/student.html";
-				} else {
-					alert("Unknown login!!");
-				}
-			}
+    xhttp.onload = () => {
+      console.log( "Rcvd: [" + xhttp.responseText + "]" );
+      if(jsonObj["username"] === "teacher" && jsonObj["password"] === "teach"){
+        result.innerHTML = "Welcome, Teacher!";
+        timeout(1500)
+          .then( () => result.insertAdjacentHTML('beforeend', "</br>Redirecting..") )
+          .then( () => timeout(600) )
+          .then( () => {
+            window.location.href = "https://web.njit.edu/~djo23/CS490/instructor/welcome.html";
+        });
+      } else if(jsonObj["username"] === "student" && jsonObj["password"] === "stu") {
+        result.innerHTML = "Welcome, Student!";
+        timeout(1500)
+          .then( () => result.insertAdjacentHTML('beforeend', "</br>Redirecting..") )
+          .then( () => timeout(600) )
+          .then( () => {
+            window.location.href = "https://web.njit.edu/~djo23/CS490/student/welcome.html";
+        });
+      } else {
+        <!-- result.innerHTML = "Unknown Login!"; -->
+        result.insertAdjacentHTML('beforeend', "</br>Unknown Login!")
+        timeout(800)
+          .then( () => result.insertAdjacentHTML('beforeend', "</br>Try again..") )
+          .then( () => timeout(1000) )
+          .then( () => {
+            window.location.href = "https://web.njit.edu/~djo23/CS490/login.html";
+        });
+      }
 		};
 		xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
 		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

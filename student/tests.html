@@ -1,0 +1,66 @@
+<!DOCTYPE html5>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Student's page for taking tests">
+  <meta name="keywords"    content="Computer Science, Exam, Questions, Student, NJIT, Python">
+  <meta name="author"      content="Devon J O'Connor">
+  <meta name="viewport"    content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet"   type="text/css" href="../styles/mainstyle.css">
+  <title>Quizzem Student</title>
+</head>
+<body>
+  <header>
+    <main>
+      <nav id="sHeadNav"><a href='welcome.html'><h2>Quizzem</h2></a></nav>
+      <section id="sHeadSection"><h4>Header Section</h4></section>
+      <aside id="sHeadAside">Header Aside</aside>
+    </main>
+  </header>
+  <main class="clearfix">
+
+    <nav id="sMainNav" class=box>
+      <ul id="navList">
+        <li class="currTab"><a href='tests.html'>Tests</a></li>
+        <li>Grades</li>
+      </ul>
+    </nav>
+
+    <section id="sMainSection" class="box">
+      <ul id="sTestDisp">
+      </ul>
+    </section>
+    
+    <aside id="sMainAside" id="quizBuilder" class="box">
+      <form>
+        <fieldset>
+          <legend>Finish Attempt</legend>
+          Comments: </br>
+          <textarea style="width:250; height:80"></textarea> </br>
+          <button id="finTestBtn" type="button">Submit</button>
+        </fieldset>
+      </form>
+    </aside>
+
+  </main>
+  <script src="../scripts/external.js"></script>
+  <script src="../scripts/testdata.js"></script>
+  <script>
+    var sLocalT  = [t0, t1, t2, t3, t4, t5]; // Always holds all known tests
+    var sActiveT = []; // Should only ever have at most one test inside of it
+    console.log(sLocalT);
+    console.log(sActiveT); 
+    fetch('getT').then( x => { // As soon as page is accessed, download all tests
+      console.log("Rcvd:", x);
+      handleReply(x, "student") 
+    } );
+    finTestBtn.addEventListener("click", () => { 
+        fetch('addA')
+        .then( x => { 
+          console.log("Rcvd:", x);
+          handleReply(x) 
+        } ) 
+    });
+  </script>
+</body>
+</html>

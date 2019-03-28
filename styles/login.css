@@ -1,0 +1,48 @@
+body {
+    background-color : aliceblue;
+    font-family      : Georgia, Times, Serif;
+    color            : red;
+    text-shadow      : 1px 1px black;
+}
+form {
+    width      : 300px;
+    margin     : auto;
+    margin-top : 100px;
+}
+input, .inputLabel {
+    width         : 200px;
+    margin-bottom : 4px;
+    margin-left   : 50px;
+    margin-right  : 50px;
+}
+input[type=text], input[type=password] {
+    border        : 0px solid black;
+    border-radius : 4px;
+    box-shadow    : 1px 2px 3px black;
+    padding       : 2px;
+    padding-left  : 8px;
+}
+.button { 
+    width  : 78px;
+    margin : 5px 8px 0px 8px;
+}
+.buttons { 
+    width  : 200px;
+    margin : auto;
+}
+fieldset { 
+    border             : 2px outset red;
+    border-left-width  : 10px;
+    border-right-width : 10px;
+    border-radius      : 40px;
+    background-color   : GhostWhite;
+    box-shadow         : 3px 5px 10px #000;
+}
+p {
+    text-align : center;
+}
+legend { 
+    font-size   : 20px;
+    font-weight : bold;
+    text-shadow : 2px 2px 1px #000;
+}

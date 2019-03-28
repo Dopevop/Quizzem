@@ -1,41 +1,331 @@
-body { background-color: aliceblue;
-       font-family: Georgia, Times, Serif;
-       color: red;
-	   text-shadow: 1px 1px black;
+* {
+	box-sizing        : border-box;
+	margin            : 0px;
 }
-form { width: 300px;
-       margin: auto;
-       margin-top: 100px;
+.box {
+	float             : left;
+	height            : calc(100vh - 40px);
+	overflow          : auto;
+
 }
-input, .inputLabel {
-	width: 200px;
-	margin-bottom: 4px;
-	margin-left: 50px;
-	margin-right: 50px;
+ 
+                            /* Header elements */
+body>header{
+    position: absolute;
+    z-index: 1;
+    height : 40px;
+    width : 100vw;
+    min-width: 950px;
+    text-align : center;
+    color: ghostwhite;
+    text-shadow: 0px 0px 1px black;
+    line-height : 40px;
+    background-color: #729FCF;
+    box-shadow: 0px 1px 2px #880000, 0px 1px 5px darkgrey;
 }
-input[type=text], input[type=password] {
-	border: 0px solid black;
-	border-radius: 4px;
-	box-shadow: 1px 2px 3px black;
-	padding: 2px;
-	padding-left: 8px;
+body>header main {
+    position: relative;
+    width :950px;
+    margin: auto;
 }
-.button { width: 78px;
-          margin: 5px 8px 0px 8px;
+body>header nav {
+    position: absolute;
+    background-color: inherit;
+    margin: 0px;
+    padding: 0px;
+    width : 120px;
 }
-.buttons { width: 200px;
-           margin: auto;
+body>header section {
+    position: absolute;
+    left: 150px;
+    width: 530px;
+    margin: 0px;
 }
-fieldset { border: 2px outset red;
-	   border-left-width: 10px;
-           border-right-width: 10px;
-           border-radius: 40px;
-           background-color: GhostWhite;
-           box-shadow: 3px 5px 10px #000;
+body>header aside {
+    position: absolute;
+    right: 0px;
+    width: 300px;
+    margin: 0px;
 }
-p { text-align: center;
+body>header a {
+    display: block;
+    text-decoration: none;
+    color: inherit;
 }
-legend { font-size: 20px;
-         font-weight: bold;
-         text-shadow: 2px 2px 1px #000;
+body>header a:hover {
+    color: white;
+    text-shadow: 0px 0px 2px black, 0px 0px 3px white;
+}
+body>main {
+    position: relative;
+    top: 40px;
+}
+body>main nav {
+    width : 120px;
+    margin: 0px;
+}
+body>main nav ul {
+    list-style-type: none;
+    text-align: center;
+    padding: 5px;
+    width: 100px;
+    margin: auto;
+}
+body>main nav li {
+    height: 30px;
+    line-height: 30px;
+    margin: 10px 0px;
+    border-radius: 8px;
+    box-shadow: 0px 1px 3px darkgrey;
+    background-color: whitesmoke;
+    color: darkgrey;
+}
+body>main nav li:hover {
+    box-shadow: 0px 1px 3px darkgrey;
+    background-color: snow;
+    color: black;
+}
+body>main nav li a {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+.currTab,
+.currTab:hover {
+    color: black;
+    box-shadow: 0px 1px 2px #880000, 0px 1px 5px darkgrey;
+    background-color: #BADCEE;
+}
+.currTab:hover {
+    font-weight: bold;
+}
+body>main section {
+    position: relative;
+    padding: 0px 5px;
+    width : 530px;
+    overflow: hidden;
+}
+body>main section p { /* Styles the welcome page messages */
+    background: ghostwhite;
+    text-align: left;
+    width: 95%;
+    margin: 15px auto;
+    padding : 15px;
+    box-shadow: 0px 0px 5px darkgrey;
+}
+body>main aside {
+    padding: 0px 5px;
+    width : 300px;
+}
+fieldset {
+    margin: 10px 5px;
+	background-color  : ghostwhite;
+    border-radius: 15px;
+    padding: 10px 20px;
+    border: 0px;
+    box-shadow: 0px 1px 2px #880000, 0px 1px 5px darkgrey;
+}
+button {
+    margin: 8px 5px;
+    border-radius: 8px;
+    border: 0px;
+    box-shadow: 0px 1px 3px darkgrey;
+    background-color: whitesmoke;
+}
+button:hover {
+    background-color: snow;
+    box-shadow: 0px 1px 2px #800, 0px 1px 5px darkgrey;
+}
+input[type=range] {
+    -webkit-appearance:none;
+    margin 18px 0;
+    width: 100%;
+    background: transparent;
+}
+input[type=range]:focus {
+    outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    box-shadow: 0px 1px 2px #800, 0px  1px 5px darkgrey;
+    background: white;
+    height: 20px;
+    width:  5px;
+    border-radius: 3px;
+    margin-top: -8px;
+}
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 2px;
+    cursor: pointer;
+    background: white;
+    border-radius: 1.3px;
+    border: 0.2px solid #010101;
+    box-shadow: 0px 1px 3px darkgrey;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+    box-shadow: 0px 1px 2px #800, 0px 1px 3px darkgrey;
+}
+.clearfix {
+    width : 950px;
+    margin : auto;
+    background-color: aliceblue;
+    box-shadow: -2px 0px 3px darkgrey, 0px 0px 50px gainsboro;
+}
+.clearfix::after {
+	content           : "";
+	clear             : both;
+	display           : table;
+}
+ul {
+	/* text-align        : center; */
+	list-style-type   : none;
+	margin            : 0;
+	padding           : 0;
+}
+.tTop {
+    text-align: center;
+    font-weight: bold;
+    padding: 5px;
+    /* background-color: gainsboro; */
+}
+.tBot {
+    padding: 5px 15px;
+    box-shadow: 0px 0px 5px darkgrey inset;
+    background-color: ghostwhite;
+}
+section li {
+    width: 95%;
+    margin: 20px auto;
+    border-radius: 5px;
+}
+#activeList,
+#matchedList {
+    width: 505px;
+    margin: 6px;
+    border-radius: 5px;
+    overflow: auto;
+    max-height: 46.5vh;
+}
+#activeList {
+    box-shadow: 0px 1px 2px #880000, 0px 1px 5px darkgrey;
+    background-color: #BADCEE;
+}
+#matchedList {
+    position: absolute;
+    bottom: 0px;
+    box-shadow: 0px 1px 2px #888, 0px 1px 5px darkgrey;
+}
+.available {
+    width: 95%;
+    padding: 10px;
+    background-color: whitesmoke;
+    box-shadow: 0px 1px 3px darkgrey;
+    border-radius: 5px;
+}
+.available:hover,
+.matched:hover {
+    background-color: snow;
+}
+.matched,
+.selected {
+	text-align        : left;
+	list-style-type   : none;
+	background        : whitesmoke;
+	margin            : 15px;
+	padding           : 10px;
+    border-radius: 5px;
+    box-shadow: 0px 1px 8px darkgrey;
+}
+.active,
+.qDiv {
+    position: relative;
+    overflow: hidden;
+    padding: 3%;
+    background-color: whitesmoke;
+    box-shadow: 0px 1px 8px darkgrey;
+    border-radius: 5px;
+}
+.active {
+    background-color: snow;
+    box-shadow: 0px 0px 5px darkgrey;
+    padding: 3% 5%;
+}
+.qTop {
+    min-height: 36px;
+}
+.qTopLeft {
+    padding: 0px 5px;
+    float: left;
+}
+.qTopMid {
+    width: 100%;
+    /* float: left; */
+    width: 90%;
+    margin: 0px;
+    text-align: left;
+}
+.qTopRight {
+    position: absolute;
+    padding: 1%;
+    right: 0px;
+    top: 0px;
+    /* width: 10%; */
+    float: right;
+}
+.qBot {
+    width: 100%;
+    /* min-height: 150px; */
+    /* margin: auto; */
+}
+.qAns {
+    width: 100%;
+    min-height: 150px;
+    margin: 10px auto;
+    background-color: white;
+    box-shadow: 0px 0px 5px darkgrey inset;
+    text-align: left;
+    padding: 2%;
+    resize: vertical;
+    overflow: hidden;
+    font-family: monospace;
+}
+.qBtn {
+    position:absolute;
+    right: 3px;
+    bottom: 3px;
+    background-color: ghostwhite;
+    border-radius: 50px;
+    box-shadow: 0px 1px 3px darkgrey;
+    border: 1px outset silver;
+    color: #A00;
+}
+.qBtn:hover {
+    background-color: white;
+    border-radius: 50px;
+    box-shadow: 0px 1px 2px #880000, 0px 1px 3px darkgrey;
+    color: #F00;
+}
+*::-webkit-scrollbar {
+    width: 5px;
+    outline: 1px solid darkgrey;
+    box-shadow: 0px 0px 3px darkgrey inset;
+}
+*::-webkit-scrollbar-thumb {
+    box-shadow: 0px 0px 3px #880000;
+    background-color: ghostwhite;
+    width: 5px;
+    border-radius: 15px;
+}
+textarea {
+    width: 100%;
+    min-height: 90px;
+    resize: vertical;
+    box-shadow: 0 0 3px darkgrey inset;
+    border: none;
+}
+input[type=text] {
+    width: 100%;
+    box-shadow: 0 0px 3px darkgrey inset;
+    border: none;
 }

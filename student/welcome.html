@@ -6,23 +6,34 @@
 	<meta name="keywords"    content="Computer Science, Exam, Questions, Student, NJIT, Python">
 	<meta name="author"      content="Devon J O'Connor">
 	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet"   type="text/css" href="styles/student.css">
-	<title>Quizzem</title>
+	<link rel="stylesheet"   type="text/css" href="../styles/mainstyle.css">
+	<title>Quizzem Student</title>
 </head>
 <body>
-	<main>
-		<nav id="sTestNav">
-			<ul>
-				<li>Tests</li>
-			</ul>	
-		</nav>
-		<article id="sTestDisp">
-			<ul>
-				<li>Select a test from the list</li>
-			</ul>
-		</article>
-	</main>
-	<script src="external.js"></script>
+  <header>
+    <main>
+      <nav id="sHeadNav"><a href='welcome.html'><h2>Quizzem</h2></a></nav>
+      <section id="sHeadSection"><h4>Header Section</h4></section>
+      <aside id="sHeadAside">Header Aside</aside>
+    </main>
+  </header>
+  <main class="clearfix">
+    <nav id="sMainNav" class=box>
+      <ul id="navList">
+        <li><a href='tests.html'>Tests</a></li>
+        <li>Grades</li>
+      </ul>
+    </nav>
+    <section id="sMainSection" class="box">
+      <ul id="msgList">
+        <p>Welcome to Quizzem, the one-stop shop for all your quizzing needs!</p>
+      </ul>
+    </section>
+    <aside id="sMainAside" class="box">
+
+    </aside>
+  </main>
+	<script src="../scripts/external.js"></script>
 	<script>
 		var testTest = {
 			"Id"        : 0,
