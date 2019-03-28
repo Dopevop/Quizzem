@@ -20,6 +20,7 @@
 			<p id=Result></p>			
 		</fieldset>
 	</form>
+  <script src="scripts/external.js"></script>
 	<script>
 	document.getElementById("btn").addEventListener("click", postForm);
 	document.getElementById("clr").addEventListener("click", clearResult);
@@ -45,19 +46,24 @@
 		}
 		var jsonStr = JSON.stringify(jsonObj);
 		console.log(jsonStr);
-		xhttp.onreadystatechange = function() {
-			if (xhttp.readyState == 4 && xhttp.status == 200) {
-				response.innerHTML = "[" + xhttp.responseText + "]";
-				if(jsonObj["username"] === "teacher" && jsonObj["password"] === "teach"){
-					alert("Welcome, Teacher");
-					window.location.href = "https://web.njit.edu/~djo23/CS490/instructor/welcome.html";
-				} else if(jsonObj["username"] === "student" && jsonObj["password"] === "stu") {
-					alert("Welcome, Student");
-					window.location.href = "https://web.njit.edu/~djo23/CS490/student/welcome.html";
-				} else {
-					alert("Unknown login!!");
-				}
-			}
+    xhttp.onload = () => {
+      console.log( "Rcvd: [" + xhttp.responseText + "]" );
+      if(jsonObj["username"] === "teacher" && jsonObj["password"] === "teach"){
+        result.innerHTML = "Welcome, Teacher";
+        timeout(3000).then( () => {
+          window.location.href = "https://web.njit.edu/~djo23/CS490/instructor/welcome.html";
+        });
+      } else if(jsonObj["username"] === "student" && jsonObj["password"] === "stu") {
+        result.innerHTML = "Welcome, Student";
+        timeout(3000).then( () => {
+          window.location.href = "https://web.njit.edu/~djo23/CS490/student/welcome.html";
+        });
+      } else {
+        result.innerHTML = "Unknown Login";
+        timeout(3000).then( () => {
+          window.location.href = "https://web.njit.edu/~djo23/CS490/login.html";
+        });
+      }
 		};
 		xhttp.open("POST", "https://web.njit.edu/~djo23/CS490/curlObj.php", true);
 		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
