@@ -581,6 +581,7 @@ function addInput(elemId) {
 	var elem      = document.getElementById(elemId);
 	var textInput = document.createElement("INPUT");
 	var breakElem = document.createElement("BR");
+    textInput.setAttribute("type", "text");
 	elem.insertBefore(breakElem, elem.childNodes[3]);
 	elem.insertBefore(textInput, elem.childNodes[3]);
 }
