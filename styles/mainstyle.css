@@ -251,6 +251,9 @@ section li {
     box-shadow: 0px 0px 5px darkgrey;
     padding: 3% 5%;
 }
+.qTop {
+    min-height: 36px;
+}
 .qTopLeft {
     padding: 0px 5px;
     float: left;
