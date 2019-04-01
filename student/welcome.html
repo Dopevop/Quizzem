@@ -29,42 +29,7 @@
         <p>Welcome to Quizzem, the one-stop shop for all your quizzing needs!</p>
       </ul>
     </section>
-    <aside id="sMainAside" class="box">
-
-    </aside>
+    <aside id="sMainAside" class="box"></aside>
   </main>
-	<script src="../scripts/external.js"></script>
-	<script>
-		var testTest = {
-			"Id"        : 0,
-			"Desc"      : "My Practice Test",
-			"Rel"       : 1,
-			"Sub"       : 0,
-			"Questions" : [
-				{
-					"Desc"  : "Write an algorithm...",
-					"Topic" : "Practice",
-					"Id"    : 0,
-					"Diff"  : 4,
-					"Tests" : ["a()=b", "b()=c"],
-				},
-				{
-					"Desc"  : "Write an function...",
-					"Topic" : "Practice",
-					"Id"    : 1,
-					"Diff"  : 3,
-					"Tests" : ["a()=b", "b()=c"],
-				},
-
-			],
-		}
-		var sLocalT  = []; // Always holds all known tests
-		var sActiveT = []; // Should only ever have one test inside of it
-		sLocalT.push(testTest);
-		sendGetTests("student"); // Get all released tests
-		console.log(sLocalT);
-		console.log(sActiveT);
-
-	</script>
 </body>
 </html>
