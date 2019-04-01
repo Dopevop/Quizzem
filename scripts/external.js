@@ -43,7 +43,7 @@ function handleReply(replyText, source) {
 				}
 			}
             updateDisplays(["sTestDisp"]);
-            console.log("iLocalT:", iLocalT);
+            console.log("iLocalT:", localT);
 			break;
 		case 'addT':
 			var newTest = replyObj['test'];
@@ -107,8 +107,19 @@ function buildPostBody(type, source) {
 	return JSON.stringify(jsonObj);
 }
 
-function getActiveTest() {
-    return 
+function getStudentComment() {
+    return document.getElementById("finTestCmt").value;
+}
+
+function getStudentAnswers() {
+    console.log("Getting answers");
+    let inputs = document.getElementsByClassName("qAns");
+    let answers = [];
+    for(let i=0; i<inputs.length; i++) {
+        answers.push(inputs[i].value);
+    }
+    console.log("Returning:", answers);
+    return answers;
 }
 
 function insertTab(e) {
