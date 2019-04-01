@@ -43,10 +43,12 @@ function handleReply(replyText, source) {
 				}
 			}
             updateDisplays(["sTestDisp"]);
+            console.log("iLocalT:", iLocalT);
 			break;
 		case 'addT':
 			var newTest = replyObj['test'];
 			iLocalT.push(newTest);
+            console.log("iLocalT:", iLocalT);
 			break;
 	}
 }
@@ -205,7 +207,7 @@ function validateForm(type) {
 			if(nonEmpty("testDesc")) {
                 fetch( type )
                 .then( (x) => {
-                    console.log(x);
+                    console.log("Rcvd:", x);
                     handleReply(x);
                 })
                 .then( ( ) => clearForm("testForm") ) ;
