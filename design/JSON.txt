@@ -6,6 +6,9 @@ QUESTION:
 TEST:
 { id:INT, desc:STR, rel:INT, sub:INT, ques:[{QUESTION}] }
 
+ATTEMPT:
+{ id:INT, desc:STR, grade:INT, max:INT, ques:[{QUESTION}], answers:[STR], cmts:[STR] }
+
 ANSWER:
 { id:INT, text:STR }
 
