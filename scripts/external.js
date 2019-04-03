@@ -109,7 +109,11 @@ function buildPostBody(type, source) {
 }
 
 function getQuestionPoints() {
-    return document.getElementsByTagName("qPts");
+    let inputs = document.getElementsByClassName("qPts");
+    let points = [];
+    for(let i=0; i<inputs.length; i++)
+        points.push(inputs[i].value);
+    return points;
 }
 
 function getStudentComment() {
