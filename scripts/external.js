@@ -63,6 +63,7 @@ function buildPostBody(type, source) {
 				'type'  : 'addQ',
 				'desc'  : addDesc.value,
 				'topic' : addTopic.value,
+                'cons'  : getQuestionConstraints(),
 				'diff'  : addRange.value,
 				'tests' : getNonEmptyInputs('addTests'),
 			}
@@ -114,6 +115,10 @@ function getQuestionPoints() {
     for(let i=0; i<inputs.length; i++)
         points.push(inputs[i].value);
     return points;
+}
+
+function getQuestionConstraints() {
+    return getCheckedValues("addCons");
 }
 
 function getStudentComment() {
