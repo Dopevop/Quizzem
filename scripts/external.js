@@ -193,7 +193,7 @@ function localSearch(topic, diffs, keys) {
  * Displays the iMatchQ in the matches section */
 function displaySearchResults() {
 	var topic = searchTopic.value;
-	var diffs = getCheckedValues("searchDiff");
+	var diffs = getCheckedValues("searchDiffs");
 	var keys  = getNonEmptyInputs("searchKeys");
 	var M  = localSearch(topic, diffs, keys);
 	iMatchQ.length = 0;
