@@ -81,6 +81,7 @@ function buildPostBody(type, source) {
 				'desc' : testDesc.value,
 				'rel'  : getCheckedValue("testRelease"),
 				'ques' : getSelectedQs(),
+                'pts'  : getQuestionPoints(),
 			}
 			break;
 		case 'getT':
@@ -105,6 +106,10 @@ function buildPostBody(type, source) {
             break;
 	}
 	return JSON.stringify(jsonObj);
+}
+
+function getQuestionPoints() {
+    return document.getElementsByTagName("qPts");
 }
 
 function getStudentComment() {
