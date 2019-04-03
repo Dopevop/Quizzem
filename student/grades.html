@@ -38,14 +38,15 @@
   <script src="../scripts/external.js"></script>
   <script src="../scripts/testdata.js"></script>
   <script>
-    var sLocalT  = [t0, t1, t2, t3, t4, t5]; // Always holds all known tests
-    var sActiveT = []; // Should only ever have at most one test inside of it
-    console.log(sLocalT);
-    console.log(sActiveT); 
-    fetch('getT').then( x => { // As soon as page is accessed, download all tests
+    var sLocalA  = [t0, t1, t2, t3, t4, t5]; // Always holds all known tests
+    var sActiveA = [];                       // Should only ever have at most one test inside of it
+    console.log(sLocalA);
+    console.log(sActiveA); 
+    fetch('getA')
+    .then( x => { // As soon as page is accessed, download all attempts
       console.log("Rcvd:", x);
-      handleReply(x, "student") 
-    } );
+      handleReply(x) 
+    });
     finTestBtn.addEventListener("click", () => { 
         fetch('addA')
         .then( x => { 
