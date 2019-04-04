@@ -279,7 +279,7 @@ function toggleSelected(listItemId) {
 				break;
 			}
 		}
-        updateDisplays(["iMainSection"]);
+        updateDisplays(["iMainSection", "iMainAside"]);
 	}
 	else if ( listItemId[0] == "a") { // Selected Item is a iActiveList question
 		// add Q to iMatchedQ, remove from iActiveQ
@@ -293,7 +293,7 @@ function toggleSelected(listItemId) {
 				break;
 			}
 		}
-        updateDisplays(["iMainSection"]);
+        updateDisplays(["iMainSection", "iMainAside"]);
 	}
 	else {
 		console.log("in toggleSelected, "+listItemId[0]+" was not 't', 'm', or 'a'");
@@ -358,6 +358,14 @@ function addItemsToDisplay(thisId) {
     }
 }
 
+function hideElement(elemId) {
+    document.getElementById(elemId).style.display = "none";
+}
+
+function showElement(elemId) {
+    document.getElementById(elemId).style.display = "block";
+}
+
 function updateDisplay(displayId) {
     switch(displayId) {
         case "iHeadSection":
@@ -368,27 +376,32 @@ function updateDisplay(displayId) {
             addItemsToDisplay("iMatchedList");
             addItemsToDisplay("iActiveList");
             if(iMatchedQ.length + iActiveQ.length === 0) {
-                document.getElementById("iBuildInfo").style.display = "block";
-                document.getElementById("iActiveInfo").style.display = "none";
-                document.getElementById("iMatchedInfo").style.display = "none";
+                showElement("iBuildInfo");
+                hideElement("iActiveInfo");
+                hideElement("iMatchedInfo");
             }
             else if(iActiveQ.length === 0) {
-                document.getElementById("iBuildInfo").style.display = "none";
-                document.getElementById("iActiveInfo").style.display = "block";
-                document.getElementById("iMatchedInfo").style.display = "none";
+                hideElement("iBuildInfo");
+                showElement("iActiveInfo");
+                hideElement("iMatchedInfo");
             }
             else if(iMatchedQ.length === 0) {
-                document.getElementById("iBuildInfo").style.display = "none";
-                document.getElementById("iActiveInfo").style.display = "none";
-                document.getElementById("iMatchedInfo").style.display = "block";
+                hideElement("iBuildInfo");
+                hideElement("iActiveInfo");
+                showElement("iMatchedInfo");
             }
             else {
-                document.getElementById("iBuildInfo").style.display = "none";
-                document.getElementById("iActiveInfo").style.display = "none";
-                document.getElementById("iMatchedInfo").style.display = "none";
+                hideElement("iBuildInfo");
+                hideElement("iActiveInfo");
+                hideElement("iMatchedInfo");
             }
             break;
         case "iMainAside":
+            if(iActiveQ.length === 0) {
+                hideElement("testForm");
+            } else {
+                showElement("testForm");
+            }
             break;
         case "sHeadSection":
             break;
