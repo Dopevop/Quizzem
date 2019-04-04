@@ -1,10 +1,3 @@
-// Just for testing promises
-function timeout(delay) {
-    return new Promise((resolve,reject) => {
-        setTimeout(resolve, delay);
-    });
-}
-
 const fetch = (type) => new Promise((resolve,reject) => {
     let url     = "https://web.njit.edu/~djo23/CS490/curlObj.php";
     let xhr     = new XMLHttpRequest();
@@ -33,6 +26,7 @@ function handleReply(replyText, source) {
 					iLocalQ.push(DBQ[i]);          //   Q array
 				}
 			}
+            updateDisplays(["iMainSection"]);
 			break;
 		case 'getT':
 			var localT = (source == "student")? sLocalT : iLocalT; 
@@ -42,8 +36,7 @@ function handleReply(replyText, source) {
 					localT.push(DBT[i]);          // Uniq Qs
 				}
 			}
-            updateDisplays(["sTestDisp"]);
-            console.log("iLocalT:", localT);
+            updateDisplays(["sMainSection"]);
 			break;
 		case 'addT':
 			var newTest = replyObj['test'];
@@ -107,40 +100,6 @@ function buildPostBody(type, source) {
             break;
 	}
 	return JSON.stringify(jsonObj);
-}
-
-function getQuestionPoints() {
-    let inputs = document.getElementsByClassName("qPts");
-    let points = [];
-    for(let i=0; i<inputs.length; i++)
-        points.push(inputs[i].value);
-    return points;
-}
-
-function getQuestionConstraints() {
-    return getCheckedValues("addCons");
-}
-
-function getStudentComment() {
-    return document.getElementById("finTestCmt").value;
-}
-
-function getStudentAnswers() {
-    console.log("Getting answers");
-    let inputs = document.getElementsByClassName("qAns");
-    let answers = [];
-    for(let i=0; i<inputs.length; i++) {
-        answers.push(inputs[i].value);
-    }
-    console.log("Returning:", answers);
-    return answers;
-}
-
-function insertTab(e) {
-    if (e.keyCode === 9) {
-        document.execCommand('insertHTML', false, '    ');
-        e.preventDefault();
-    }
 }
 
 /* Searches through local questions returning matches
@@ -245,47 +204,6 @@ function validateForm(type) {
 	}
 }
 
-function validatePts() {
-    let pts = document.getElementsByClassName("qPts");
-    for(let i=0; i<pts.length; i++) {
-        let thisPt = pts[i].value;
-        if(thisPt === "") {
-            alertUser("error", "All points must be filled out!");
-            return false;
-        }
-        for(let j=0; j<thisPt.length; j++) {
-            let thisChar = thisPt[j];
-            if(!inArr(thisChar, ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"])) {
-                alertUser("error", "Points must be integers!");
-                return false;
-            }
-       }
-    }
-    return true;
-}
-
-function alertUser(type, msg) {
-    hideElement("errorDiv");
-    hideElement("successDiv");
-    let id = (type === "error") ? "errorDiv" : "successDiv";
-    document.getElementById(id).innerHTML = msg;
-    timeout(100).then(()=> showElement(id));
-    timeout(5000).then(() => hideElement(id));
-}
-
-/* Makes sure there are at least two non-empty tests
- * Makes sure all tests are in the form of func([a][,b]...)=answer */
-function validateTests(tests) {
-	if(tests.length < 2) return false;	
-	var pattern = /[a-zA-Z][a-zA-Z0-9]*\( *([^, (]+ *(, *[^,( ]+)*)|\) *\) *= *.*/;
-	for(var i=0; i<tests.length; i++){
-		if(!tests[i].match(pattern)){
-			return false;
-		}
-	}
-	return true;
-}
-
 /* Toggles whether the clicked on question is in iActiveQ 
  * listItemId: The id of the List Item that the question appears in */
 function toggleSelected(listItemId) {
@@ -333,6 +251,47 @@ function toggleSelected(listItemId) {
 	else {
 		console.log("in toggleSelected, "+listItemId[0]+" was not 't', 'm', or 'a'");
 	}
+}
+
+function validatePts() {
+    let pts = document.getElementsByClassName("qPts");
+    for(let i=0; i<pts.length; i++) {
+        let thisPt = pts[i].value;
+        if(thisPt === "") {
+            alertUser("error", "All points must be filled out!");
+            return false;
+        }
+        for(let j=0; j<thisPt.length; j++) {
+            let thisChar = thisPt[j];
+            if(!inArr(thisChar, ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"])) {
+                alertUser("error", "Points must be integers!");
+                return false;
+            }
+       }
+    }
+    return true;
+}
+
+function alertUser(type, msg) {
+    hideElement("errorDiv");
+    hideElement("successDiv");
+    let id = (type === "error") ? "errorDiv" : "successDiv";
+    document.getElementById(id).innerHTML = msg;
+    timeout(100).then(()  => showElement(id));
+    timeout(5000).then(() => hideElement(id));
+}
+
+/* Makes sure there are at least two non-empty tests
+ * Makes sure all tests are in the form of func([a][,b]...)=answer */
+function validateTests(tests) {
+	if(tests.length < 2) return false;	
+	var pattern = /[a-zA-Z][a-zA-Z0-9]*\( *([^, (]+ *(, *[^,( ]+)*)|\) *\) *= *.*/;
+	for(var i=0; i<tests.length; i++){
+		if(!tests[i].match(pattern)){
+			return false;
+		}
+	}
+	return true;
 }
 
 /* Resets all of the inputs inside of the specified element.
@@ -402,61 +361,64 @@ function addItemsToDisplay(thisId) {
     }
 }
 
-function hideElement(elemId) {
-    document.getElementById(elemId).style.display = "none";
-}
-
-function showElement(elemId) {
-    document.getElementById(elemId).style.display = "block";
-}
-
 function updateDisplay(displayId) {
     switch(displayId) {
         case "iHeadSection":
             break;
         case "iMainSection":
-            clearInnerHTML("iMatchedList");
-            clearInnerHTML("iActiveList");
-            addItemsToDisplay("iMatchedList");
-            addItemsToDisplay("iActiveList");
-            if(iMatchedQ.length + iActiveQ.length === 0) {
-                showElement("iBuildInfo");
-                hideElement("iActiveInfo");
-                hideElement("iMatchedInfo");
-            }
-            else if(iActiveQ.length === 0) {
-                hideElement("iBuildInfo");
-                showElement("iActiveInfo");
-                hideElement("iMatchedInfo");
-            }
-            else if(iMatchedQ.length === 0) {
-                hideElement("iBuildInfo");
-                hideElement("iActiveInfo");
-                showElement("iMatchedInfo");
-            }
-            else {
-                hideElement("iBuildInfo");
-                hideElement("iActiveInfo");
-                hideElement("iMatchedInfo");
-            }
-            break;
+            updateIMainSection();
         case "iMainAside":
-            if(iActiveQ.length === 0) {
-                hideElement("testForm");
-            } else {
-                showElement("testForm");
-            }
+            updateIMainAside();
             break;
         case "sHeadSection":
             break;
         case "sMainSection":
-            clearInnerHTML("sTestDisp");
-            addItemsToDisplay("sTestDisp");
+            updateSMainSection();
             break;
         case "sMainAside":
             break;
         default:
             break;
+    }
+}
+
+function updateSMainSection() {
+    clearInnerHTML("sTestDisp");
+    addItemsToDisplay("sTestDisp");
+}
+
+function updateIMainAside() {
+    if(iActiveQ.length === 0) {
+        hideElement("testForm");
+    } else {
+        showElement("testForm");
+    }
+}
+
+function updateIMainSection() {
+    clearInnerHTML("iMatchedList");
+    clearInnerHTML("iActiveList");
+    addItemsToDisplay("iMatchedList");
+    addItemsToDisplay("iActiveList");
+    if(iMatchedQ.length + iActiveQ.length === 0) {
+        showElement("iBuildInfo");
+        hideElement("iActiveInfo");
+        hideElement("iMatchedInfo");
+    }
+    else if(iActiveQ.length === 0) {
+        hideElement("iBuildInfo");
+        showElement("iActiveInfo");
+        hideElement("iMatchedInfo");
+    }
+    else if(iMatchedQ.length === 0) {
+        hideElement("iBuildInfo");
+        hideElement("iActiveInfo");
+        showElement("iMatchedInfo");
+    }
+    else {
+        hideElement("iBuildInfo");
+        hideElement("iActiveInfo");
+        hideElement("iMatchedInfo");
     }
 }
 
@@ -713,6 +675,20 @@ function resetModal(label, elemId, func) {
 		addInput(elemId);
 }
 
+function insertTab(e) {
+    if (e.keyCode === 9) {
+        document.execCommand('insertHTML', false, '    ');
+        e.preventDefault();
+    }
+}
+
+// Just for testing promises
+function timeout(delay) {
+    return new Promise((resolve,reject) => {
+        setTimeout(resolve, delay);
+    });
+}
+
 /* Returns all non-empty input values in an array 
  * Takes the Id of a div element */
 function getNonEmptyInputs(divId) {
@@ -809,6 +785,33 @@ function getRelArr(displayId) {
 	return relArr;
 }
 
+function getQuestionPoints() {
+    let inputs = document.getElementsByClassName("qPts");
+    let points = [];
+    for(let i=0; i<inputs.length; i++)
+        points.push(inputs[i].value);
+    return points;
+}
+
+function getQuestionConstraints() {
+    return getCheckedValues("addCons");
+}
+
+function getStudentComment() {
+    return document.getElementById("finTestCmt").value;
+}
+
+function getStudentAnswers() {
+    console.log("Getting answers");
+    let inputs = document.getElementsByClassName("qAns");
+    let answers = [];
+    for(let i=0; i<inputs.length; i++) {
+        answers.push(inputs[i].value);
+    }
+    console.log("Returning:", answers);
+    return answers;
+}
+
 /* Checks the given question's Id against all Ids in localQ
  * Returns true if given question's Id is not found */
 function uniqQuestion(question, qArr){
@@ -849,6 +852,14 @@ function convertDiffFormat(diff) {
 function updateDiff() {
 	//console.log("updateDiff");
 	addSpan.innerHTML = convertDiffFormat(addRange.value);
+}
+
+function hideElement(elemId) {
+    document.getElementById(elemId).style.display = "none";
+}
+
+function showElement(elemId) {
+    document.getElementById(elemId).style.display = "block";
 }
 
 /* Checks that the given element has a non-empty value */

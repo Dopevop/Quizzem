@@ -53,13 +53,13 @@
     fetch('getT').then( x => { // As soon as page is accessed, download all tests
       console.log("Rcvd:", x);
       handleReply(x, "student") 
-    } );
+    })
     finTestBtn.addEventListener("click", () => { 
         fetch('addA')
         .then( x => { 
           console.log("Rcvd:", x);
           handleReply(x) 
-        } ) 
+        }) 
     });
   </script>
 </body>
