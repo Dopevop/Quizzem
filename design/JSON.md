@@ -37,7 +37,7 @@ ATTEMPT = {
 }
 ```
 
-
+---------------------
 ## addQ
 ```javascript
 request = {
@@ -57,6 +57,7 @@ reply = {
 }
 ```
 
+---------------------
 ## getQ 
 ```javascript
 request = {
