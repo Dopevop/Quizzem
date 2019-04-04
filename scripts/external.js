@@ -211,31 +211,63 @@ function validateForm(type) {
                         .then(() => clearForm("addForm"))
                         .catch("Some error happened");
 				} else {
-                    alert("Need two test cases: e.g. func(a,b)=ans");
+                    alertUser("error", "Need two tests: e.g. func(a,b)=ans");
 				}
 			} else {
-				alert("Make sure Description and Topic are filled out!");
+				alertUser("error", "Make sure Description and Topic are filled out!");
 			}
 			break;
 		case "addT":
 			if(nonEmpty("testDesc")) {
-                fetch( type )
-                .then( (x) => {
-                    console.log("Rcvd:", x);
-                    handleReply(x);
-                })
-                .then( ( ) => clearForm("testForm") ) ;
+                if(validatePts()) {
+                    fetch( type )
+                    .then( (x) => {
+                        console.log("Rcvd:", x);
+                        handleReply(x);
+                    })
+                    .then(() => clearForm("testForm"))
+                    .then(() => alertUser("success", "Test submitted!"))
+                    .catch(() => alertUser("error", "Something went wrong.. test not submitted!"));
+                }
 			}
 			else {
-				alert("Make sure you've named the exam!");
+				alertUser("error", "Make sure you've named the exam!");
 			}
 			break;
 		case "addA":
-			alert("Adding Answer!");
+			alertUser("error", "Adding Answer!");
 			break;
 		default:
 			console.log("Invalid type to validate");
 	}
+}
+
+function validatePts() {
+    let pts = document.getElementsByClassName("qPts");
+    for(let i=0; i<pts.length; i++) {
+        let thisPt = pts[i].value;
+        if(thisPt === "") {
+            alertUser("error", "All points must be filled out!");
+            return false;
+        }
+        for(let j=0; j<thisPt.length; j++) {
+            let thisChar = thisPt[j];
+            if(!inArr(thisChar, ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"])) {
+                alertUser("error", "Points must be integers!");
+                return false;
+            }
+       }
+    }
+    return true;
+}
+
+function alertUser(type, msg) {
+    hideElement("errorDiv");
+    hideElement("successDiv");
+    let id = (type === "error") ? "errorDiv" : "successDiv";
+    document.getElementById(id).innerHTML = msg;
+    timeout(100).then(()=> showElement(id));
+    timeout(5000).then(() => hideElement(id));
 }
 
 /* Makes sure there are at least two non-empty tests
