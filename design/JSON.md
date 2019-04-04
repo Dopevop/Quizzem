@@ -1,4 +1,4 @@
-JSON Messages:
+#JSON Messages:
 
 ###QUESTION:
 { 
@@ -42,6 +42,7 @@ JSON Messages:
     diff  : INT,
     tests : [STR]
 }
+
 ###addQ reply
 {
     type  : addQ,
