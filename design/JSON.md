@@ -2,7 +2,7 @@
 
 ## QUESTION:
 ```javascript
-{ 
+let question = { 
     id    : INT,
     desc  : STR,
     topic : STR,
@@ -13,7 +13,7 @@
 
 ## TEST:
 ```javascript
-{ 
+test = { 
     id   : INT,
     desc : STR,
     rel  : INT,
@@ -26,7 +26,7 @@
 
 ## ATTEMPT:
 ```javascript
-{ 
+var = { 
     id       : INT,
     test     : {TEST},
     answers  : [STR],
