@@ -58,19 +58,16 @@ reply = {
 ```
 
 ## getQ 
-### request
 ```javascript
-{
+request = {
     type  : "getQ",
     topic : STR,
     diffs : [INT],
     keys  : [STR]
 }
 ```
-
-### reply
 ```javascript
-{
+reply = {
     type  : "getQ",
     error : STR,
     ques  : [{QUESTION}]
@@ -78,9 +75,8 @@ reply = {
 ```
 
 ## addT 
-###request
 ```javascript
-{
+request = {
     type : "addT",
     desc : STR,
     rel  : INT,
@@ -89,9 +85,8 @@ reply = {
 }
 ```
 
-### reply
 ```javascript
-{
+reply = {
     type  : "addT",
     error : STR,
     test  : {TEST}
@@ -99,17 +94,15 @@ reply = {
 ```
 
 ## getT
-### request
 ```javascript
-{
+request = {
     type : "getT",
     rels : [INT]
 }
 ```
 
-### reply
 ```javascript
-{
+reply = {
     type  : "getT",
     error : STR,
     tests : [{TEST}]
@@ -118,9 +111,8 @@ reply = {
 
 
 ## addA
-### request
 ```javascript
-{
+request = {
     type    : "addA",
     id      : INT,
     comment : STR,
@@ -128,9 +120,8 @@ reply = {
 }
 ```
 
-### reply
 ```javascript
-{
+reply = {
     type    : "addA",
     error   : INT,
     id      : INT,
@@ -140,17 +131,15 @@ reply = {
 ```
 
 ## getA
-### request
 ```javascript
-{
+request = {
     type : "getA",
     ids  : [INT]
 }
 ```
 
-###  reply
 ```javascript
-{
+reqply = {
     type    : "getA",
     error   : STR,
     answers : [{ANSWER}]
