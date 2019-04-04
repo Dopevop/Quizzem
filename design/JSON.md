@@ -1,7 +1,7 @@
 # JSON Messages:
 
 ## QUESTION:
-```
+```javascript
 { 
     id    : INT,
     desc  : STR,
@@ -12,7 +12,7 @@
 ```
 
 ## TEST:
-```
+```json
 { 
     id   : INT,
     desc : STR,
@@ -25,7 +25,7 @@
 
 
 ## ATTEMPT:
-```
+```JSON
 { 
     id       : INT,
     test     : {TEST},
