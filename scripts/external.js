@@ -23,7 +23,7 @@ function handleReply(replyText, source) {
 	switch(replyObj['type']) {
 		case 'addQ':
 			iLocalQ.push(replyObj['que']);  // Add to local Qs
-			iMatchQ.push(replyObj['que']); // Add to matched Qs
+			iMatchedQ.push(replyObj['que']); // Add to matched Qs
             updateDisplays(["iMainSection"]);
 			break;
 		case 'getQ':
@@ -178,20 +178,20 @@ function localSearch(topic, diffs, keys) {
 }
 
 /* Called when searchSubmit button is clicked
- * Updates the iMatchQ array with Q's matching new search criteria
- * Displays the iMatchQ in the matches section */
+ * Updates the iMatchedQ array with Q's matching new search criteria
+ * Displays the iMatchedQ in the matches section */
 function displaySearchResults() {
 	var topic = searchTopic.value;
 	var diffs = getCheckedValues("searchDiffs");
 	var keys  = getNonEmptyInputs("searchKeys");
 	var M  = localSearch(topic, diffs, keys);
-	iMatchQ.length = 0;
+	iMatchedQ.length = 0;
 	for(var i=0; i<M.length; i++) {
-		if( uniqQuestion(M[i], iMatchQ) && uniqQuestion(M[i], iActiveQ) ){
-			iMatchQ.push(M[i]);
+		if( uniqQuestion(M[i], iMatchedQ) && uniqQuestion(M[i], iActiveQ) ){
+			iMatchedQ.push(M[i]);
 		}
 	}
-	iMatchQ.sort( (a,b) => { a['id'] < b['id'] } );
+	iMatchedQ.sort( (a,b) => { a['id'] < b['id'] } );
 	updateDisplays(["iMainSection"]);
 }
 
@@ -268,26 +268,26 @@ function toggleSelected(listItemId) {
 		updateDisplays(["sMainSection", "sMainAside"]);
 	}
 	else if ( listItemId[0] == "m") { // Selected Item is a matchList question
-		// add Q to iActiveQ, remove from iMatchQ
-		for(var i=0; i<iMatchQ.length; i++){
-			var thisQ = iMatchQ[i];
+		// add Q to iActiveQ, remove from iMatchedQ
+		for(var i=0; i<iMatchedQ.length; i++){
+			var thisQ = iMatchedQ[i];
 			if(thisQ['id'] == id){ // Check if found the clicked on Q
 				if(uniqQuestion(thisQ, iActiveQ)){
 					iActiveQ.push(thisQ);
 				}
-				iMatchQ = removeItemFromArray(thisQ['id'], iMatchQ);
+				iMatchedQ = removeItemFromArray(thisQ['id'], iMatchedQ);
 				break;
 			}
 		}
         updateDisplays(["iMainSection"]);
 	}
-	else if ( listItemId[0] == "a") { // Selected Item is a activeList question
-		// add Q to iMatchQ, remove from iActiveQ
+	else if ( listItemId[0] == "a") { // Selected Item is a iActiveList question
+		// add Q to iMatchedQ, remove from iActiveQ
 		for(var i=0; i<iActiveQ.length; i++){
 			var thisQ = iActiveQ[i];
 			if(thisQ['id'] == id){ // Check if found the clicked on Q
-				if(uniqQuestion(thisQ, iMatchQ)){
-					iMatchQ.push(thisQ);
+				if(uniqQuestion(thisQ, iMatchedQ)){
+					iMatchedQ.push(thisQ);
 				}
 				iActiveQ = removeItemFromArray(thisQ['id'], iActiveQ);
 				break;
@@ -335,23 +335,12 @@ function clearForm(formId) {
 }
 
 function clearMatches() {
-	iMatchQ.length = 0;
+	iMatchedQ.length = 0;
     updateDisplays(["iMainSection"]);
 }
 
-function resetDisplay(displayId) {
-    switch(displayId) {
-        case "iMainSection":
-            document.getElementById("activeList").innerHTML = "";
-            document.getElementById("matchedList").innerHTML = "";
-            break;
-        case "sMainSection":
-            document.getElementById("sTestDisp").innerHTML = "";
-            break;
-        default:
-            document.getElementById(displayId).innerHTML = "";
-            break;
-    }
+function clearInnerHTML(displayId) {
+    document.getElementById(displayId).innerHTML = "";
 }
 
 /* A display has an id of the form: [i|s][Head|Main][Nav|Section|Aside] */
@@ -374,13 +363,29 @@ function updateDisplay(displayId) {
         case "iHeadSection":
             break;
         case "iMainSection":
-            if(iMatchQ.length + iActiveQ.length === 0) {
-                resetDisplay(displayId);
+            clearInnerHTML("iMatchedList");
+            clearInnerHTML("iActiveList");
+            addItemsToDisplay("iMatchedList");
+            addItemsToDisplay("iActiveList");
+            if(iMatchedQ.length + iActiveQ.length === 0) {
+                document.getElementById("iBuildInfo").style.display = "block";
+                document.getElementById("iActiveInfo").style.display = "none";
+                document.getElementById("iMatchedInfo").style.display = "none";
+            }
+            else if(iActiveQ.length === 0) {
+                document.getElementById("iBuildInfo").style.display = "none";
+                document.getElementById("iActiveInfo").style.display = "block";
+                document.getElementById("iMatchedInfo").style.display = "none";
+            }
+            else if(iMatchedQ.length === 0) {
+                document.getElementById("iBuildInfo").style.display = "none";
+                document.getElementById("iActiveInfo").style.display = "none";
+                document.getElementById("iMatchedInfo").style.display = "block";
             }
             else {
-                resetDisplay(displayId);
-                addItemsToDisplay("matchedList");
-                addItemsToDisplay("activeList");
+                document.getElementById("iBuildInfo").style.display = "none";
+                document.getElementById("iActiveInfo").style.display = "none";
+                document.getElementById("iMatchedInfo").style.display = "none";
             }
             break;
         case "iMainAside":
@@ -388,7 +393,7 @@ function updateDisplay(displayId) {
         case "sHeadSection":
             break;
         case "sMainSection":
-            resetDisplay(displayId);
+            clearInnerHTML("sTestDisp");
             addItemsToDisplay("sTestDisp");
             break;
         case "sMainAside":
@@ -402,10 +407,10 @@ function updateDisplay(displayId) {
 function addItemToDisplay(newItem, displayId, num) {
     var item;
     switch(displayId) {
-        case "matchedList":
+        case "iMatchedList":
             item = buildMatchedQuestionItem(newItem, displayId, num);
             break;
-        case "activeList":
+        case "iActiveList":
             item = buildActiveQuestionItem(newItem, displayId, num);
             break;
         case "sTestDisp":
@@ -593,11 +598,11 @@ function buildQuestionItem(newItem, displayId, num) {
  * Used for constructing a new list item to add to displays */
 function getIdClassStrObj(newItem, displayId) {
 	var strObj = {};
-	     if(displayId === "matchedList") {
+	     if(displayId === "iMatchedList") {
 		strObj['idStr']    = "m" + newItem['id'];
 		strObj['classStr'] = "matched";
 	}
-	else if(displayId === "activeList") {
+	else if(displayId === "iActiveList") {
 		strObj['idStr']    = "a" + newItem['id'];
 		strObj['classStr'] = "selected";
 	}
@@ -726,12 +731,12 @@ function removeItemFromArray(id, A) {
 	return A;
 }
 
-/* Determines which array (iActiveQ or iMatchQ) is associated with a display */
+/* Determines which array (iActiveQ or iMatchedQ) is associated with a display */
 function getRelArr(displayId) {
 	var relArr;
-	if(displayId === "matchedList"){
-		relArr = iMatchQ;
-	} else if(displayId === "activeList") {
+	if(displayId === "iMatchedList"){
+		relArr = iMatchedQ;
+	} else if(displayId === "iActiveList") {
 		relArr = iActiveQ;
 	} else if(displayId === "sTestDisp") {
 		if(sActiveT.length == 1){

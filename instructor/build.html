@@ -28,9 +28,18 @@
     </nav>
 
     <section id="iMainSection" class="box">
-      <ul id="activeList"> 
+      <p id="iBuildInfo">
+        To build a test, begin by creating a new question, or searching for existing questions using the fields on the right.
+      </p>
+      <p id="iActiveInfo" style="display:none;">
+        Select questions from the list below to add to your new test.
+      </p>
+      <ul id="iActiveList"> 
       </ul>
-      <ul id="matchedList">
+      <p id="iMatchedInfo" style="display:none;">
+        Create and search for more questions, or submit the selected questions using the forms on the right.
+      </p>
+      <ul id="iMatchedList">
       </ul>
     </section>
 
@@ -46,25 +55,6 @@
             <label><input type="radio" name="release" value="0" checked>No</label></br>
           </div>
           <button id="testSub" type="button">Submit</button> 
-        </fieldset>
-      </form>
-
-      <form id="searchForm">
-        <fieldset>
-          <legend>Search for Questions</legend>
-          Topic </br>
-          <input id="searchTopic" type="text"> </br>
-          Difficulty </br>
-          <div id="searchDiffs">
-            <label><input type="checkbox" value="1">Very Easy</label></br>
-            <label class="shortDiff"><input type="checkbox" value="2">Easy	    </label></br>
-            <label><input type="checkbox" value="3">Medium   </label></br>
-            <label class="shortDiff"><input type="checkbox" value="4">Hard	    </label></br>
-            <label><input type="checkbox" value="5">Very Hard</label></br>
-          </div>
-          <div id   ="searchKeys" class="modular keys"></div>
-          <button id="searchSub" type="button">Search</button> 
-          <button id="searchReset" type="reset">Clear</button> 
         </fieldset>
       </form>
 
@@ -100,12 +90,31 @@
         </fieldset>
       </form>	
 
+      <form id="searchForm">
+        <fieldset>
+          <legend>Search for Questions</legend>
+          Topic </br>
+          <input id="searchTopic" type="text"> </br>
+          Difficulty </br>
+          <div id="searchDiffs">
+            <label><input type="checkbox" value="1">Very Easy</label></br>
+            <label class="shortDiff"><input type="checkbox" value="2">Easy	    </label></br>
+            <label><input type="checkbox" value="3">Medium   </label></br>
+            <label class="shortDiff"><input type="checkbox" value="4">Hard	    </label></br>
+            <label><input type="checkbox" value="5">Very Hard</label></br>
+          </div>
+          <div id   ="searchKeys" class="modular keys"></div>
+          <button id="searchSub" type="button">Search</button> 
+          <button id="searchReset" type="reset">Clear</button> 
+        </fieldset>
+      </form>
+
     </aside>
   </main>
 	<script type="text/javascript" src="../scripts/external.js"></script>
 	<script type="text/javascript" src="../scripts/testdata.js"></script>
 	<script>
-		var iMatchQ  = [];
+		var iMatchedQ  = [];
 		var iActiveQ = [];
 		var iLocalQ  = [q0, q1, q2, q3, q4, q5, q6];
     var iLocalT  = [];
