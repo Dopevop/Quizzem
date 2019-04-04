@@ -24,7 +24,7 @@ function handleReply(replyText, source) {
 		case 'addQ':
 			iLocalQ.push(replyObj['que']);  // Add to local Qs
 			iMatchQ.push(replyObj['que']); // Add to matched Qs
-			updateDisplays(["matchedList"]);     // Update matchedList
+            updateDisplays(["iMainSection"]);
 			break;
 		case 'getQ':
 			var DBQ = replyObj['ques'];       // Extract all Qs
@@ -192,7 +192,7 @@ function displaySearchResults() {
 		}
 	}
 	iMatchQ.sort( (a,b) => { a['id'] < b['id'] } );
-	updateDisplays(["matchedList"]);
+	updateDisplays(["iMainSection"]);
 }
 
 /* Checks that all fields are correct in form being submitted */
@@ -265,9 +265,7 @@ function toggleSelected(listItemId) {
 				break;
 			}
 		}
-        console.log("Just toggled ");
-        console.log( JSON.stringify(sActiveT) );
-		updateDisplays(["sTestDisp"]);
+		updateDisplays(["sMainSection", "sMainAside"]);
 	}
 	else if ( listItemId[0] == "m") { // Selected Item is a matchList question
 		// add Q to iActiveQ, remove from iMatchQ
@@ -281,7 +279,7 @@ function toggleSelected(listItemId) {
 				break;
 			}
 		}
-		updateDisplays(["activeList", "matchedList"]);
+        updateDisplays(["iMainSection"]);
 	}
 	else if ( listItemId[0] == "a") { // Selected Item is a activeList question
 		// add Q to iMatchQ, remove from iActiveQ
@@ -295,20 +293,16 @@ function toggleSelected(listItemId) {
 				break;
 			}
 		}
-		updateDisplays(["activeList", "matchedList"]);
+        updateDisplays(["iMainSection"]);
 	}
 	else {
-		//console.log("Shouldn't have gotten here");
+		console.log("in toggleSelected, "+listItemId[0]+" was not 't', 'm', or 'a'");
 	}
-	//console.log(studLocalT);
-	//console.log(studAvailT);
-	//console.log(sActiveT);
 }
 
 /* Resets all of the inputs inside of the specified element.
  * Removes additionally added text boxes like those for test cases*/
 function clearForm(formId) {
-	//console.log("clearForm");
 	var inputs = document.getElementById(formId).getElementsByTagName("INPUT");
 	var elems  = document.getElementById(formId).getElementsByClassName("modular");
 	// Reset all inputs
@@ -342,30 +336,64 @@ function clearForm(formId) {
 
 function clearMatches() {
 	iMatchQ.length = 0;
-	updateDisplays(["matchedList"]);
+    updateDisplays(["iMainSection"]);
 }
 
 function resetDisplay(displayId) {
-	document.getElementById(displayId).innerHTML = "";
+    switch(displayId) {
+        case "iMainSection":
+            document.getElementById("activeList").innerHTML = "";
+            document.getElementById("matchedList").innerHTML = "";
+            break;
+        case "sMainSection":
+            document.getElementById("sTestDisp").innerHTML = "";
+            break;
+        default:
+            document.getElementById(displayId).innerHTML = "";
+            break;
+    }
 }
 
-/* Called whenever iMatchQ might change */
+/* A display has an id of the form: [i|s][Head|Main][Nav|Section|Aside] */
+/* and specifies one of the webpage layout areas                        */
 function updateDisplays(displayIdArr) {
-	for(var i = 0; i<displayIdArr.length; i++){
-		var thisId = displayIdArr[i];
-		var relArr = getRelArr(thisId);
-		resetDisplay(thisId);
-		for(var j=0; j<relArr.length; j++) {
-			addItemToDisplay(relArr[j], thisId, j);
-		}
-	}
+	for(var i = 0; i<displayIdArr.length; i++)
+        updateDisplay(displayIdArr[i]);
+        // addItemsToDisplay(displayIdArr[i]);
 } 
+
+function addItemsToDisplay(thisId) {
+    var relArr = getRelArr(thisId);
+    for(var j=0; j<relArr.length; j++) {
+        addItemToDisplay(relArr[j], thisId, j);
+    }
+}
 
 function updateDisplay(displayId) {
     switch(displayId) {
+        case "iHeadSection":
+            break;
         case "iMainSection":
-            updateMatchedList();
-            updateActiveList();
+            if(iMatchQ.length + iActiveQ.length === 0) {
+                resetDisplay(displayId);
+            }
+            else {
+                resetDisplay(displayId);
+                addItemsToDisplay("matchedList");
+                addItemsToDisplay("activeList");
+            }
+            break;
+        case "iMainAside":
+            break;
+        case "sHeadSection":
+            break;
+        case "sMainSection":
+            resetDisplay(displayId);
+            addItemsToDisplay("sTestDisp");
+            break;
+        case "sMainAside":
+            break;
+        default:
             break;
     }
 }
@@ -564,7 +592,6 @@ function buildQuestionItem(newItem, displayId, num) {
 /* Returns an object with two fields: idStr and classStr
  * Used for constructing a new list item to add to displays */
 function getIdClassStrObj(newItem, displayId) {
-	//console.log("getIdClassStrObj");
 	var strObj = {};
 	     if(displayId === "matchedList") {
 		strObj['idStr']    = "m" + newItem['id'];
@@ -593,7 +620,6 @@ function getIdClassStrObj(newItem, displayId) {
  * Works for elements that contain a label, a button, and then a list of inputs 
  * elemId: The id of the element you want to add the input box to */
 function addInput(elemId) {
-	//console.log("addInput");
 	var elem      = document.getElementById(elemId);
 	var textInput = document.createElement("INPUT");
 	var breakElem = document.createElement("BR");
@@ -608,7 +634,6 @@ function addInput(elemId) {
  * elemId: The id of the button that will be added to this  
  * func: The function that will be applied to the button */
 function resetModal(label, elemId, func) {
-	//console.log("resetModal");
 	var modalElem = document.getElementById(elemId);
 	var brkElem   = document.createElement("BR");
 	var textLabel = document.createTextNode(label);
@@ -629,7 +654,6 @@ function resetModal(label, elemId, func) {
 /* Returns all non-empty input values in an array 
  * Takes the Id of a div element */
 function getNonEmptyInputs(divId) {
-	//console.log("getNonEmptyInputs");
 	var result = [];
 	var elems = document.getElementById(divId).children;
 	for(var i = 0; i < elems.length; i++) {
@@ -660,7 +684,6 @@ function getSelectedIds(){
 /* Returns the value of the first checked input element contained by the given element 
  * This assumes radio input types inside a div of their own */
 function getCheckedValue(divId) {
-	//console.log("getCheckedValue");
 	var elems = document.getElementById(divId).getElementsByTagName("INPUT");
 	for(var i=0; i<elems.length; i++){
 		if(elems[i].checked){
@@ -673,7 +696,6 @@ function getCheckedValue(divId) {
 /* Returns an array of the checked input values inside of given element 
  * This assumes checkbox input types inside a div of their own */
 function getCheckedValues(divId) {
-	//console.log("getCheckedValues");
 	var checked = [];
 	var elems = document.getElementById(divId).getElementsByTagName("INPUT");
 	for(var i=0; i<elems.length; i++) {
@@ -688,7 +710,6 @@ function getCheckedValues(divId) {
 
 /* Adds an array of objects to another array */
 function addObjsToArray(objs, array){
-	//console.log("addObjsToArray");
 	for(var i=0; i<objs.length; i++)
 		array.push(objs[i]);
 }
@@ -714,7 +735,6 @@ function getRelArr(displayId) {
 		relArr = iActiveQ;
 	} else if(displayId === "sTestDisp") {
 		if(sActiveT.length == 1){
-            console.log("getRelArr", JSON.stringify(sActiveT[0]['ques']));
 			relArr = sActiveT[0]['ques'];
 		} 
 		else {
