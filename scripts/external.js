@@ -207,7 +207,8 @@ function validateForm(type) {
                             console.log("Rcvd:", replyText); 
                             handleReply(replyText);
                         })
-                        .then(() => timeout(2000))
+                        .then(() => alertUser("success", "New question created!"))
+                        .then(() => timeout(1000))
                         .then(() => clearForm("addForm"))
                         .catch("Some error happened");
 				} else {
@@ -227,6 +228,8 @@ function validateForm(type) {
                     })
                     .then(() => clearForm("testForm"))
                     .then(() => alertUser("success", "Test submitted!"))
+                    .then(() => { iActiveQ.length = 0; iMatchedQ.length = 0 })
+                    .then(() => updateDisplays(["iMainSection", "iMainAside"]))
                     .catch(() => alertUser("error", "Something went wrong.. test not submitted!"));
                 }
 			}
@@ -336,6 +339,7 @@ function toggleSelected(listItemId) {
  * Removes additionally added text boxes like those for test cases*/
 function clearForm(formId) {
 	var inputs = document.getElementById(formId).getElementsByTagName("INPUT");
+    var textAreas = document.getElementById(formId).getElementsByTagName("TEXTAREA");
 	var elems  = document.getElementById(formId).getElementsByClassName("modular");
 	// Reset all inputs
 	for(var i=0; i<inputs.length; i++) {
@@ -347,6 +351,9 @@ function clearForm(formId) {
 				inputs[i].value = 3;
 				updateDiff();
 				break;
+            case "checkbox":
+                inputs[i].checked = false;
+                break;
 			case "radio":
 				if(inputs[i].value == 0)
 					inputs[i].checked = true;
@@ -355,6 +362,11 @@ function clearForm(formId) {
 				break;
 		}
 	}
+    console.log(textAreas);
+    // Reset all text areas
+    for(var i=0; i<textAreas.length; i++) {
+        textAreas[i].value = "";
+    }
 	// Reset all modular elements
 	for(var i=0; i<elems.length; i++) {
 		var classes = elems[i].classList;
