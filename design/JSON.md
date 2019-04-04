@@ -1,6 +1,6 @@
 # JSON Messages:
 
-### QUESTION:
+## QUESTION:
 { 
     id    : INT,
     desc  : STR,
@@ -10,7 +10,7 @@
 }
 
 
-###T EST:
+## TEST:
 { 
     id   : INT,
     desc : STR,
@@ -21,7 +21,7 @@
 }
 
 
-### ATTEMPT:
+## ATTEMPT:
 { 
     id       : INT,
     test     : {TEST},
@@ -33,7 +33,8 @@
 }
 
 
-### addQ request
+## addQ
+### request
 {
     type  : addQ,
     desc  : STR,
@@ -43,7 +44,7 @@
     tests : [STR]
 }
 
-### addQ reply
+### reply
 {
     type  : addQ,
     error : STR,
