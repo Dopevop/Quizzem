@@ -42,7 +42,7 @@
 ### request
 ```javascript
 {
-    type  : addQ,
+    type  : "addQ",
     desc  : STR,
     topic : STR,
     cons  : [STR],
@@ -54,7 +54,7 @@
 ### reply
 ```javascript
 {
-    type  : addQ,
+    type  : "addQ",
     error : STR,
     que   : {QUESTION}
 }
@@ -64,19 +64,19 @@
 ### request
 ```javascript
 {
-    type:getQ,
-    topic:STR,
-    diffs:[INT],
-    keys:[STR]
+    type  : "getQ",
+    topic : STR,
+    diffs : [INT],
+    keys  : [STR]
 }
 ```
 
 ### reply
 ```javascript
 {
-    type:getQ,
-    error:STR,
-    ques:[{QUESTION}]
+    type  : "getQ",
+    error : STR,
+    ques  : [{QUESTION}]
 }
 ```
 
@@ -84,20 +84,20 @@
 ###request
 ```javascript
 {
-    type:addT,
-    desc:STR,
-    rel:INT,
-    ques:[{QUESTION}],
-    pts:[INT]
+    type : "addT",
+    desc : STR,
+    rel  : INT,
+    ques : [{QUESTION}],
+    pts  : [INT]
 }
 ```
 
 ### reply
 ```javascript
 {
-    type:addT,
-    error:STR,
-    test:{TEST}
+    type  : "addT",
+    error : STR,
+    test  : {TEST}
 }
 ```
 
@@ -105,17 +105,17 @@
 ### request
 ```javascript
 {
-    type:getT,
-    rels:[INT]
+    type : "getT",
+    rels : [INT]
 }
 ```
 
 ### reply
 ```javascript
 {
-    type:getT,
-    error:STR,
-    tests:[{TEST}]
+    type  : "getT",
+    error : STR,
+    tests : [{TEST}]
 }
 ```
 
@@ -124,21 +124,21 @@
 ### request
 ```javascript
 {
-    type:addA,
-    id:INT,
-    comment:STR,
-    answers:[{ANSWER}]
+    type    : "addA",
+    id      : INT,
+    comment : STR,
+    answers : [{ANSWER}]
 }
 ```
 
 ### reply
 ```javascript
 {
-    type:addA,
-    error:INT,
-    id:INT,
-    sub:INT,
-    answers:[{ANSWER}]
+    type    : "addA",
+    error   : INT,
+    id      : INT,
+    sub     : INT,
+    answers : [{ANSWER}]
 }
 ```
 
@@ -146,16 +146,16 @@
 ### request
 ```javascript
 {
-    type:getA,
-    ids:[INT]
+    type : "getA",
+    ids  : [INT]
 }
 ```
 
 ###  reply
 ```javascript
 {
-    type:getA,
-    error:STR,
-    answers:[{ANSWER}]
+    type    : "getA",
+    error   : STR,
+    answers : [{ANSWER}]
 }
 ```
