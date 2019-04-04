@@ -12,6 +12,7 @@
 ```
 
 ## TEST:
+```
 { 
     id   : INT,
     desc : STR,
@@ -20,9 +21,11 @@
     ques : [{QUESTION}],
     pts  : [INT]
 }
+```
 
 
 ## ATTEMPT:
+```
 { 
     id       : INT,
     test     : {TEST},
@@ -32,10 +35,12 @@
     feedback : [STR],
     remarks  : [STR]
 }
+```
 
 
 ## addQ
 ### request
+```
 {
     type  : addQ,
     desc  : STR,
@@ -44,32 +49,40 @@
     diff  : INT,
     tests : [STR]
 }
+```
 
 ### reply
+```
 {
     type  : addQ,
     error : STR,
     que   : {QUESTION}
 }
+```
 
-
-### getQ request
+## getQ 
+### request
+```
 {
     type:getQ,
     topic:STR,
     diffs:[INT],
     keys:[STR]
 }
-### getQ reply
+```
+
+### reply
+```
 {
     type:getQ,
     error:STR,
     ques:[{QUESTION}]
 }
+```
 
-
-
-### addT request
+## addT 
+###request
+```
 {
     type:addT,
     desc:STR,
@@ -77,35 +90,49 @@
     ques:[{QUESTION}],
     pts:[INT]
 }
-### addT reply
+```
+
+### reply
+```
 {
     type:addT,
     error:STR,
     test:{TEST}
 }
+```
 
-
-### getT request
+## getT
+### request
+```
 {
     type:getT,
     rels:[INT]
 }
-### getT reply
+```
+
+### reply
+```
 {
     type:getT,
     error:STR,
     tests:[{TEST}]
 }
+```
 
 
-### addA request
+## addA
+### request
+```
 {
     type:addA,
     id:INT,
     comment:STR,
     answers:[{ANSWER}]
 }
-### addA reply
+```
+
+### reply
+```
 {
     type:addA,
     error:INT,
@@ -113,16 +140,22 @@
     sub:INT,
     answers:[{ANSWER}]
 }
+```
 
-
-### getA request
+## getA
+### request
+```
 {
     type:getA,
     ids:[INT]
 }
-### getA reply
+```
+
+###  reply
+```
 {
     type:getA,
     error:STR,
     answers:[{ANSWER}]
 }
+```
