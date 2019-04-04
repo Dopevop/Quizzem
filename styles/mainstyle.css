@@ -175,6 +175,7 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 #searchDiffs,
 #addCons {
+    width: 80%;
     display : flex;
     flex-wrap: wrap;
     justify-content: flex-start;
@@ -187,6 +188,7 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 .shortDiff {
     flex-grow: 1;
+    text-align: right;
 }
 .tick {
     position: relative;
