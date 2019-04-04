@@ -1,6 +1,6 @@
 JSON Messages:
 
-        QUESTION:
+###QUESTION:
 { 
     id    : INT,
     desc  : STR,
@@ -10,7 +10,7 @@ JSON Messages:
 }
 
 
-        TEST:
+###TEST:
 { 
     id   : INT,
     desc : STR,
@@ -21,7 +21,7 @@ JSON Messages:
 }
 
 
-        ATTEMPT:
+###ATTEMPT:
 { 
     id       : INT,
     test     : {TEST},
@@ -33,8 +33,7 @@ JSON Messages:
 }
 
 
-        addQ:
-request
+###addQ request
 {
     type  : addQ,
     desc  : STR,
@@ -43,7 +42,7 @@ request
     diff  : INT,
     tests : [STR]
 }
-reply
+###addQ reply
 {
     type  : addQ,
     error : STR,
@@ -51,14 +50,14 @@ reply
 }
 
 
-getQ request
+###getQ request
 {
     type:getQ,
     topic:STR,
     diffs:[INT],
     keys:[STR]
 }
-getQ reply
+###getQ reply
 {
     type:getQ,
     error:STR,
@@ -67,7 +66,7 @@ getQ reply
 
 
 
-addT request
+###addT request
 {
     type:addT,
     desc:STR,
@@ -75,7 +74,7 @@ addT request
     ques:[{QUESTION}],
     pts:[INT]
 }
-addT reply
+###addT reply
 {
     type:addT,
     error:STR,
@@ -83,12 +82,12 @@ addT reply
 }
 
 
-getT request
+###getT request
 {
     type:getT,
     rels:[INT]
 }
-getT reply
+###getT reply
 {
     type:getT,
     error:STR,
@@ -96,14 +95,14 @@ getT reply
 }
 
 
-addA request
+###addA request
 {
     type:addA,
     id:INT,
     comment:STR,
     answers:[{ANSWER}]
 }
-addA reply
+###addA reply
 {
     type:addA,
     error:INT,
@@ -113,12 +112,12 @@ addA reply
 }
 
 
-getA request
+###getA request
 {
     type:getA,
     ids:[INT]
 }
-getA reply
+###getA reply
 {
     type:getA,
     error:STR,
