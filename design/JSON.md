@@ -2,7 +2,7 @@
 
 ## QUESTION:
 ```javascript
-let question = { 
+QUESTION = { 
     id    : INT,
     desc  : STR,
     topic : STR,
@@ -13,7 +13,7 @@ let question = {
 
 ## TEST:
 ```javascript
-test = { 
+TEST = { 
     id   : INT,
     desc : STR,
     rel  : INT,
@@ -26,7 +26,7 @@ test = {
 
 ## ATTEMPT:
 ```javascript
-var = { 
+ATTEMPT = { 
     id       : INT,
     test     : {TEST},
     answers  : [STR],
@@ -39,9 +39,8 @@ var = {
 
 
 ## addQ
-### request
 ```javascript
-{
+request = {
     type  : "addQ",
     desc  : STR,
     topic : STR,
@@ -50,10 +49,8 @@ var = {
     tests : [STR]
 }
 ```
-
-### reply
 ```javascript
-{
+reply = {
     type  : "addQ",
     error : STR,
     que   : {QUESTION}
