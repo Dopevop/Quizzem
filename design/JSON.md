@@ -12,7 +12,7 @@
 ```
 
 ## TEST:
-```json
+```javascript
 { 
     id   : INT,
     desc : STR,
@@ -25,7 +25,7 @@
 
 
 ## ATTEMPT:
-```JSON
+```javascript
 { 
     id       : INT,
     test     : {TEST},
@@ -40,7 +40,7 @@
 
 ## addQ
 ### request
-```
+```javascript
 {
     type  : addQ,
     desc  : STR,
@@ -52,7 +52,7 @@
 ```
 
 ### reply
-```
+```javascript
 {
     type  : addQ,
     error : STR,
@@ -62,7 +62,7 @@
 
 ## getQ 
 ### request
-```
+```javascript
 {
     type:getQ,
     topic:STR,
@@ -72,7 +72,7 @@
 ```
 
 ### reply
-```
+```javascript
 {
     type:getQ,
     error:STR,
@@ -82,7 +82,7 @@
 
 ## addT 
 ###request
-```
+```javascript
 {
     type:addT,
     desc:STR,
@@ -93,7 +93,7 @@
 ```
 
 ### reply
-```
+```javascript
 {
     type:addT,
     error:STR,
@@ -103,7 +103,7 @@
 
 ## getT
 ### request
-```
+```javascript
 {
     type:getT,
     rels:[INT]
@@ -111,7 +111,7 @@
 ```
 
 ### reply
-```
+```javascript
 {
     type:getT,
     error:STR,
@@ -122,7 +122,7 @@
 
 ## addA
 ### request
-```
+```javascript
 {
     type:addA,
     id:INT,
@@ -132,7 +132,7 @@
 ```
 
 ### reply
-```
+```javascript
 {
     type:addA,
     error:INT,
@@ -144,7 +144,7 @@
 
 ## getA
 ### request
-```
+```javascript
 {
     type:getA,
     ids:[INT]
@@ -152,7 +152,7 @@
 ```
 
 ###  reply
-```
+```javascript
 {
     type:getA,
     error:STR,
