@@ -1,6 +1,7 @@
 # JSON Messages:
 
 ## QUESTION:
+```
 { 
     id    : INT,
     desc  : STR,
@@ -8,7 +9,7 @@
     diff  : INT,
     tests : [STR]
 }
-
+```
 
 ## TEST:
 { 
