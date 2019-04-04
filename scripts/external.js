@@ -94,7 +94,7 @@ function buildPostBody(type, source) {
         case 'addA':
             jsonObj = {
                 'type'    : 'addA',
-                'id'      : sActiveT[0]['id'],
+                'test'    : sActiveT[0],
                 'comment' : getStudentComment(),
                 'answers' : getStudentAnswers(),
             }
