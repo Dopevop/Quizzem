@@ -143,17 +143,6 @@ function insertTab(e) {
     }
 }
 
-/* Adds a button to the end of the student's question display */
-function addSubmitToDisplay() {
-	var theBtn = document.createElement("BUTTON");
-	theBtn.setAttribute("type","button");
-	theBtn.setAttribute("id", "testSub"); // <-- might have to change this
-	theBtn.addEventListener("click", function() { validateForm("SubmitTest") } );
-	theBtn.innerHTML = "Submit Exam";
-	sTestDisp.appendChild(theBtn);
-}
-
-
 /* Searches through local questions returning matches
  * Topic   : A topic to search by, "" matches all topics
  * Diffs[] : An array of difficulties to filter by
@@ -532,9 +521,9 @@ function buildTestSummaryItem(newItem, displayId, num) {
 }
 
 function buildQuestionItem(newItem, displayId, num) {
-    thisDesc = newItem['desc']; // Variables specific
-    thisNum  = num + 1;         // to this quetion
-    thisPts  = 5;               //
+    thisDesc = newItem['desc'];      // Variables specific
+    thisNum  = num + 1;              // to this quetion
+    thisPts  = sActiveT[0]['pts'][num]; //
 
     var item      = document.createElement("LI");  // Build the elements
     var qDiv      = document.createElement("DIV"); // that will go into
