@@ -57,7 +57,6 @@ reply = {
 }
 ```
 
----------------------
 ## getQ 
 ```javascript
 request = {
