@@ -1,3 +1,29 @@
+let p1 = [
+    "func()=ans",
+    "myMethod( )=myAnswer",
+    "add(1,4)=5",
+    "sub( 5, 3)=  2",
+    "divide( 4, 2, 1)  =  2",
+    "    f( a, b ) = ans",
+    "print( \"hi\" )   =  \"hi\"",
+    "mult( 45 , 3 ) = 135",
+    "plus(1,2,3,4,5) = 15",
+    "concat( 'boo' , 'yah' )='booyah'",
+    "greet( \"Bob\" , \"Hi\" ) = \"Hi, Bob\"",
+    "mysteryFunc()='b'",
+    "echo('gross')='gross'",
+    "ignore(\"print me!\")=\"\"",
+    "hijk(5)=\"lmnop\"",
+    "hijk(3)=\"lmn\"",
+    "abcd(5)=\"efghi\"",
+    "zyx(5)=\"wvuts\"",
+    "next(\"h\", 5)=\"ijklm\"",
+    "next(\"q\", 3)=\"rst\"",
+];
+let p2 = [];
+let p = p1;
+let q = p2;
+
 function disableButton(btnId) {
     return new Promise((resolve) => {
         document.getElementById(btnId).disabled = true;
@@ -183,7 +209,6 @@ function validateForm(type) {
                         .then(() => enableButton("addSub"))
                         .catch("Some error happened");
 				} else {
-                    alertUser("error", "Need two tests: e.g. func(a,b)=ans");
                     enableButton("addSub");
 				}
 			} else {
@@ -304,9 +329,11 @@ function alertUser(type, msg) {
  * Makes sure all tests are in the form of func([a][,b]...)=answer */
 function validateTests(tests) {
 	if(tests.length < 2) return false;	
-	var pattern = /^ *[a-zA-Z][a-zA-Z0-9]*\(.*\) *= *[^ ]+$/;
+	var pattern = /^ *[a-zA-Z][a-zA-Z0-9]*\(( *| *[^ ]+( *, *[^ ]+)* *)\) *= *[^ ]+$/;
 	for(var i=0; i<tests.length; i++){
-		if(!tests[i].match(pattern)){
+        thisTest = tests[i];
+		if(!thisTest.match(pattern)){
+            alertUser("error", 'Test #' + (i+1) + " isn't in form func( [a[,b]*] )=ans ");
 			return false;
 		}
 	}
@@ -679,7 +706,18 @@ function addInput(elemId) {
 	elem.insertBefore(breakElem, elem.childNodes[3]);
 	elem.insertBefore(textInput, elem.childNodes[3]);
     if(elemId === "addTests")
-        textInput.placeholder = "func( [ a [, b ]* ] ) = ans";
+        textInput.placeholder = getRandomTestPattern();
+}
+
+function getRandomTestPattern() {
+    if(p.length === 0) {
+        q = p;
+        p = (p === p1) ? p2 : p1;
+    }
+    let randIndex = Math.floor(Math.random() * p.length);
+    let newPat = p.splice(randIndex, 1);
+    q.push(newPat);
+    return newPat;
 }
 
 /* Resets an input div to contain a label, a button for adding more inputs,
