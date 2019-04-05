@@ -114,7 +114,7 @@ reply = {
 ```javascript
 request = {
     type    : "addA",
-    id      : INT,
+    test    : {TEST},
     comment : STR,
     answers : [{ANSWER}]
 }
@@ -124,9 +124,7 @@ request = {
 reply = {
     type    : "addA",
     error   : INT,
-    id      : INT,
-    sub     : INT,
-    answers : [{ANSWER}]
+    attempt : {ATTEMPT}
 }
 ```
 
@@ -139,9 +137,9 @@ request = {
 ```
 
 ```javascript
-reqply = {
-    type    : "getA",
-    error   : STR,
-    answers : [{ANSWER}]
+reply = {
+    type     : "getA",
+    error    : INT,
+    attempts : [{ATTEMPT}]
 }
 ```

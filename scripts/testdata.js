@@ -111,3 +111,25 @@ var t7 = {
 	'ques'  : [q3, q4],
     'pts': ["15", "15"]
 };
+
+var a0 = {
+    'id'       : 1000,
+    'test'     : t0,
+    'answers'  : ["Here's my answer for q0, it's not a very good one"],
+    'grades'   : [0],
+    'comment'  : "I wasn't prepared for this test, go easy on me",
+    'feedback' : ["Didn't pass test cases"],
+    'remarks'  : ["This answer was just awful, see me after class."],
+
+}
+var a1 = {
+    'id'       : 1001,
+    'test'     : t1,
+    'answers'  : ["Here's my answer for q0, it's not a very good one",
+                  "And here's my answer for q1. This one's good"],
+    'grades'   : [0, 30],
+    'comment'  : "I wasn't prepared for this test, go easy on me",
+    'feedback' : ["Didn't pass test cases", "Couldn't find anything wrong with this one"],
+    'remarks'  : ["This answer was just awful, see me after class.", 
+                  "I'll let you pass on this one because the autograder didn't find anything wrong"],
+}
