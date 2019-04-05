@@ -397,8 +397,8 @@ function clearInnerHTML(displayId) {
 function updateDisplays(displayIdArr) {
 	for(var i = 0; i<displayIdArr.length; i++)
         updateDisplay(displayIdArr[i]);
-        // addItemsToDisplay(displayIdArr[i]);
 } 
+
 
 function addItemsToDisplay(thisId) {
     var relArr = getRelArr(thisId);
@@ -445,8 +445,13 @@ function updateSMainAside() {
 }
 
 function updateSMainSection() {
-    clearInnerHTML("sTestDisp");
-    addItemsToDisplay("sTestDisp");
+    if(typeof sActiveT !== 'undefined') {
+        clearInnerHTML("sTestDisp");
+        addItemsToDisplay("sTestDisp");
+    } else {
+        clearInnerHTML("sAttemptDisp");
+        addItemsToDisplay("sAttemptDisp");
+    }
 }
 
 function updateIMainAside() {
@@ -502,10 +507,51 @@ function addItemToDisplay(newItem, displayId, num) {
             else
                 item = document.createTextNode("sActiveT has "+sActiveT.length+" tests in it!");
             break;
+        case "sAttemptDisp":
+            item = buildAttemptSummaryItem(newItem, displayId, num);
+            break;
         default:
             item = document.createTextNode(displayId + " not handled by addItemToDisplay!");
     }
 	document.getElementById(displayId).appendChild(item);
+}
+
+function buildAttemptSummaryItem(newItem, displayId, num) {
+    // Gather the information from newItem that will be displayed to user
+    console.log(newItem);
+    let testName   = newItem.test.desc;
+    let maxPts     = newItem.test.pts.map(a => Number(a)).reduce((a,b) => a + b, 0);
+    let grade      = newItem.grades.map(a => Number(a)).reduce((a,b) => a + b, 0);
+    let reviewed   = newItem.remarks.filter((str) => str !== "").length !== 0;
+    let statusText = (reviewed)? "Reviewed by Instructor" : "Auto-Graded";
+    let itemId     = "a"+newItem.test.id;
+    let itemClass  = "attempt";
+    
+    // Construct the elements that the information will be displayed in
+    let item  = document.createElement("LI");
+    let aDiv  = document.createElement("DIV");
+    let aTop  = document.createElement("DIV");
+    let aBot  = document.createElement("DIV");
+    let aDesc = document.createTextNode(testName);
+    let aPts  = document.createTextNode("Grade: " + grade + " / " + maxPts);
+    let aStat = document.createTextNode("Status: " + statusText);
+
+    // Define the attributes, eventListeners, children of the elements
+    item.setAttribute ("id", itemId);
+    item.setAttribute ("class", itemClass);
+    item.appendChild(aDiv);
+    aDiv.setAttribute ("class", "aDiv" );
+    aTop.setAttribute ("class", "aTop" );
+    aBot.setAttribute ("class", "aBot" );
+    aDiv.appendChild(aTop);
+    aDiv.appendChild(aBot);
+    aTop.appendChild(aDesc);
+    aBot.appendChild(aPts);
+    aBot.appendChild(aStat);
+    
+    // Return the item
+    console.log("item", item);
+    return item;
 }
 
 function buildMatchedQuestionItem(newItem, displayId, num) {
@@ -842,21 +888,24 @@ function removeItemFromArray(id, A) {
 /* Determines which array (iActiveQ or iMatchedQ) is associated with a display */
 function getRelArr(displayId) {
 	var relArr;
-	if(displayId === "iMatchedList"){
-		relArr = iMatchedQ;
-	} else if(displayId === "iActiveList") {
-		relArr = iActiveQ;
-	} else if(displayId === "sTestDisp") {
-		if(sActiveT.length == 1){
-			relArr = sActiveT[0]['ques'];
-		} 
-		else {
-			relArr = sLocalT;
-		}
-	} else {
-		relArr = [{ 'desc':"Invalid Display Id", 'topic':"Fail", 'id':"Fail", 'diff':"Fail",
-					'tests':["a()=b", "a()=c"] }];
+    switch(displayId) {
+        case "iMatchedList":
+            relArr = iMatchedQ;
+            break;
+        case "iActiveList":
+            relArr = iActiveQ;
+            break;
+        case "sTestDisp":
+            relArr = (sActiveT.length == 1)? sActiveT[0]['ques'] : sLocalT;
+            break;
+        case "sAttemptDisp":
+            relArr = (sActiveA.length == 1)? sActiveA[0]['ques'] : sLocalA;
+            break;
+        default:
+            relArr = [{'desc':"No",'topic':"relArr",'id':"for",'diff':"this",'tests':["display"] }];
+            break;
 	}
+    console.log("relArr: ", relArr)
 	return relArr;
 }
 

@@ -33,7 +33,7 @@
     </nav>
 
     <section id="sMainSection" class="box">
-      <ul id="sTestDisp">
+      <ul id="sAttemptDisp">
       </ul>
     </section>
     
@@ -48,11 +48,13 @@
     var sActiveA = [];                       // Should only ever have at most one attempt 
     console.log(sLocalA);
     console.log(sActiveA); 
-    fetch('getA')
-    .then( x => { // As soon as page is accessed, download all attempts
-      console.log("Rcvd:", x);
-      handleReply(x, "student") 
-    });
+    updateDisplays(["sMainSection"]);
+    fetch('getA') // As soon as page is accessed, download all attempts
+      .catch(() => alertUser("error", "Could not download graded tests!"))
+      .then( x => { 
+        console.log("Rcvd:", x);
+        handleReply(x, "student") 
+      });
   </script>
 </body>
 </html>
