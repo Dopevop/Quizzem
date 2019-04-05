@@ -184,9 +184,11 @@ function validateForm(type) {
                         .catch("Some error happened");
 				} else {
                     alertUser("error", "Need two tests: e.g. func(a,b)=ans");
+                    enableButton("addSub");
 				}
 			} else {
 				alertUser("error", "Make sure Description and Topic are filled out!");
+                enableButton("addSub");
 			}
 			break;
 		case "addT":
@@ -204,10 +206,13 @@ function validateForm(type) {
                     .then(() => { iActiveQ.length = 0; iMatchedQ.length = 0 })
                     .then(() => updateDisplays(["iMainSection", "iMainAside"]))
                     .catch(() => alertUser("error", "Something went wrong.. test not submitted!"));
+                } else {
+                    enableButton("testSub");
                 }
 			}
 			else {
 				alertUser("error", "Make sure you've named the exam!");
+                enableButton("testSub");
 			}
 			break;
 		case "addA":
@@ -299,7 +304,7 @@ function alertUser(type, msg) {
  * Makes sure all tests are in the form of func([a][,b]...)=answer */
 function validateTests(tests) {
 	if(tests.length < 2) return false;	
-	var pattern = /[a-zA-Z][a-zA-Z0-9]*\( *([^, (]+ *(, *[^,( ]+)*)|\) *\) *= *.*/;
+	var pattern = /^ *[a-zA-Z][a-zA-Z0-9]*\(.*\) *= *[^ ]+$/;
 	for(var i=0; i<tests.length; i++){
 		if(!tests[i].match(pattern)){
 			return false;
@@ -673,6 +678,8 @@ function addInput(elemId) {
     textInput.setAttribute("type", "text");
 	elem.insertBefore(breakElem, elem.childNodes[3]);
 	elem.insertBefore(textInput, elem.childNodes[3]);
+    if(elemId === "addTests")
+        textInput.placeholder = "func( [ a [, b ]* ] ) = ans";
 }
 
 /* Resets an input div to contain a label, a button for adding more inputs,
@@ -686,12 +693,12 @@ function resetModal(label, elemId, func) {
 	var textLabel = document.createTextNode(label);
 	var btnElem   = document.createElement("BUTTON");
 	var btnText   = document.createTextNode("+");
-	btnElem.appendChild(btnText); // Put "+" on button
+	btnElem.appendChild(btnText);           // Put "+" on button
 	btnElem.setAttribute("type", "button"); // Make it a button (soas to not reload page)
-	btnElem.setAttribute("onclick", func); // Make button add new inputs
-	modalElem.innerHTML = ""; // Clear all inputs
-	modalElem.appendChild(textLabel); // Add label 
-	modalElem.appendChild(btnElem); // Add button
+	btnElem.setAttribute("onclick", func);  // Make button add new inputs
+	modalElem.innerHTML = "";               // Clear all inputs
+	modalElem.appendChild(textLabel);       // Add label
+	modalElem.appendChild(btnElem);         // Add button
 	modalElem.appendChild(brkElem);
 	addInput(elemId);
 	if(elemId === "addTests")
