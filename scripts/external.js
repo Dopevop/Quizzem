@@ -262,7 +262,7 @@ function toggleSelected(listItemId) {
 				break;
 			}
 		}
-		updateDisplays(["sMainSection", "sMainAside"]);
+		updateDisplays(["sMainSection", "sMainAside", "sHeadSection"]);
 	}
 	else if ( listItemId[0] == "m") { // Selected Item is a matchList question
 		// add Q to iActiveQ, remove from iMatchedQ
@@ -417,6 +417,7 @@ function updateDisplay(displayId) {
             updateIMainAside();
             break;
         case "sHeadSection":
+            updateSHeadSection();
             break;
         case "sMainSection":
             updateSMainSection();
@@ -426,6 +427,12 @@ function updateDisplay(displayId) {
             break;
         default:
             break;
+    }
+}
+
+function updateSHeadSection() { 
+    if(sActiveT.length === 1) {
+        document.getElementById("sHeadSummary").innerHTML = sActiveT[0]['desc'];
     }
 }
 
