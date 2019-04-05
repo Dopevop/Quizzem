@@ -48,18 +48,18 @@
   <script>
     var sLocalT  = [t0, t1, t2, t3, t4, t5]; // Always holds all known tests
     var sActiveT = []; // Should only ever have at most one test inside of it
-    console.log(sLocalT);
-    console.log(sActiveT); 
+    console.log(sLocalT, sActiveT);
+    updateDisplays(["sMainSection"]);
     fetch('getT').then( x => { // As soon as page is accessed, download all tests
       console.log("Rcvd:", x);
       handleReply(x, "student") 
-    } );
+    })
     finTestBtn.addEventListener("click", () => { 
         fetch('addA')
         .then( x => { 
           console.log("Rcvd:", x);
           handleReply(x) 
-        } ) 
+        }) 
     });
   </script>
 </body>

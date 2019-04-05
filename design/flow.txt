@@ -1,22 +1,25 @@
 State A: User is at the login page.
     │
-    └→ User enter's instructor username/password
+    └→ User enters username/password
         │└→ "Checking..." is displayed to the user 
         │ 
         ├─┤Unknown...├→ "Unknown Login" is displayed to the user 
-        │                └→ Wait 3 seconds
+        │                └→ Wait a bit
         │                    └→ Go to State A
         │
         ├─┤Instructor├→ "Welcome Instructor" is displayed to the user 
-        │                └→ Wait 3 seconds
+        │                └→ Wait a bit
         │                    └→ Go to State B
         │
         └─┤Student...├→ "Wecome Student" is displayed to the user 
-                         └→ Wait 3 seconds
+                         └→ Wait a bit
                              └→ Go to State E
 
 
 State B: Instructor is at Welcome page.
+    │├→ Welcome message is displayed to the user 
+    │├→ Login form shown in MainAside
+    │└→ HeadSection & HeadAside are blank (for now, most likely change)
     │
     ├→ User clicks on Build tab
     │   │
