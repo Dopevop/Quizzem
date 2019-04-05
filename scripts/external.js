@@ -1,3 +1,40 @@
+let p1 = [
+    "func()=ans",
+    "myMethod( )=myAnswer",
+    "add(1,4)=5",
+    "sub( 5, 3)=  2",
+    "divide( 4, 2, 1)  =  2",
+    "    f( a, b ) = ans",
+    "print( \"hi\" )   =  \"hi\"",
+    "mult( 45 , 3 ) = 135",
+    "plus(1,2,3,4,5) = 15",
+    "concat( 'boo' , 'yah' )='booyah'",
+    "greet( \"Bob\" , \"Hi\" ) = \"Hi, Bob\"",
+    "mysteryFunc()='b'",
+    "echo('gross')='gross'",
+    "ignore(\"print me!\")=\"\"",
+    "hijk(5)=\"lmnop\"",
+    "hijk(3)=\"lmn\"",
+    "abcd(5)=\"efghi\"",
+    "zyx(5)=\"wvuts\"",
+    "next(\"h\", 5)=\"ijklm\"",
+    "next(\"q\", 3)=\"rst\"",
+];
+let p2 = [];
+let p = p1;
+let q = p2;
+
+function disableButton(btnId) {
+    return new Promise((resolve) => {
+        document.getElementById(btnId).disabled = true;
+        resolve();
+    });
+}
+
+function enableButton(btnId) {
+    document.getElementById(btnId).disabled = false;
+}
+
 const fetch = (type) => new Promise((resolve,reject) => {
     let url     = "https://web.njit.edu/~djo23/CS490/curlObj.php";
     let xhr     = new XMLHttpRequest();
@@ -169,12 +206,14 @@ function validateForm(type) {
                         .then(() => alertUser("success", "New question created!"))
                         .then(() => timeout(1000))
                         .then(() => clearForm("addForm"))
+                        .then(() => enableButton("addSub"))
                         .catch("Some error happened");
 				} else {
-                    alertUser("error", "Need two tests: e.g. func(a,b)=ans");
+                    enableButton("addSub");
 				}
 			} else {
 				alertUser("error", "Make sure Description and Topic are filled out!");
+                enableButton("addSub");
 			}
 			break;
 		case "addT":
@@ -185,15 +224,20 @@ function validateForm(type) {
                         console.log("Rcvd:", x);
                         handleReply(x);
                     })
-                    .then(() => clearForm("testForm"))
                     .then(() => alertUser("success", "Test submitted!"))
+                    .then(() => timeout(1000))
+                    .then(() => enableButton("testSub"))
+                    .then(() => clearForm("testForm"))
                     .then(() => { iActiveQ.length = 0; iMatchedQ.length = 0 })
                     .then(() => updateDisplays(["iMainSection", "iMainAside"]))
                     .catch(() => alertUser("error", "Something went wrong.. test not submitted!"));
+                } else {
+                    enableButton("testSub");
                 }
 			}
 			else {
 				alertUser("error", "Make sure you've named the exam!");
+                enableButton("testSub");
 			}
 			break;
 		case "addA":
@@ -285,9 +329,11 @@ function alertUser(type, msg) {
  * Makes sure all tests are in the form of func([a][,b]...)=answer */
 function validateTests(tests) {
 	if(tests.length < 2) return false;	
-	var pattern = /[a-zA-Z][a-zA-Z0-9]*\( *([^, (]+ *(, *[^,( ]+)*)|\) *\) *= *.*/;
+	var pattern = /^ *[a-zA-Z][a-zA-Z0-9]*\(( *| *[^ ]+( *, *[^ ]+)* *)\) *= *[^ ]+$/;
 	for(var i=0; i<tests.length; i++){
-		if(!tests[i].match(pattern)){
+        thisTest = tests[i];
+		if(!thisTest.match(pattern)){
+            alertUser("error", 'Test #' + (i+1) + " isn't in form func( [a[,b]*] )=ans ");
 			return false;
 		}
 	}
@@ -376,9 +422,18 @@ function updateDisplay(displayId) {
             updateSMainSection();
             break;
         case "sMainAside":
+            updateSMainAside();
             break;
         default:
             break;
+    }
+}
+
+function updateSMainAside() {
+    if(sActiveT.length === 0) {
+        hideElement("finTestForm");
+    } else {
+        showElement("finTestForm");
     }
 }
 
@@ -650,6 +705,19 @@ function addInput(elemId) {
     textInput.setAttribute("type", "text");
 	elem.insertBefore(breakElem, elem.childNodes[3]);
 	elem.insertBefore(textInput, elem.childNodes[3]);
+    if(elemId === "addTests")
+        textInput.placeholder = getRandomTestPattern();
+}
+
+function getRandomTestPattern() {
+    if(p.length === 0) {
+        q = p;
+        p = (p === p1) ? p2 : p1;
+    }
+    let randIndex = Math.floor(Math.random() * p.length);
+    let newPat = p.splice(randIndex, 1);
+    q.push(newPat);
+    return newPat;
 }
 
 /* Resets an input div to contain a label, a button for adding more inputs,
@@ -663,12 +731,12 @@ function resetModal(label, elemId, func) {
 	var textLabel = document.createTextNode(label);
 	var btnElem   = document.createElement("BUTTON");
 	var btnText   = document.createTextNode("+");
-	btnElem.appendChild(btnText); // Put "+" on button
+	btnElem.appendChild(btnText);           // Put "+" on button
 	btnElem.setAttribute("type", "button"); // Make it a button (soas to not reload page)
-	btnElem.setAttribute("onclick", func); // Make button add new inputs
-	modalElem.innerHTML = ""; // Clear all inputs
-	modalElem.appendChild(textLabel); // Add label 
-	modalElem.appendChild(btnElem); // Add button
+	btnElem.setAttribute("onclick", func);  // Make button add new inputs
+	modalElem.innerHTML = "";               // Clear all inputs
+	modalElem.appendChild(textLabel);       // Add label
+	modalElem.appendChild(btnElem);         // Add button
 	modalElem.appendChild(brkElem);
 	addInput(elemId);
 	if(elemId === "addTests")

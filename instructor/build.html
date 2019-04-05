@@ -16,7 +16,11 @@
     <main>
       <nav id="iHeadNav"><h1><a href='welcome.html'>Quizzem</a></h1></nav>
       <section id="iHeadSection"><h3>Header Section</h4></section>
-      <aside id="iHeadAside">Header Aside</aside>
+      <aside id="iHeadAside">
+        <ul class="asideButtons">
+          <li class="asideButton"><a href="../login.html">Logout</a></li>
+        </ul>
+      </aside>
     </main>
   </header>
   <main class="clearfix">
@@ -46,7 +50,7 @@
     </section>
 
     <aside id="iMainAside" class="box">
-      <form id="testForm" style="display:none;">
+      <form id="testForm">
         <fieldset>
           <legend>Create Exam</legend>
           Exam Name</br>
@@ -64,7 +68,6 @@
         <fieldset>
           <legend>Create Question:</legend>
           Description </br>
-          <!-- <input id="addDesc" type="text"> </br> -->
           <textarea id="addDesc"></textarea> </br>
           Topic </br>
           <input id="addTopic" type="text"> </br>
@@ -125,15 +128,24 @@
       handleReply(x);
     } );
 		
-		/* Adding event listeners to submit and clear buttons  */
-         addSub.addEventListener("click"    , () => { validateForm("addQ")    } );
-        addForm.addEventListener("mousemove", () => { updateDiff()            } );
-       addRange.addEventListener("mouseup"  , () => { updateDiff()            } );
-       addRange.addEventListener("keyup"    , () => { updateDiff()            } );
-      searchSub.addEventListener("click"    , () => { displaySearchResults()  } );
-    searchReset.addEventListener("click"    , () => { clearForm("searchForm") } );
-    searchReset.addEventListener("click"    , () => { clearMatches()          } );
-        testSub.addEventListener("click"    , () => { validateForm("addT")    } );
+    addForm.addEventListener("mousemove", () => { updateDiff()            } );
+    addRange.addEventListener("mouseup" , () => { updateDiff()            } );
+    addRange.addEventListener("keyup"   , () => { updateDiff()            } );
+    searchSub.addEventListener("click"  , () => { displaySearchResults()  } );
+    searchReset.addEventListener("click", () => { clearForm("searchForm") } );
+    searchReset.addEventListener("click", () => { clearMatches()          } );
+    addSub.addEventListener("click", 
+      () => {
+        disableButton("addSub")
+        .then(() => validateForm("addQ"))
+      }
+    );
+    testSub.addEventListener("click",
+      () => { 
+        disableButton("testSub")
+        .then(() => validateForm("addT"))
+      } 
+    );
 
 		/* Initializes the modular elements */
 		resetModal("Test Cases", "addTests"  , 'addInput("addTests")');
