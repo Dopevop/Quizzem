@@ -16,7 +16,11 @@
     <main>
       <nav id="sHeadNav"><a href='welcome.html'><h2>Quizzem</h2></a></nav>
       <section id="sHeadSection"><h4>Header Section</h4></section>
-      <aside id="sHeadAside">Header Aside</aside>
+      <aside id="sHeadAside">
+        <ul class="asideButtons">
+          <li class="asideButton"><a href="../login.html">Logout</a></li>
+        </ul>
+      </aside>
     </main>
   </header>
   <main class="clearfix">
@@ -59,14 +63,18 @@
     })
     .catch(() => alertUser("error", "Could not download tests!"));
     finTestBtn.addEventListener("click", () => { 
-        fetch('addA')
+        disableButton("finTestBtn")
+        .then(() => fetch('addA'))
         .then( x => { 
           console.log("Rcvd:", x);
           handleReply(x) 
         })
         .then(() => alertUser("success", "Test Submitted"))
+        .then(() => timeout(3000))
+        .then(() => clearForm("finTestForm"))
         .then(() => sActiveT.length = 0)
         .then(() => updateDisplays(["sMainSection", "sMainAside"]))
+        .then(() => enableButton("finTestBtn"))
         .catch(() => alertUser("error", "Could not submit test!"));
     });
   </script>

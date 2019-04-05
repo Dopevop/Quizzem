@@ -1,3 +1,14 @@
+function disableButton(btnId) {
+    return new Promise((resolve) => {
+        document.getElementById(btnId).disabled = true;
+        resolve();
+    });
+}
+
+function enableButton(btnId) {
+    document.getElementById(btnId).disabled = false;
+}
+
 const fetch = (type) => new Promise((resolve,reject) => {
     let url     = "https://web.njit.edu/~djo23/CS490/curlObj.php";
     let xhr     = new XMLHttpRequest();
@@ -169,6 +180,7 @@ function validateForm(type) {
                         .then(() => alertUser("success", "New question created!"))
                         .then(() => timeout(1000))
                         .then(() => clearForm("addForm"))
+                        .then(() => enableButton("addSub"))
                         .catch("Some error happened");
 				} else {
                     alertUser("error", "Need two tests: e.g. func(a,b)=ans");
@@ -185,8 +197,10 @@ function validateForm(type) {
                         console.log("Rcvd:", x);
                         handleReply(x);
                     })
-                    .then(() => clearForm("testForm"))
                     .then(() => alertUser("success", "Test submitted!"))
+                    .then(() => timeout(1000))
+                    .then(() => enableButton("testSub"))
+                    .then(() => clearForm("testForm"))
                     .then(() => { iActiveQ.length = 0; iMatchedQ.length = 0 })
                     .then(() => updateDisplays(["iMainSection", "iMainAside"]))
                     .catch(() => alertUser("error", "Something went wrong.. test not submitted!"));

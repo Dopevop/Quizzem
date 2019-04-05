@@ -16,7 +16,11 @@
     <main>
       <nav id="sHeadNav"><a href='welcome.html'><h2>Quizzem</h2></a></nav>
       <section id="sHeadSection"><h4>Header Section</h4></section>
-      <aside id="sHeadAside">Header Aside</aside>
+      <aside id="sHeadAside">
+        <ul class="asideButtons">
+          <li class="asideButton"><a href="../login.html">Logout</a></li>
+        </ul>
+      </aside>
     </main>
   </header>
   <main class="clearfix">
@@ -47,13 +51,6 @@
     fetch('getT').then( x => { // As soon as page is accessed, download all tests
       console.log("Rcvd:", x);
       handleReply(x, "student") 
-    } );
-    finTestBtn.addEventListener("click", () => { 
-        fetch('addA')
-        .then( x => { 
-          console.log("Rcvd:", x);
-          handleReply(x) 
-        } ) 
     });
   </script>
 </body>
