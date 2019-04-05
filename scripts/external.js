@@ -376,9 +376,18 @@ function updateDisplay(displayId) {
             updateSMainSection();
             break;
         case "sMainAside":
+            updateSMainAside();
             break;
         default:
             break;
+    }
+}
+
+function updateSMainAside() {
+    if(sActiveT.length === 0) {
+        hideElement("finTestForm");
+    } else {
+        showElement("finTestForm");
     }
 }
 

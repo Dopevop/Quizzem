@@ -10,6 +10,8 @@
   <title>Quizzem Student</title>
 </head>
 <body>
+  <div id="successDiv" class="alert alert-success">Here's an alert-success</div>
+  <div id="errorDiv" class="alert alert-error">Here's an alert-error</div>
   <header>
     <main>
       <nav id="sHeadNav"><a href='welcome.html'><h2>Quizzem</h2></a></nav>
@@ -32,7 +34,7 @@
     </section>
     
     <aside id="sMainAside" id="quizBuilder" class="box">
-      <form>
+      <form id="finTestForm">
         <fieldset>
           <legend>Finish Attempt</legend>
           Comments: </br>
@@ -50,16 +52,22 @@
     var sActiveT = []; // Should only ever have at most one test inside of it
     console.log(sLocalT, sActiveT);
     updateDisplays(["sMainSection"]);
-    fetch('getT').then( x => { // As soon as page is accessed, download all tests
+    fetch('getT')
+    .then( x => { // As soon as page is accessed, download all tests
       console.log("Rcvd:", x);
       handleReply(x, "student") 
     })
+    .catch(() => alertUser("error", "Could not download tests!"));
     finTestBtn.addEventListener("click", () => { 
         fetch('addA')
         .then( x => { 
           console.log("Rcvd:", x);
           handleReply(x) 
-        }) 
+        })
+        .then(() => alertUser("success", "Test Submitted"))
+        .then(() => sActiveT.length = 0)
+        .then(updateDisplays(["sMainSection", "sMainAside"]))
+        .catch(() => alertUser("error", "Could not submit test!"));
     });
   </script>
 </body>

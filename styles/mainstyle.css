@@ -9,6 +9,11 @@
 
 }
 
+#testForm, 
+#finTestForm {
+    display: none;
+}
+
 .alert {
     position: absolute;
     z-index: 3;
