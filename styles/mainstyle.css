@@ -290,13 +290,15 @@ ul {
 	margin            : 0;
 	padding           : 0;
 }
-.tTop {
+.tTop,
+.aTop {
     text-align: center;
     font-weight: bold;
     padding: 5px;
     /* background-color: gainsboro; */
 }
-.tBot {
+.tBot,
+.aBot {
     padding: 5px 15px;
     box-shadow: 0px 0px 5px darkgrey inset;
     background-color: ghostwhite;
@@ -351,6 +353,7 @@ section li {
     position: relative;
     overflow: hidden;
     padding: 3%;
+    padding-top: 20px;
     background-color: whitesmoke;
     box-shadow: 0px 1px 8px darkgrey;
     border-radius: 5px;
@@ -382,22 +385,66 @@ section li {
     /* width: 10%; */
     float: right;
 }
+/* .ptsSpan { */
+/*     font-weight: bold; */
+/* } */
+.lowGradeSpan {
+    font-weight: bold;
+    color: red;
+}
+.midGradeSpan {
+    font-weight: bold;
+    color: orange;
+}
+.highGradeSpan {
+    font-weight: bold;
+    color: green;
+}
 .qBot {
     width: 100%;
     /* min-height: 150px; */
     /* margin: auto; */
 }
-.qAns {
+.qAns,
+.aAns {
     width: 100%;
-    min-height: 150px;
     margin: 10px auto;
-    background-color: white;
-    box-shadow: 0px 0px 5px darkgrey inset;
+    box-shadow: 0 0 3px darkgrey inset;
     text-align: left;
     padding: 2%;
-    resize: vertical;
     overflow: hidden;
     font-family: monospace;
+}
+.qAns {
+    background-color: white;
+    resize: vertical;
+    min-height: 150px;
+}
+.aAns {
+    /* min-height: 90px; */
+    background-color: ghostwhite;
+}
+.remark,
+.feedback {
+    position: relative;
+    width: 80%;
+    min-height: 30px;
+    top: 50%;
+    margin: 2px auto;
+    padding: 5px;
+    text-align: center;
+    /* box-shadow: 0px 1px 3px darkgrey; */
+    box-shadow: 0px 1px 2px #880000, 0px 1px 3px darkgrey;
+}
+.remark {
+    background-color: #ffff0077;
+    border: 1px solid yellow;
+    border-radius: 5px;
+}
+.feedback {
+    background-color: #ff000077;
+    /* border: 1px solid red; */
+    border-radius: 5px;
 }
 .qBtn {
     position:absolute;

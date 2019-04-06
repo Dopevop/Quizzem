@@ -254,46 +254,32 @@ function toggleSelected(listItemId) {
 	var id = listItemId.substring(1);
 	if(listItemId[0] == "t") {
 		// add test with id to sActiveT 
-		sActiveT.length = 0;
-		for(var i=0; i<sLocalT.length; i++) {
-			var thisT = sLocalT[i];
-			if(thisT['id'] == id) {
-				sActiveT.push(thisT);
-				break;
-			}
-		}
+        sActiveT.push(sLocalT.filter((t) => t.id == id)[0]);
+        console.log(sActiveT);
 		updateDisplays(["sMainSection", "sMainAside", "sHeadSection"]);
 	}
 	else if ( listItemId[0] == "m") { // Selected Item is a matchList question
 		// add Q to iActiveQ, remove from iMatchedQ
-		for(var i=0; i<iMatchedQ.length; i++){
-			var thisQ = iMatchedQ[i];
-			if(thisQ['id'] == id){ // Check if found the clicked on Q
-				if(uniqQuestion(thisQ, iActiveQ)){
-					iActiveQ.push(thisQ);
-				}
-				iMatchedQ = removeItemFromArray(thisQ['id'], iMatchedQ);
-				break;
-			}
-		}
+        let clickedQ = iMatchedQ.filter((q) => q.id == id)[0];
+        iActiveQ.push(clickedQ);
+        iMatchedQ = removeItemFromArray(clickedQ.id, iMatchedQ);
         updateDisplays(["iMainSection", "iMainAside"]);
 	}
-	else if ( listItemId[0] == "a") { // Selected Item is a iActiveList question
+	else if ( listItemId[0] == "s") { // Selected Item is a iActiveList question
 		// add Q to iMatchedQ, remove from iActiveQ
-		for(var i=0; i<iActiveQ.length; i++){
-			var thisQ = iActiveQ[i];
-			if(thisQ['id'] == id){ // Check if found the clicked on Q
-				if(uniqQuestion(thisQ, iMatchedQ)){
-					iMatchedQ.push(thisQ);
-				}
-				iActiveQ = removeItemFromArray(thisQ['id'], iActiveQ);
-				break;
-			}
-		}
+        let clickedQ = iActiveQ.filter((q) => q.id == id)[0];
+        iMatchedQ.push(clickedQ);
+        iActiveQ = removeItemFromArray(clickedQ.id, iActiveQ);
         updateDisplays(["iMainSection", "iMainAside"]);
 	}
+    else if( listItemId[0] == "a" ) {
+        // add attempt with id to sActiveA
+        let clickedA = sLocalA.filter( (a) => a.test.id == id )[0];
+        sActiveA.push(clickedA);
+        updateDisplays(["sMainSection"]);
+    }
 	else {
-		console.log("in toggleSelected, "+listItemId[0]+" was not 't', 'm', or 'a'");
+		console.log("in toggleSelected, "+listItemId[0]+" was not 't', 'm', or 's'");
 	}
 }
 
@@ -494,21 +480,18 @@ function addItemToDisplay(newItem, displayId, num) {
     var item;
     switch(displayId) {
         case "iMatchedList":
-            item = buildMatchedQuestionItem(newItem, displayId, num);
+            item = buildMatchedQuestionItem(newItem, num);
             break;
         case "iActiveList":
-            item = buildActiveQuestionItem(newItem, displayId, num);
+            item = buildActiveQuestionItem(newItem, num);
             break;
         case "sTestDisp":
-            if(sActiveT.length === 0)
-                item = buildTestSummaryItem(newItem, displayId, num);
-            else if(sActiveT.length === 1) 
-                item = buildQuestionItem(newItem, displayId, num);
-            else
-                item = document.createTextNode("sActiveT has "+sActiveT.length+" tests in it!");
+            item = (sActiveT.length === 0)? buildTestSummaryItem(newItem, num) :
+                                            buildQuestionItem(newItem, num);
             break;
         case "sAttemptDisp":
-            item = buildAttemptSummaryItem(newItem, displayId, num);
+            item = (sActiveA.length === 0)? buildAttemptSummaryItem(newItem, num) :
+                                            buildAttemptItem(newItem, num);
             break;
         default:
             item = document.createTextNode(displayId + " not handled by addItemToDisplay!");
@@ -516,7 +499,77 @@ function addItemToDisplay(newItem, displayId, num) {
 	document.getElementById(displayId).appendChild(item);
 }
 
-function buildAttemptSummaryItem(newItem, displayId, num) {
+function buildAttemptItem(newItem, num) {
+    thisNum    = num + 1;
+    thisAns    = newItem.answer;
+    thisDesc   = newItem.desc;
+    thisFeed   = newItem.feedback; // an array of auto-generated feedback strings
+    thisGrade  = newItem.grade; 
+    thisPts    = newItem.maxPts;
+    thisRemark = newItem.remark;
+    gradeSpanClass = (thisGrade <= (thisPts/2))   ? "lowGradeSpan" :
+                     (thisGrade <= (3*thisPts/4)) ? "midGradeSpan" : "highGradeSpan";
+                     
+
+    var item      = document.createElement("LI");  // Build the elements
+    var aDiv      = document.createElement("DIV");
+    var qDiv      = document.createElement("DIV"); // that will go into
+    var qTop      = document.createElement("DIV"); // this question
+    var qTopLeft  = document.createElement("DIV");
+    var qTopMid   = document.createElement("DIV");
+    var qTopRight = document.createElement("DIV");
+    var qBot      = document.createElement("DIV");
+    var aAns      = document.createElement("DIV");
+    var aUnder    = document.createElement("DIV");
+    var aRemark   = document.createElement("DIV");
+    var qNum      = document.createTextNode(thisNum + ".)");
+    var qDesc     = document.createTextNode(thisDesc);
+    var qPtsSpan  = document.createElement("SPAN");
+    var qGrdSpan  = document.createElement("SPAN");
+    var qPoints   = document.createTextNode(" / " + thisPts + " Pts");
+
+         qDiv.setAttribute("class", "qDiv"); // Set attributes of
+         qDiv.appendChild(qTop);             // and append children to
+         qDiv.appendChild(qBot);             // the elements
+         qTop.setAttribute("class", "qTop"); 
+         qTop.appendChild(qTopLeft);
+         qTop.appendChild(qTopMid);
+         qTop.appendChild(qTopRight);
+     qTopLeft.setAttribute("class", "qTopLeft");
+     qTopLeft.appendChild(qNum);
+      qTopMid.setAttribute("class", "qTopMid");
+      qTopMid.appendChild(qDesc);
+    qPtsSpan.appendChild(qGrdSpan);
+    qPtsSpan.appendChild(qPoints);
+    qPtsSpan.setAttribute("class", "ptsSpan");
+    qGrdSpan.setAttribute("class", gradeSpanClass);
+    qGrdSpan.appendChild(document.createTextNode(thisGrade));
+    qTopRight.setAttribute("class", "qTopRight");
+    qTopRight.appendChild(qPtsSpan);
+         qBot.setAttribute("class", "qBot");
+         qBot.appendChild(aAns);
+
+         aAns.appendChild(document.createTextNode(thisAns));
+         aAns.setAttribute("class", "aAns");
+         aAns.setAttribute("contenteditable", "false");
+         aDiv.appendChild(qDiv);
+         aDiv.appendChild(aUnder);
+      aRemark.appendChild(document.createTextNode(thisRemark));
+      aRemark.setAttribute("class", "remark");
+       aUnder.appendChild(aRemark);
+    for(let i=0; i<thisFeed.length; i++) {
+        let newFeedDiv = document.createElement("DIV");
+        newFeedDiv.setAttribute("class", "feedback");
+        newFeedDiv.appendChild(document.createTextNode(thisFeed[i]));
+        aUnder.appendChild(newFeedDiv);
+    }
+
+         item.appendChild(aDiv);
+
+    return item;
+}
+
+function buildAttemptSummaryItem(newItem, num) {
     // Gather the information from newItem that will be displayed to user
     console.log(newItem);
     let testName   = newItem.test.desc;
@@ -537,9 +590,6 @@ function buildAttemptSummaryItem(newItem, displayId, num) {
     let aStat = document.createTextNode("Status: " + statusText);
 
     // Define the attributes, eventListeners, children of the elements
-    item.setAttribute ("id", itemId);
-    item.setAttribute ("class", itemClass);
-    item.appendChild(aDiv);
     aDiv.setAttribute ("class", "aDiv" );
     aTop.setAttribute ("class", "aTop" );
     aBot.setAttribute ("class", "aBot" );
@@ -547,22 +597,27 @@ function buildAttemptSummaryItem(newItem, displayId, num) {
     aDiv.appendChild(aBot);
     aTop.appendChild(aDesc);
     aBot.appendChild(aPts);
+    aBot.appendChild(document.createElement("BR"));
     aBot.appendChild(aStat);
     
     // Return the item
-    console.log("item", item);
+    item.setAttribute ("id", itemId);
+    item.setAttribute ("class", "available");
+    item.appendChild(aDiv);
+    item.addEventListener("click", () => toggleSelected(itemId));
     return item;
 }
 
-function buildMatchedQuestionItem(newItem, displayId, num) {
+function buildMatchedQuestionItem(newItem, num) {
     var item      = document.createElement("LI");
     var descText  = document.createTextNode(newItem['desc']);
     var diffText  = document.createTextNode("Difficulty: "+convertDiffFormat(newItem['diff']));
     var topicText = document.createTextNode("Topic: "+newItem['topic']);
-    var strObj    = getIdClassStrObj(newItem, displayId);
-    item.setAttribute("id", strObj['idStr']);
-    item.setAttribute("class", strObj['classStr']);
-    item.addEventListener("click", function() { toggleSelected( strObj['idStr'] ) });
+    var itemId = "m"+newItem.id;
+    var itemClass = "matched";
+    item.setAttribute("id", itemId);
+    item.setAttribute("class", itemClass);
+    item.addEventListener("click", function() { toggleSelected( itemId ) });
     item.appendChild(descText);
     item.appendChild(document.createElement("BR"));
     item.appendChild(diffText);
@@ -570,12 +625,11 @@ function buildMatchedQuestionItem(newItem, displayId, num) {
     return item;
 }
 
-function buildActiveQuestionItem(newItem, displayId, num) {
+function buildActiveQuestionItem(newItem, num) {
     var thisDesc = newItem['desc'];                          // Variables specific
     var thisNum  = num + 1;                                  // to this quetion
     var thisPts  = 5;
-    var strObj   = getIdClassStrObj(newItem, displayId);
-    var idStr    = strObj['idStr'];
+    var idStr    = "s" + newItem.id;
 
     var item      = document.createElement("LI");            // Build the elements
     var qDiv      = document.createElement("DIV");           // that will go into
@@ -618,11 +672,12 @@ function buildActiveQuestionItem(newItem, displayId, num) {
     return item;
 }
 
-function buildTestSummaryItem(newItem, displayId, num) {
+function buildTestSummaryItem(newItem, num) {
     var thisDesc  = newItem['desc'];        // Get the variables
     var thisQues  = newItem['ques'];        // specific to this test
     var thisNum   = newItem['ques'].length; // Figure out the number of questions
-    var strObj    = getIdClassStrObj(newItem, displayId);
+    var itemId = "t"+newItem.id;
+    var itemClass = "available";
     var uniqTops  = [];                     // Figure out the topics of these questions
     var uniqDiffs = [];                     // Figure out the difficulties of these questions
     var lowerCaseTops = [];
@@ -670,17 +725,17 @@ function buildTestSummaryItem(newItem, displayId, num) {
     tBot.appendChild(tTopics);
     tBot.appendChild(document.createElement("BR"));
     tBot.appendChild(tDiffs);
-    item.setAttribute("id",    strObj['idStr']);
-    item.setAttribute("class", strObj['classStr']);
+    item.setAttribute("id",    itemId);
+    item.setAttribute("class", itemClass);
     item.setAttribute("tabindex", num+1);
-    item.addEventListener("click", () => { toggleSelected(strObj['idStr'])  });
-    item.addEventListener("keyup", (e) => { if(e.keyCode==13) toggleSelected(strObj['idStr'])});
+    item.addEventListener("click", () => { toggleSelected(itemId)  });
+    item.addEventListener("keyup", (e) => { if(e.keyCode==13) toggleSelected(itemId)});
     item.appendChild(tTop);
     item.appendChild(tBot);
     return item;
 }
 
-function buildQuestionItem(newItem, displayId, num) {
+function buildQuestionItem(newItem, num) {
     thisDesc = newItem['desc'];      // Variables specific
     thisNum  = num + 1;              // to this quetion
     thisPts  = sActiveT[0]['pts'][num]; //
@@ -718,34 +773,6 @@ function buildQuestionItem(newItem, displayId, num) {
          item.appendChild(qDiv);
 
     return item;
-}
-
-
-/* Returns an object with two fields: idStr and classStr
- * Used for constructing a new list item to add to displays */
-function getIdClassStrObj(newItem, displayId) {
-	var strObj = {};
-	     if(displayId === "iMatchedList") {
-		strObj['idStr']    = "m" + newItem['id'];
-		strObj['classStr'] = "matched";
-	}
-	else if(displayId === "iActiveList") {
-		strObj['idStr']    = "a" + newItem['id'];
-		strObj['classStr'] = "selected";
-	}
-	else if(displayId === "sTestDisp" && sActiveT.length === 0) {
-		strObj['idStr']    = "t" + newItem['id'];
-		strObj['classStr'] = "available";
-	}
-	else if(displayId === "sTestDisp" && sActiveT.length === 1) {
-		strObj['idStr']    = "q" + newItem['id'];
-		strObj['classStr'] = "question";
-	}
-	else {
-		strObj['idStr'] = "?" + newItem['id'];
-		strObj['classStr'] = "?" + "unknown";
-	}
-	return strObj;
 }
 
 /* Add another input text box to the top of the specified element.
@@ -899,14 +926,39 @@ function getRelArr(displayId) {
             relArr = (sActiveT.length == 1)? sActiveT[0]['ques'] : sLocalT;
             break;
         case "sAttemptDisp":
-            relArr = (sActiveA.length == 1)? sActiveA[0]['ques'] : sLocalA;
+            relArr = (sActiveA.length == 1)? buildAttemptList(sActiveA[0]) : sLocalA;
             break;
         default:
             relArr = [{'desc':"No",'topic':"relArr",'id':"for",'diff':"this",'tests':["display"] }];
             break;
 	}
-    console.log("relArr: ", relArr)
 	return relArr;
+}
+
+// this returns an array of objects that can be turned into display items
+function buildAttemptList(attempt) {
+    console.log("buildingAttemptList: ", attempt);
+    let list = [];
+    // Need: Q desc, maxpts, grade, answer, feedback, remarks
+    for(let i=0; i<attempt.answers.length; i++) {
+        let thisDesc   = attempt.test.ques[i].desc; // Description of Q
+        let thisMaxPts = attempt.test.pts[i];  // Max grade for this Q
+        let thisGrade  = attempt.grades[i];    // Student's grade for this Q
+        let thisAns    = attempt.answers[i];   // Student's answer for this Q
+        let thisFeed   = attempt.feedback[i];  // An array of auto-generated feedback
+        let thisRemark = attempt.remarks[i];   // A single str from instructor
+        let thisObj    = {
+            'desc'     : thisDesc,
+            'maxPts'   : thisMaxPts,
+            'grade'    : thisGrade,
+            'answer'   : thisAns,
+            'feedback' : thisFeed,
+            'remark'   : thisRemark,
+        }
+        list.push(thisObj);
+    }
+    console.log("attempList: ", list);
+    return list;
 }
 
 function getQuestionPoints() {
