@@ -38,12 +38,12 @@
     </section>
     
     <aside id="sMainAside" id="quizBuilder" class="box">
-      <form id="finTestForm">
+      <form id="finAttemptForm">
         <fieldset>
           <legend>Finish Attempt</legend>
           Comments: </br>
-          <textarea id="finTestCmt" style="width:250; height:80"></textarea> </br>
-          <button id="finTestBtn" type="button">Submit</button>
+          <textarea id="finAttemptCmt" style="width:250; height:80"></textarea> </br>
+          <button id="finAttemptBtn" type="button">Submit</button>
         </fieldset>
       </form>
     </aside>
@@ -62,8 +62,8 @@
       handleReply(x, "student") 
     })
     .catch(() => alertUser("error", "Could not download tests!"));
-    finTestBtn.addEventListener("click", () => { 
-        disableButton("finTestBtn")
+    finAttemptBtn.addEventListener("click", () => { 
+        disableButton("finAttemptBtn")
         .then(() => fetch('addA'))
         .then( x => { 
           console.log("Rcvd:", x);
@@ -71,10 +71,10 @@
         })
         .then(() => alertUser("success", "Test Submitted"))
         .then(() => timeout(3000))
-        .then(() => clearForm("finTestForm"))
+        .then(() => clearForm("finAttemptForm"))
         .then(() => sActiveT.length = 0)
         .then(() => updateDisplays(["sMainSection", "sMainAside"]))
-        .then(() => enableButton("finTestBtn"))
+        .then(() => enableButton("finAttemptBtn"))
         .catch(() => alertUser("error", "Could not submit test!"));
     });
   </script>

@@ -4,7 +4,7 @@ let p1 = [
     "add(1,4)=5",
     "sub( 5, 3)=  2",
     "divide( 4, 2, 1)  =  2",
-    "    f( a, b ) = ans",
+    "  f( a, b ) = ans",
     "print( \"hi\" )   =  \"hi\"",
     "mult( 45 , 3 ) = 135",
     "plus(1,2,3,4,5) = 15",
@@ -36,16 +36,19 @@ function enableButton(btnId) {
 }
 
 const fetch = (type) => new Promise((resolve,reject) => {
+    console.log("fetching...");
     let url     = "https://web.njit.edu/~djo23/CS490/curlObj.php";
     let xhr     = new XMLHttpRequest();
+    console.log("xhr was assigned");
     let source  = (document.getElementById("sHeadNav"))? "student" : "instructor";
+    console.log("source was assigned");
     let jsonStr = buildPostBody(type, source);
+    console.log("Sent:",jsonStr);
     xhr.onload  = () => resolve(xhr.responseText);
     xhr.onerror = () => reject("Network Error");
     xhr.open('post', url, true);
     xhr.timeout = 10000;
     xhr.send(jsonStr);
-    console.log("Sent:",jsonStr);
 });
 
 function handleReply(replyText, source) {
@@ -58,21 +61,13 @@ function handleReply(replyText, source) {
 			break;
 		case 'getQ':
 			var DBQ = replyObj['ques'];       // Extract all Qs
-			for(var i=0; i<DBQ.length; i++){       // Put all uniq Qs in
-				if(uniqQuestion(DBQ[i], iLocalQ)){ //   instructor's local
-					iLocalQ.push(DBQ[i]);          //   Q array
-				}
-			}
+            iLocalQ = iLocalQ.concat(DBQ.filter( q => !(iLocalQ.includes(q)) ));
             updateDisplays(["iMainSection"]);
 			break;
 		case 'getT':
 			var localT = (source == "student")? sLocalT : iLocalT; 
 			var DBT = replyObj['tests'];          // Update the
-			for(var i=0; i<DBT.length; i++){      // relevant array
-				if(uniqQuestion(DBT[i], localT)){ // Only add
-					localT.push(DBT[i]);          // Uniq Qs
-				}
-			}
+            localT = localT.concat(DBQ.filter( t => !(localT.includes(t)) ));
             updateDisplays(["sMainSection"]);
 			break;
 		case 'addT':
@@ -93,7 +88,7 @@ function buildPostBody(type, source) {
 				'type'  : 'addQ',
 				'desc'  : addDesc.value,
 				'topic' : addTopic.value,
-                'cons'  : getQuestionConstraints(),
+                'cons'  : getCheckedValues("addCons"),
 				'diff'  : addRange.value,
 				'tests' : getNonEmptyInputs('addTests'),
 			}
@@ -111,8 +106,8 @@ function buildPostBody(type, source) {
 				'type' : 'addT',
 				'desc' : testDesc.value,
 				'rel'  : getCheckedValue("testRelease"),
-				'ques' : getSelectedQs(),
-                'pts'  : getQuestionPoints(),
+				'ques' : iActiveQ,
+                'pts'  : Array.from(document.getElementsByClassName("qPts")).map(i=>i.value),
 			}
 			break;
 		case 'getT':
@@ -125,7 +120,7 @@ function buildPostBody(type, source) {
             jsonObj = {
                 'type'    : 'addA',
                 'test'    : sActiveT[0],
-                'comment' : getStudentComment(),
+                'comment' : finAttemptCmt.value,
                 'answers' : getStudentAnswers(),
             }
             break;
@@ -187,6 +182,7 @@ function displaySearchResults() {
 			iMatchedQ.push(M[i]);
 		}
 	}
+    iMatchedQ = iMatchedQ.concat(  );
 	iMatchedQ.sort( (a,b) => { a['id'] < b['id'] } );
 	updateDisplays(["iMainSection"]);
 }
@@ -230,7 +226,10 @@ function validateForm(type) {
                     .then(() => clearForm("testForm"))
                     .then(() => { iActiveQ.length = 0; iMatchedQ.length = 0 })
                     .then(() => updateDisplays(["iMainSection", "iMainAside"]))
-                    .catch(() => alertUser("error", "Something went wrong.. test not submitted!"));
+                    .catch(() => {
+                        alertUser("error", "Something went wrong.. test not submitted!")
+                        enableButton("testSub");
+                    });
                 } else {
                     enableButton("testSub");
                 }
@@ -427,9 +426,9 @@ function updateSHeadSection() {
 
 function updateSMainAside() {
     if(sActiveT.length === 0) {
-        hideElement("finTestForm");
+        hideElement("finAttemptForm");
     } else {
-        showElement("finTestForm");
+        showElement("finAttemptForm");
     }
 }
 
@@ -843,31 +842,8 @@ function timeout(delay) {
 /* Returns all non-empty input values in an array 
  * Takes the Id of a div element */
 function getNonEmptyInputs(divId) {
-	var result = [];
-	var elems = document.getElementById(divId).children;
-	for(var i = 0; i < elems.length; i++) {
-		if(elems[i].tagName === "INPUT")
-			if(elems[i].value !== "")
-				result.push(elems[i].value);
-	}
-	return result;
-}
-
-function getSelectedQs() {
-	var Qs = [];
-	for(var i=0; i<iActiveQ.length; i++){
-		Qs.push(iActiveQ[i]);
-	}
-	return Qs;
-}
-
-/* Returns an array of ids for the selected questions */
-function getSelectedIds(){
-	var ids = [];
-	for(var i=0; i<iActiveQ.length; i++){
-		ids.push(iActiveQ[i]['id']);
-	}
-	return ids;
+	var elems = Array.from(document.getElementById(divId).children);
+    return elems.filter(i=>i.tagName==="INPUT"&&i.value!=="").map(i=>i.value);
 }
 
 /* Returns the value of the first checked input element contained by the given element 
@@ -879,19 +855,13 @@ function getCheckedValue(divId) {
 			return elems[i].value;
 		}
 	}
-	return -1;
 }
 
 /* Returns an array of the checked input values inside of given element 
  * This assumes checkbox input types inside a div of their own */
 function getCheckedValues(divId) {
-	var checked = [];
-	var elems = document.getElementById(divId).getElementsByTagName("INPUT");
-	for(var i=0; i<elems.length; i++) {
-		if(elems[i].checked) {
-			checked.push(elems[i].value);
-		}
-	}
+	var elems = Array.from(document.getElementById(divId).getElementsByTagName("INPUT"));
+    var checked = elems.filter(i=>i.checked).map(i=>i.value);
 	if(checked.length === 0)
 		checked = [1,2,3,4,5];
 	return checked;
@@ -965,19 +935,7 @@ function buildAttemptList(attempt) {
 }
 
 function getQuestionPoints() {
-    let inputs = document.getElementsByClassName("qPts");
-    let points = [];
-    for(let i=0; i<inputs.length; i++)
-        points.push(inputs[i].value);
-    return points;
-}
-
-function getQuestionConstraints() {
-    return getCheckedValues("addCons");
-}
-
-function getStudentComment() {
-    return document.getElementById("finTestCmt").value;
+    return 
 }
 
 function getStudentAnswers() {
