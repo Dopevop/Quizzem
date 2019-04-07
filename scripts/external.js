@@ -314,7 +314,10 @@ function alertUser(type, msg) {
 /* Makes sure there are at least two non-empty tests
  * Makes sure all tests are in the form of func([a][,b]...)=answer */
 function validateTests(tests) {
-	if(tests.length < 2) return false;	
+	if(tests.length < 2) {
+        alertUser("error", "You need at least 2 test cases to create a new question!");
+        return false;	
+    }
 	var pattern = /^ *[a-zA-Z][a-zA-Z0-9]*\(( *| *[^ ]+( *, *[^ ]+)* *)\) *= *[^ ]+$/;
 	for(var i=0; i<tests.length; i++){
         thisTest = tests[i];
