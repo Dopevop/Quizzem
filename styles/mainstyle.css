@@ -15,10 +15,12 @@
 }
 
 .alert {
+    font-family: monospace;
     position: absolute;
     z-index: 3;
-    width: 400px;
+    min-width: 400px;
     height: 50px;
+    padding: 0 15px;
     line-height: 50px;
     text-align: center;
     left: calc(50% - 200px);

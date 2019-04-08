@@ -40,6 +40,7 @@ const fetch = (type) => new Promise((resolve,reject) => {
     let xhr     = new XMLHttpRequest();
     let source  = (document.getElementById("sHeadNav"))? "student" : "instructor";
     let jsonStr = buildPostBody(type, source);
+    console.log("Sent:", jsonStr);
     xhr.onload  = () => resolve(xhr.responseText);
     xhr.onerror = () => reject("Network Error");
     xhr.open('post', url, true);
@@ -146,19 +147,13 @@ function localSearch(topic, diffs, keys) {
  * Updates the iMatchedQ array with Q's matching new search criteria
  * Displays the iMatchedQ in the matches section */
 function displaySearchResults() {
-    console.log("displaySearchResults");
 	var topic = searchTopic.value.toLowerCase();
 	var diffs = getCheckedValues("searchDiffs").map(d=>Number(d));
 	var keys  = getNonEmptyInputs("searchKeys").map(k=>k.toLowerCase());
-	var M  = localSearch(topic, diffs, keys);
+	var matches  = localSearch(topic, diffs, keys);
 	iMatchedQ.length = 0;
-	for(var i=0; i<M.length; i++) {
-		if( uniqQuestion(M[i], iMatchedQ) && uniqQuestion(M[i], iActiveQ) ){
-			iMatchedQ.push(M[i]);
-		}
-	}
-    iMatchedQ = iMatchedQ.concat(  );
-	iMatchedQ.sort( (a,b) => { a['id'] < b['id'] } );
+    iMatchedQ = matches.filter(q=>(!iMatchedQ.includes(q))&&(!iActiveQ.includes(q)));
+	iMatchedQ.sort( (a,b) => a.diff - b.diff );
 	updateDisplays(["iMainSection"]);
 }
 
@@ -178,7 +173,10 @@ function validateForm(type) {
                         .then(() => timeout(1000))
                         .then(() => clearForm("addForm"))
                         .then(() => enableButton("addSub"))
-                        .catch("Some error happened");
+                        .catch(() => { 
+                            enableButton("addSub");
+                            alertUser("error", "Network error, try again later.");
+                        });
 				} else {
                     enableButton("addSub");
 				}
@@ -258,20 +256,13 @@ function toggleSelected(listItemId) {
 }
 
 function validatePts() {
-    let pts = document.getElementsByClassName("qPts");
-    for(let i=0; i<pts.length; i++) {
-        let thisPt = pts[i].value;
-        if(thisPt === "") {
-            alertUser("error", "All points must be filled out!");
-            return false;
-        }
-        for(let j=0; j<thisPt.length; j++) {
-            let thisChar = thisPt[j];
-            if(!inArr(thisChar, ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"])) {
-                alertUser("error", "Points must be integers!");
-                return false;
-            }
-       }
+    let pts = Array.from(document.getElementsByClassName("qPts"));
+    const emptyPt = p => p.value === ""; 
+    const nanPt   = p => isNaN(p.value);
+    const anyTrue = (a,b) => a||b;
+    if( pts.map(emptyPt).reduce(anyTrue) || pts.map(nanPt).reduce(anyTrue) ) {
+        alertUser("error", "All points must be filled out with integers!");
+        return false;
     }
     return true;
 }
@@ -293,22 +284,23 @@ function validateTests(tests) {
         return false;	
     }
 	var pattern = /^ *[a-zA-Z][a-zA-Z0-9]*\(( *| *[^ ]+( *, *[^ ]+)* *)\) *= *[^ ]+$/;
-	for(var i=0; i<tests.length; i++){
-        thisTest = tests[i];
-		if(!thisTest.match(pattern)){
-            alertUser("error", 'Test #' + (i+1) + " isn't in form func( [a[,b]*] )=ans ");
-			return false;
-		}
-	}
+    let malTests = tests.map(t=>!t.match(pattern)).map((b,i)=>b?i+1:"NaN").filter(n=>!isNaN(n));
+    if(malTests.length !== 0) {
+        if(malTests.length === 1)
+            alertUser("error", "Test " + malTests + " is not in the form func([a[,b]*])=ans");
+        else
+            alertUser("error", "Tests " + malTests + " are not in the form func([a[,b]*])=ans");
+        return false;
+    }
 	return true;
 }
 
 /* Resets all of the inputs inside of the specified element.
  * Removes additionally added text boxes like those for test cases*/
 function clearForm(formId) {
-	var inputs = document.getElementById(formId).getElementsByTagName("INPUT");
+	var inputs    = document.getElementById(formId).getElementsByTagName("INPUT");
     var textAreas = document.getElementById(formId).getElementsByTagName("TEXTAREA");
-	var elems  = document.getElementById(formId).getElementsByClassName("modular");
+	var elems     = document.getElementById(formId).getElementsByClassName("modular");
 	// Reset all inputs
 	for(var i=0; i<inputs.length; i++) {
 		switch(inputs[i].type) {
@@ -330,7 +322,6 @@ function clearForm(formId) {
 				break;
 		}
 	}
-    console.log(textAreas);
     // Reset all text areas
     for(var i=0; i<textAreas.length; i++) {
         textAreas[i].value = "";
