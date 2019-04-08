@@ -36,14 +36,10 @@ function enableButton(btnId) {
 }
 
 const fetch = (type) => new Promise((resolve,reject) => {
-    console.log("fetching...");
     let url     = "https://web.njit.edu/~djo23/CS490/curlObj.php";
     let xhr     = new XMLHttpRequest();
-    console.log("xhr was assigned");
     let source  = (document.getElementById("sHeadNav"))? "student" : "instructor";
-    console.log("source was assigned");
     let jsonStr = buildPostBody(type, source);
-    console.log("Sent:",jsonStr);
     xhr.onload  = () => resolve(xhr.responseText);
     xhr.onerror = () => reject("Network Error");
     xhr.open('post', url, true);
@@ -139,42 +135,21 @@ function buildPostBody(type, source) {
  * Diffs[] : An array of difficulties to filter by
  * Keys[]  : An array of words to search through descriptions by */
 function localSearch(topic, diffs, keys) {
-	var matches = [];
-	for(var i=0; i<iLocalQ.length; i++){
-		var thisQ = iLocalQ[i];
-		var thisTopic = thisQ['topic'].toLowerCase();
-		if(topic === "" || thisTopic.match(topic.toLowerCase())){
-			// Topic matches, now check Diffs
-			var thisDiff = thisQ['diff'];
-			if( inArr(thisDiff, diffs) ){
-				// Topic and Diff matches, check Keys
-				var thisDesc = thisQ['desc'].toLowerCase();
-				if(keys.length !== 0){
-					for(var j=0; j<keys.length; j++) {
-						var thisKey = keys[j].toLowerCase();
-                        var thisRE = new RegExp(thisKey);
-						if( thisDesc.match(thisRE)){
-							// Topic, Diff, & Key matches, add to matches
-							matches.push(thisQ);
-							break;
-						}
-					}
-				} else {
-					matches.push(thisQ);
-				}
-			}
-		}
-	}
-	return matches;
+    const sameTopic    = q => q.topic === "" || q.topic.toLowerCase().match(topic);
+    const sameDiff     = q => diffs.includes(q.diff);
+    const containsKeys = q => 
+        keys.map(k=>q.desc.toLowerCase().match(new RegExp(k))).reduce((a,b)=>a&&b, true);
+	return iLocalQ.filter(sameTopic).filter(sameDiff).filter(containsKeys);
 }
 
 /* Called when searchSubmit button is clicked
  * Updates the iMatchedQ array with Q's matching new search criteria
  * Displays the iMatchedQ in the matches section */
 function displaySearchResults() {
-	var topic = searchTopic.value;
-	var diffs = getCheckedValues("searchDiffs");
-	var keys  = getNonEmptyInputs("searchKeys");
+    console.log("displaySearchResults");
+	var topic = searchTopic.value.toLowerCase();
+	var diffs = getCheckedValues("searchDiffs").map(d=>Number(d));
+	var keys  = getNonEmptyInputs("searchKeys").map(k=>k.toLowerCase());
 	var M  = localSearch(topic, diffs, keys);
 	iMatchedQ.length = 0;
 	for(var i=0; i<M.length; i++) {
