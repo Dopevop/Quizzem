@@ -50,25 +50,25 @@ const fetch = (type) => new Promise((resolve,reject) => {
 
 function handleReply(replyText, source) {
 	var replyObj = JSON.parse(replyText);
-	switch(replyObj['type']) {
+	switch(replyObj.type) {
 		case 'addQ':
-			iLocalQ.push(replyObj['que']);  // Add to local Qs
-			iMatchedQ.push(replyObj['que']); // Add to matched Qs
+			iLocalQ.push(replyObj.que);  // Add to local Qs
+			iMatchedQ.push(replyObj.que); // Add to matched Qs
             updateDisplays(["iMainSection"]);
 			break;
 		case 'getQ':
-			var DBQ = replyObj['ques'];       // Extract all Qs
+			var DBQ = replyObj.ques;       // Extract all Qs
             iLocalQ = iLocalQ.concat(DBQ.filter( q => !(iLocalQ.includes(q)) ));
             updateDisplays(["iMainSection"]);
 			break;
 		case 'getT':
 			var localT = (source == "student")? sLocalT : iLocalT; 
-			var DBT = replyObj['tests'];          // Update the
+			var DBT = replyObj.tests;          // Update the
             localT = localT.concat(DBQ.filter( t => !(localT.includes(t)) ));
             updateDisplays(["sMainSection"]);
 			break;
 		case 'addT':
-			var newTest = replyObj['test'];
+			var newTest = replyObj.test;
 			iLocalT.push(newTest);
             console.log("iLocalT:", iLocalT);
 			break;
@@ -386,7 +386,7 @@ function updateDisplay(displayId) {
 
 function updateSHeadSection() { 
     if(sActiveT.length === 1) {
-        document.getElementById("sHeadSummary").innerHTML = sActiveT[0]['desc'];
+        document.getElementById("sHeadSummary").innerHTML = sActiveT[0].desc;
     }
 }
 
@@ -578,9 +578,9 @@ function buildAttemptSummaryItem(newItem, num) {
 
 function buildMatchedQuestionItem(newItem, num) {
     var item      = document.createElement("LI");
-    var descText  = document.createTextNode(newItem['desc']);
-    var diffText  = document.createTextNode("Difficulty: "+convertDiffFormat(newItem['diff']));
-    var topicText = document.createTextNode("Topic: "+newItem['topic']);
+    var descText  = document.createTextNode(newItem.desc);
+    var diffText  = document.createTextNode("Difficulty: "+convertDiffFormat(newItem.diff));
+    var topicText = document.createTextNode("Topic: "+newItem.topic);
     var itemId = "m"+newItem.id;
     var itemClass = "matched";
     item.setAttribute("id", itemId);
@@ -594,7 +594,7 @@ function buildMatchedQuestionItem(newItem, num) {
 }
 
 function buildActiveQuestionItem(newItem, num) {
-    var thisDesc = newItem['desc'];                          // Variables specific
+    var thisDesc = newItem.desc;                          // Variables specific
     var thisNum  = num + 1;                                  // to this quetion
     var thisPts  = 5;
     var idStr    = "s" + newItem.id;
@@ -641,9 +641,9 @@ function buildActiveQuestionItem(newItem, num) {
 }
 
 function buildTestSummaryItem(newItem, num) {
-    var thisDesc  = newItem['desc'];        // Get the variables
-    var thisQues  = newItem['ques'];        // specific to this test
-    var thisNum   = newItem['ques'].length; // Figure out the number of questions
+    var thisDesc  = newItem.desc;        // Get the variables
+    var thisQues  = newItem.ques;        // specific to this test
+    var thisNum   = newItem.ques.length; // Figure out the number of questions
     var itemId = "t"+newItem.id;
     var itemClass = "available";
     var uniqTops  = [];                     // Figure out the topics of these questions
@@ -651,8 +651,8 @@ function buildTestSummaryItem(newItem, num) {
     var lowerCaseTops = [];
     for(var i=0; i<thisNum; i++) {
         var thisQ    = thisQues[i];
-        var thisTop  = thisQ['topic'];
-        var thisDiff = thisQ['diff'];
+        var thisTop  = thisQ.topic;
+        var thisDiff = thisQ.diff;
         if( !inArr(thisTop.toLowerCase(), lowerCaseTops) ) {
             uniqTops.push( thisTop );
             lowerCaseTops.push( thisTop.toLowerCase() );
@@ -704,9 +704,9 @@ function buildTestSummaryItem(newItem, num) {
 }
 
 function buildQuestionItem(newItem, num) {
-    thisDesc = newItem['desc'];      // Variables specific
+    thisDesc = newItem.desc;      // Variables specific
     thisNum  = num + 1;              // to this quetion
-    thisPts  = sActiveT[0]['pts'][num]; //
+    thisPts  = sActiveT[0].pts[num]; //
 
     var item      = document.createElement("LI");  // Build the elements
     var qDiv      = document.createElement("DIV"); // that will go into
@@ -815,35 +815,24 @@ function getNonEmptyInputs(divId) {
 /* Returns the value of the first checked input element contained by the given element 
  * This assumes radio input types inside a div of their own */
 function getCheckedValue(divId) {
-	var elems = document.getElementById(divId).getElementsByTagName("INPUT");
-	for(var i=0; i<elems.length; i++){
-		if(elems[i].checked){
-			return elems[i].value;
-		}
-	}
+	var elems = Array.from(document.getElementById(divId).getElementsByTagName("INPUT"));
+    return elems.filter(e=>e.checked).map(e=>e.value);
 }
 
 /* Returns an array of the checked input values inside of given element 
  * This assumes checkbox input types inside a div of their own */
 function getCheckedValues(divId) {
-	var elems = Array.from(document.getElementById(divId).getElementsByTagName("INPUT"));
-    var checked = elems.filter(i=>i.checked).map(i=>i.value);
+	let elems   = Array.from(document.getElementById(divId).getElementsByTagName("INPUT"));
+    let checked = elems.filter(e=>e.checked).map(e=>e.value);
 	if(checked.length === 0)
 		checked = [1,2,3,4,5];
 	return checked;
 }
 
-/* Adds an array of objects to another array */
-function addObjsToArray(objs, array){
-	for(var i=0; i<objs.length; i++)
-		array.push(objs[i]);
-}
-
 /* Removes question with qId from the array qArr */
 function removeItemFromArray(id, A) {
-	// idStr = (A['id'])? 'id':'id';
 	for(var i=0; i<A.length; i++){
-		if(A[i]['id'] === id) {
+		if(A[i].id === id) {
 			A.splice(i, 1);
 			break;
 		}
@@ -862,7 +851,7 @@ function getRelArr(displayId) {
             relArr = iActiveQ;
             break;
         case "sTestDisp":
-            relArr = (sActiveT.length == 1)? sActiveT[0]['ques'] : sLocalT;
+            relArr = (sActiveT.length == 1)? sActiveT[0].ques : sLocalT;
             break;
         case "sAttemptDisp":
             relArr = (sActiveA.length == 1)? buildAttemptList(sActiveA[0]) : sLocalA;
@@ -876,7 +865,6 @@ function getRelArr(displayId) {
 
 // this returns an array of objects that can be turned into display items
 function buildAttemptList(attempt) {
-    console.log("buildingAttemptList: ", attempt);
     let list = [];
     // Need: Q desc, maxpts, grade, answer, feedback, remarks
     for(let i=0; i<attempt.answers.length; i++) {
@@ -896,33 +884,21 @@ function buildAttemptList(attempt) {
         }
         list.push(thisObj);
     }
-    console.log("attempList: ", list);
     return list;
 }
 
-function getQuestionPoints() {
-    return 
-}
-
 function getStudentAnswers() {
-    console.log("Getting answers");
-    let inputs = document.getElementsByClassName("qAns");
-    let answers = [];
-    for(let i=0; i<inputs.length; i++) {
-        answers.push(inputs[i].value);
-    }
-    console.log("Returning:", answers);
-    return answers;
+    let inputs = Array.from(document.getElementsByClassName("qAns"));
+    return inputs.map( i=>i.value );
 }
 
 /* Checks the given question's Id against all Ids in localQ
  * Returns true if given question's Id is not found */
 function uniqQuestion(question, qArr){
-	//console.log("uniqQuestion");
 	var uniq = true;
-	var thisId = question['id'];
+	var thisId = question.id;
 	for(var i=0; i<qArr.length; i++){
-		if( qArr[i]['id'] === thisId ) {
+		if( qArr[i].id === thisId ) {
 			uniq = false;
 			break;
 		}
@@ -944,7 +920,6 @@ function inArr(key, arr){
  * Given a string Very Easy, Easy, Medium, Hard, Very Hard return corresponding 1-5
  * Given anything else, returns -1 */
 function convertDiffFormat(diff) {
-	//console.log("convertDiffFormat");
 	var swapper = {"1":"Very Easy", "2":"Easy", "3":"Medium", "4":"Hard", "5":"Very Hard",
 				   1:"Very Easy"  , 2:"Easy"  , 3:"Medium"  , 4:"Hard"  , 5:"Very Hard"  ,
 				   "Very Easy":"1", "Easy":"2", "Medium":"3", "Hard":"4", "Very Hard":"5", };
