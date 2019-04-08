@@ -61,6 +61,11 @@ function handleReply(replyText, source) {
             iLocalQ = iLocalQ.concat(DBQ.filter( q => !(iLocalQ.includes(q)) ));
             updateDisplays(["iMainSection"]);
 			break;
+		case 'addT':
+			var newTest = replyObj.test;
+			iLocalT.push(newTest);
+            console.log("iLocalT:", iLocalT);
+			break;
 		case 'getT':
             var localT = (source == "student")? sLocalT : iLocalT;
             var DBT = replyObj.tests;
@@ -71,11 +76,18 @@ function handleReply(replyText, source) {
             }
             updateDisplays(["sMainSection"]);
 			break;
-		case 'addT':
-			var newTest = replyObj.test;
-			iLocalT.push(newTest);
-            console.log("iLocalT:", iLocalT);
-			break;
+        case 'addA':
+            // Do nothing currently
+            break;
+        case 'getA':
+            let DBA = replyObj.attempts;
+            for(var i=0; i<DBA.length; i++) {
+                if(uniqQuestion(DBA[i], sLocalA)) {
+                    sLocalA.push(DBA[i]);
+                }
+            }
+            updateDisplays(["sMainSection"]);
+            break;
 	}
 }
 
