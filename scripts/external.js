@@ -62,9 +62,13 @@ function handleReply(replyText, source) {
             updateDisplays(["iMainSection"]);
 			break;
 		case 'getT':
-			var localT = (source == "student")? sLocalT : iLocalT; 
-			var DBT = replyObj.tests;          // Update the
-            localT = localT.concat(DBQ.filter( t => !(localT.includes(t)) ));
+            var localT = (source == "student")? sLocalT : iLocalT;
+            var DBT = replyObj.tests;
+            for(var i=0; i<DBT.length; i++) {
+                if(uniqQuestion(DBT[i], localT)) {
+                    localT.push(DBT[i]);
+                }
+            }
             updateDisplays(["sMainSection"]);
 			break;
 		case 'addT':
