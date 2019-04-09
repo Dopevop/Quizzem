@@ -558,9 +558,13 @@ function buildAttemptSummaryItem(newItem, num) {
     console.log(newItem);
     let testName   = newItem.test.desc;
     let maxPts     = newItem.test.pts.map(a => Number(a)).reduce((a,b) => a + b, 0);
-    let grade      = newItem.grades.map(a => Number(a)).reduce((a,b) => a + b, 0);
+    let graded     = typeof newItem.grades !== 'undefined';
+    if(graded)
+        var grade  = newItem.grades.map(a => Number(a)).reduce((a,b) => a + b, 0);
+    else
+        var grade  = '?';
     let reviewed   = newItem.remarks.filter((str) => str !== "").length !== 0;
-    let statusText = (reviewed)? "Reviewed by Instructor" : "Auto-Graded";
+    let statusText = (!graded)? "Not Graded" : (reviewed)? "Reviewed by Instructor" : "Auto-Graded";
     let itemId     = "a"+newItem.test.id;
     let itemClass  = "attempt";
     
