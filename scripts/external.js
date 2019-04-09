@@ -419,10 +419,10 @@ function updateSMainAside() {
 
 function updateSMainSection() {
     if(typeof sActiveT !== 'undefined') {
-        clearInnerHTML("sTestDisp");
+        clearInnerHTML("sTestDisp"); // On student/test.html
         addItemsToDisplay("sTestDisp");
     } else {
-        clearInnerHTML("sAttemptDisp");
+        clearInnerHTML("sAttemptDisp"); // On student/grades.html
         addItemsToDisplay("sAttemptDisp");
     }
 }
@@ -879,7 +879,8 @@ function getRelArr(displayId) {
             relArr = iActiveQ;
             break;
         case "sTestDisp":
-            relArr = (sActiveT.length == 1)? sActiveT[0].ques : sLocalT;
+            relArr = (sActiveT.length == 1)? sActiveT[0].ques :
+                                             sLocalT.filter(t=>Number(t.rel)===1&&Number(t.sub)===0);
             break;
         case "sAttemptDisp":
             relArr = (sActiveA.length == 1)? buildAttemptList(sActiveA[0]) : sLocalA;
