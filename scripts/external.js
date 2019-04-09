@@ -44,8 +44,9 @@ const fetch = (type) => new Promise((resolve,reject) => {
     xhr.onload  = () => resolve(xhr.responseText);
     xhr.onerror = () => reject("Network Error");
     xhr.open('post', url, true);
-    xhr.timeout = 10000;
+    // xhr.timeout = 10000;
     xhr.send(jsonStr);
+    console.log("actually sent");
 });
 
 function handleReply(replyText, source) {
@@ -58,11 +59,12 @@ function handleReply(replyText, source) {
 			break;
 		case 'getQ':
 			var DBQ = replyObj.ques;       // Extract all Qs
-            for(var i=0; i<DBQ.length; i++) {
-                if(uniqItem(DBQ[i], iLocalQ)) {
-                    iLocalQ.push(DBQ[i]);
-                }
-            }
+            iLocalQ = DBQ;
+            // for(var i=0; i<DBQ.length; i++) {
+            //     if(uniqItem(DBQ[i], iLocalQ)) {
+            //         iLocalQ.push(DBQ[i]);
+            //     }
+            // }
             updateDisplays(["iMainSection"]);
 			break;
 		case 'addT':
@@ -73,6 +75,7 @@ function handleReply(replyText, source) {
 		case 'getT':
             var localT = (source == "student")? sLocalT : iLocalT;
             var DBT = replyObj.tests;
+            localT.length = 0;
             for(var i=0; i<DBT.length; i++) {
                 if(uniqItem(DBT[i], localT)) {
                     localT.push(DBT[i]);
@@ -85,7 +88,7 @@ function handleReply(replyText, source) {
             break;
         case 'getA':
             let DBA = replyObj.attempts;
-            sLocalA = sLocalA.concat(DBA);
+            sLocalA = DBA;
             updateDisplays(["sMainSection"]);
             break;
 	}
@@ -538,9 +541,11 @@ function buildAttemptItem(newItem, num) {
          aAns.setAttribute("contenteditable", "false");
          aDiv.appendChild(qDiv);
          aDiv.appendChild(aUnder);
+    if(thisRemark !== "") {
       aRemark.appendChild(document.createTextNode(thisRemark));
       aRemark.setAttribute("class", "remark");
        aUnder.appendChild(aRemark);
+    }
     for(let i=0; i<thisFeed.length; i++) {
         let newFeedDiv = document.createElement("DIV");
         newFeedDiv.setAttribute("class", "feedback");
@@ -835,8 +840,11 @@ function getNonEmptyInputs(divId) {
 /* Returns the value of the first checked input element contained by the given element 
  * This assumes radio input types inside a div of their own */
 function getCheckedValue(divId) {
-	var elems = Array.from(document.getElementById(divId).getElementsByTagName("INPUT"));
-    return elems.filter(e=>e.checked).map(e=>e.value);
+	var elems = document.getElementById(divId).getElementsByTagName("INPUT");
+    for(var i=0; i<elems.length; i++) {
+        if(elems[i].checked)
+            return elems[i].value;
+    }
 }
 
 /* Returns an array of the checked input values inside of given element 
@@ -890,7 +898,10 @@ function buildAttemptList(attempt) {
     for(let i=0; i<attempt.answers.length; i++) {
         let thisDesc   = attempt.test.ques[i].desc; // Description of Q
         let thisMaxPts = attempt.test.pts[i];  // Max grade for this Q
-        let thisGrade  = attempt.grades[i];    // Student's grade for this Q
+        if(typeof attempt.grades !== 'undefined')
+            var thisGrade  = attempt.grades[i];    // Student's grade for this Q
+        else
+            var thisGrade  = "?";    // Student's grade for this Q
         let thisAns    = attempt.answers[i];   // Student's answer for this Q
         let thisFeed   = attempt.feedback[i];  // An array of auto-generated feedback
         let thisRemark = attempt.remarks[i];   // A single str from instructor

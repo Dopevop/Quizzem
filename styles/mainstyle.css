@@ -48,6 +48,7 @@
                             /* Header elements */
 body {
     background: aliceblue;
+    overflow: hidden;
 }
 body>header{
     position: absolute;
@@ -139,12 +140,13 @@ body>main nav li {
     border-radius: 8px;
     box-shadow: 0px 1px 3px darkgrey;
     background-color: whitesmoke;
-    color: darkgrey;
+    /* color: darkgrey; */
 }
 body>main nav li:hover {
     box-shadow: 0px 1px 3px darkgrey;
     background-color: snow;
     color: black;
+    font-weight: bold;
     box-shadow: 0px 1px 2px #880000, 0px 1px 5px darkgrey;
 }
 body>main nav li a {
@@ -359,6 +361,7 @@ section li {
     background-color: whitesmoke;
     box-shadow: 0px 1px 8px darkgrey;
     border-radius: 5px;
+    white-space: pre-wrap;
 }
 .active {
     background-color: snow;
@@ -481,6 +484,7 @@ textarea {
     resize: vertical;
     box-shadow: 0 0 3px darkgrey inset;
     border: none;
+    white-space: pre-wrap;
 }
 input[type=text] {
     width: 80%;

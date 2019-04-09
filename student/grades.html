@@ -50,11 +50,12 @@
     console.log(sActiveA); 
     updateDisplays(["sMainSection"]);
     fetch('getA') // As soon as page is accessed, download all attempts
-      .catch(() => alertUser("error", "Could not download graded tests!"))
-      .then( x => { 
-        console.log("Rcvd:", x);
-        handleReply(x, "student") 
-      });
+    .catch(() => alertUser("error", "Could not download graded tests!"))
+    .then( x => { 
+      console.log("Rcvd:", x);
+      handleReply(x, "student")
+      })
+    .catch("Something went wrong with getA");
   </script>
 </body>
 </html>
