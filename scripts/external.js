@@ -58,7 +58,11 @@ function handleReply(replyText, source) {
 			break;
 		case 'getQ':
 			var DBQ = replyObj.ques;       // Extract all Qs
-            iLocalQ = iLocalQ.concat(DBQ.filter( q => !(iLocalQ.includes(q)) ));
+            for(var i=0; i<DBQ.length; i++) {
+                if(uniqItem(DBQ[i], iLocalQ)) {
+                    iLocalQ.push(DBQ[i]);
+                }
+            }
             updateDisplays(["iMainSection"]);
 			break;
 		case 'addT':
@@ -70,7 +74,7 @@ function handleReply(replyText, source) {
             var localT = (source == "student")? sLocalT : iLocalT;
             var DBT = replyObj.tests;
             for(var i=0; i<DBT.length; i++) {
-                if(uniqQuestion(DBT[i], localT)) {
+                if(uniqItem(DBT[i], localT)) {
                     localT.push(DBT[i]);
                 }
             }
@@ -81,11 +85,7 @@ function handleReply(replyText, source) {
             break;
         case 'getA':
             let DBA = replyObj.attempts;
-            for(var i=0; i<DBA.length; i++) {
-                if(uniqQuestion(DBA[i], sLocalA)) {
-                    sLocalA.push(DBA[i]);
-                }
-            }
+            sLocalA = sLocalA.concat(DBA);
             updateDisplays(["sMainSection"]);
             break;
 	}
@@ -153,7 +153,7 @@ function buildPostBody(type, source) {
  * Keys[]  : An array of words to search through descriptions by */
 function localSearch(topic, diffs, keys) {
     const sameTopic    = q => q.topic === "" || q.topic.toLowerCase().match(topic);
-    const sameDiff     = q => diffs.includes(q.diff);
+    const sameDiff     = q => diffs.includes(Number(q.diff));
     const containsKeys = q => 
         keys.map(k=>q.desc.toLowerCase().match(new RegExp(k))).reduce((a,b)=>a&&b, true);
 	return iLocalQ.filter(sameTopic).filter(sameDiff).filter(containsKeys);
@@ -912,13 +912,13 @@ function getStudentAnswers() {
     return inputs.map( i=>i.value );
 }
 
-/* Checks the given question's Id against all Ids in localQ
- * Returns true if given question's Id is not found */
-function uniqQuestion(question, qArr){
+/* Checks the given item's Id against all Ids in localQ
+ * Returns true if given item's Id is not found */
+function uniqItem(item, itemArr){
 	var uniq = true;
-	var thisId = question.id;
-	for(var i=0; i<qArr.length; i++){
-		if( qArr[i].id === thisId ) {
+	var thisId = item.id;
+	for(var i=0; i<itemArr.length; i++){
+		if( itemArr[i].id === thisId ) {
 			uniq = false;
 			break;
 		}
