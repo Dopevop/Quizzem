@@ -301,9 +301,14 @@ ul {
     padding: 5px;
     /* background-color: gainsboro; */
 }
+.mTop {
+    padding: 5px;
+    margin: 0 0 10px 0;
+}
 .tBot,
-.aBot {
-    padding: 5px 15px;
+.aBot,
+.mBot {
+    padding: 10px 15px;
     box-shadow: 0px 0px 5px darkgrey inset;
     background-color: ghostwhite;
 }

@@ -602,19 +602,30 @@ function buildAttemptSummaryItem(newItem, num) {
 }
 
 function buildMatchedQuestionItem(newItem, num) {
-    var item      = document.createElement("LI");
-    var descText  = document.createTextNode(newItem.desc);
-    var diffText  = document.createTextNode("Difficulty: "+convertDiffFormat(newItem.diff));
-    var topicText = document.createTextNode("Topic: "+newItem.topic);
-    var itemId = "m"+newItem.id;
-    var itemClass = "matched";
-    item.setAttribute("id", itemId);
-    item.setAttribute("class", itemClass);
-    item.addEventListener("click", function() { toggleSelected( itemId ) });
-    item.appendChild(descText);
-    item.appendChild(document.createElement("BR"));
-    item.appendChild(diffText);
-    item.appendChild(topicText);
+    var thisDesc  = newItem.desc;
+    var thisDiff  = convertDiffFormat(newItem.diff);
+    var thisTopic = newItem.topic;
+    var thisId    = "m" + newItem.id;
+    var thisClass = "matched";
+
+    var item   = document.createElement("LI");
+    var mTop   = document.createElement("DIV");
+    var mBot   = document.createElement("DIV");
+    var mDesc  = document.createTextNode(thisDesc);
+    var mDiff  = document.createTextNode("Difficulty: " + thisDiff);
+    var mTopic = document.createTextNode("Topic: " + thisTopic);
+
+    item.setAttribute("id", thisId);
+    item.setAttribute("class", thisClass);
+    item.addEventListener("click", function() { toggleSelected( thisId ) });
+    item.appendChild(mTop);
+    item.appendChild(mBot);
+    mTop.setAttribute("class", "mTop");
+    mTop.appendChild(mDesc);
+    mBot.setAttribute("class", "mBot");
+    mBot.appendChild(mDiff);
+    mBot.appendChild(document.createElement("BR"));
+    mBot.appendChild(mTopic);
     return item;
 }
 
