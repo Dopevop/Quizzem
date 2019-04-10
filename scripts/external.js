@@ -484,16 +484,46 @@ function addItemToDisplay(newItem, displayId, num) {
 	document.getElementById(displayId).appendChild(item);
 }
 
+function buildGeneralQuestion(newItem, num) {
+    let thisDiff;
+    let thisTopic;
+    let thisPts;
+    let thisMax;
+    let thisCons;
+    let thisDesc;
+    let thisAns;
+    let thisRemark;
+    let thisFeed;
+
+    let qItem;
+      let qDiv;
+        let qInfo;
+          let qDiff;
+          let qTopic;
+          let qPts;
+        let qCons;
+        let qDesc;
+          let qNum;
+        let qAns;
+      let qList;
+        let qItem;
+          let qRemark;
+          let qFeed;
+          let qSub;
+          let qAlt;
+
+}
+
 function buildAttemptItem(newItem, num) {
-    thisNum    = num + 1;
-    thisAns    = newItem.answer;
-    thisDesc   = newItem.desc;
-    thisFeed   = newItem.feedback; // an array of auto-generated feedback strings
-    thisGrade  = newItem.grade; 
-    thisPts    = newItem.maxPts;
-    thisRemark = newItem.remark;
-    gradeSpanClass = (thisGrade <= (thisPts/2))   ? "lowGradeSpan" :
-                     (thisGrade <= (3*thisPts/4)) ? "midGradeSpan" : "highGradeSpan";
+    var thisNum        = num + 1;
+    var thisAns        = newItem.answer;
+    var thisDesc       = newItem.desc;
+    var thisFeed       = newItem.feedback; // an array of auto-generated feedback strings
+    var thisGrade      = newItem.grade;
+    var thisPts        = newItem.maxPts;
+    var thisRemark     = newItem.remark;
+    var gradeSpanClass = (thisGrade <= (thisPts/2))   ? "lowGradeSpan" :
+                         (thisGrade <= (3*thisPts/4)) ? "midGradeSpan" : "highGradeSpan";
                      
 
     var item      = document.createElement("LI");  // Build the elements
