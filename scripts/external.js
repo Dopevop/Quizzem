@@ -797,8 +797,10 @@ function addInput(elemId) {
     textInput.setAttribute("type", "text");
 	elem.insertBefore(breakElem, elem.childNodes[3]);
 	elem.insertBefore(textInput, elem.childNodes[3]);
-    if(elemId === "addTests")
+    if(elemId === "addTests") {
         textInput.placeholder = getRandomTestPattern();
+        textInput.setAttribute("class", "testcases");
+    }
 }
 
 function getRandomTestPattern() {
