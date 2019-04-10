@@ -6,6 +6,7 @@ QUESTION = {
     id    : INT,
     desc  : STR,
     topic : STR,
+    cons  : [STR],
     diff  : INT,
     tests : [STR]
 }
