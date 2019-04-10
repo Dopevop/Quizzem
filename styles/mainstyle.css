@@ -362,7 +362,7 @@ section li {
     position: relative;
     overflow: hidden;
     padding: 3%;
-    padding-top: 20px;
+    /* padding-top: 20px; */
     background-color: whitesmoke;
     box-shadow: 0px 1px 8px darkgrey;
     border-radius: 5px;
@@ -371,28 +371,26 @@ section li {
 .active {
     background-color: snow;
     box-shadow: 0px 0px 5px darkgrey;
-    padding: 3% 5%;
+    /* padding: 3% 5%; */
 }
 .qTop {
     min-height: 36px;
+    margin-bottom: 10px;
 }
 .qTopLeft {
     padding: 0px 5px;
     float: left;
 }
-.qTopMid {
-    width: 100%;
-    /* float: left; */
+.qTopMid,
+.activeBot {
     width: 90%;
-    margin: 0px;
     text-align: left;
 }
 .qTopRight {
     position: absolute;
     padding: 1%;
     right: 0px;
-    top: 0px;
-    /* width: 10%; */
+    top: 5px;
     float: right;
 }
 /* .ptsSpan { */
@@ -458,8 +456,8 @@ section li {
 }
 .qBtn {
     position:absolute;
-    right: 3px;
-    bottom: 3px;
+    right: 18px;
+    bottom: 15px;
     background-color: ghostwhite;
     border-radius: 50px;
     box-shadow: 0px 1px 3px darkgrey;

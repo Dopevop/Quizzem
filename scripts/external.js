@@ -630,10 +630,12 @@ function buildMatchedQuestionItem(newItem, num) {
 }
 
 function buildActiveQuestionItem(newItem, num) {
-    var thisDesc = newItem.desc;                          // Variables specific
-    var thisNum  = num + 1;                                  // to this quetion
-    var thisPts  = 5;
-    var idStr    = "s" + newItem.id;
+    var thisDesc  = newItem.desc;                          // Variables specific
+    var thisNum   = num + 1;                                  // to this quetion
+    var thisPts   = 5;
+    var thisId    = "s" + newItem.id;
+    var thisDiff  = convertDiffFormat(newItem.diff);
+    var thisTopic = newItem.topic;
 
     var item      = document.createElement("LI");            // Build the elements
     var qDiv      = document.createElement("DIV");           // that will go into
@@ -648,8 +650,11 @@ function buildActiveQuestionItem(newItem, num) {
     var qDesc     = document.createTextNode(thisDesc);
     var qPtsInput = document.createElement("INPUT");
     var qPtsText  = document.createTextNode(" Pts");
+    var qDiff = document.createTextNode("Difficulty: " + thisDiff);
+    var qTopic = document.createTextNode("Topic: " + thisTopic);
+
          qDiv.setAttribute("class", "qDiv active");          // Set attributes of
-         qDiv.setAttribute("id", idStr);                     // and append children to
+         qDiv.setAttribute("id", thisId);                     // and append children to
          qDiv.appendChild(qTop);                             // the elements
          qDiv.appendChild(qBot);             
          qDiv.appendChild(qBtn);             
@@ -665,13 +670,16 @@ function buildActiveQuestionItem(newItem, num) {
     qTopRight.appendChild(qPtsInput);
     qTopRight.appendChild(qPtsText);
          qBtn.setAttribute("class", "qBtn");
-         qBtn.addEventListener("click", () => { toggleSelected(idStr); });
+         qBtn.addEventListener("click", () => { toggleSelected(thisId); });
          qBtn.appendChild(qBtnText);
     qPtsInput.setAttribute("class", "qPts");
     qPtsInput.setAttribute("maxlength", "3");
     qPtsInput.setAttribute("size", "1");
     qPtsInput.setAttribute("tabindex", thisNum);
-         qBot.setAttribute("class", "qBot"); 
+         qBot.setAttribute("class", "mBot"); 
+    qBot.appendChild(qDiff);
+    qBot.appendChild(document.createElement("BR"));
+    qBot.appendChild(qTopic);
          item.appendChild(qDiv); 
     return item;
 }
