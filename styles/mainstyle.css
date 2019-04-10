@@ -1,7 +1,7 @@
 * {
 	box-sizing  : border-box;
 	margin      : 0px;
-    font-family : pagul, times, serif;
+    /* font-family : pagul, times, serif; */
 }
 .box {
 	float    : left;
@@ -109,9 +109,6 @@ body>header nav a:hover {
     background-color : whitesmoke;
     box-shadow       : 0px 1px 3px darkgrey;
     border-radius    : 5px;
-}
-.asideButton a {
-    font-family : meera, arial;
 }
 .asideButton:hover {
     box-shadow       : 0px 1px 3px darkgrey;
