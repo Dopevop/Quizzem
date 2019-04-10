@@ -9,12 +9,10 @@
 	overflow : auto;
 
 }
-
 #testForm, 
 #finAttemptForm {
     display: none;
 }
-
 .alert {
     font-family   : monospace;
     position      : absolute;
@@ -29,7 +27,6 @@
     border-radius : 5px;
     box-shadow    : 0px 2px 2px -1px black, 0px 1px 5px darkgrey;
 }
-
 .alert-error {
     background-color : #F007;
     font-weight      : bold;
@@ -37,7 +34,6 @@
     text-shadow      : 0 0 5px black;
     display          : none;
 }
-
 .alert-success {
     background-color : #0C07;
     font-weight      : bold;
@@ -45,8 +41,6 @@
     text-shadow      : 0 0 5px black;
     display          : none;
 }
- 
-                            /* Header elements */
 body {
     background : aliceblue;
     overflow   : hidden;
@@ -93,7 +87,7 @@ body>header a {
     text-decoration : none;
     color           : inherit;
 }
-body>header nav a : hover {
+body>header nav a:hover {
     color         : white;
     text-shadow   : 0px 0px 2px black, 0px 0px 3px white;
 }
@@ -116,11 +110,10 @@ body>header nav a : hover {
     box-shadow       : 0px 1px 3px darkgrey;
     border-radius    : 5px;
 }
-.asideButton         : hover {
+.asideButton:hover {
     box-shadow       : 0px 1px 3px darkgrey;
     background-color : snow;
     box-shadow       : 0px 1px 2px #880000, 0px 1px 5px darkgrey;
-    font-weight      : bold;
 }
 body>main {
     position : relative;
@@ -145,11 +138,10 @@ body>main nav li {
     box-shadow       : 0px 1px 3px darkgrey;
     background-color : whitesmoke;
 }
-body>main nav li     : hover {
+body>main nav li:hover {
     box-shadow       : 0px 1px 3px darkgrey;
     background-color : snow;
     color            : black;
-    font-weight      : bold;
     box-shadow       : 0px 1px 2px #880000, 0px 1px 5px darkgrey;
 }
 body>main nav li a {
@@ -158,13 +150,10 @@ body>main nav li a {
     color           : inherit;
 }
 .currTab,
-.currTab             : hover {
+.currTab:hover {
     color            : black;
     box-shadow       : 0px 1px 2px #880000, 0px 1px 5px darkgrey;
     background-color : #BADCEE;
-}
-.currTab:hover {
-    font-weight : bold;
 }
 body>main section {
     position : relative;
