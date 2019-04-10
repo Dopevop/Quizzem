@@ -545,9 +545,14 @@ function buildAttemptItem(newItem, num) {
        aUnder.appendChild(aRemark);
     }
     for(let i=0; i<thisFeed.length; i++) {
+        let thisType = thisFeed[i][0];
+        let thisMsg  = thisFeed[i].substring(1);
+        let thisClass = (thisType === "g")? "feedback feedback-good" : 
+                        (thisType === "b")? "feedback feedback-bad" :
+                                            "feedback";
         let newFeedDiv = document.createElement("DIV");
-        newFeedDiv.setAttribute("class", "feedback");
-        newFeedDiv.appendChild(document.createTextNode(thisFeed[i]));
+        newFeedDiv.setAttribute("class", thisClass);
+        newFeedDiv.appendChild(document.createTextNode(thisMsg));
         aUnder.appendChild(newFeedDiv);
     }
 

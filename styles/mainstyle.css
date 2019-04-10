@@ -351,6 +351,7 @@ section li {
     position         : relative;
     overflow         : hidden;
     padding          : 3%;
+    padding-top      : 28px;
     background-color : whitesmoke;
     box-shadow       : 0px 1px 8px darkgrey;
     border-radius    : 5px;
@@ -375,10 +376,13 @@ section li {
 }
 .qTopRight {
     position : absolute;
-    padding  : 1%;
-    right    : 0px;
+    right    : 3%;
+    padding: 2px 8px;
     top      : 5px;
     float    : right;
+    background: ghostwhite;
+    box-shadow  : 0 0 3px darkgrey inset;
+    font-size: .9em;
 }
 .lowGradeSpan {
     font-weight : bold;
@@ -415,24 +419,32 @@ section li {
 }
 .remark,
 .feedback {
-    position   : relative;
-    width      : 80%;
-    min-height : 30px;
-    top        : 50%;
-    margin     : 2px auto;
-    padding    : 5px;
-    text-align : center;
-    box-shadow : 0px 1px 2px #880000,
-                 0px 1px 3px darkgrey;
+    position      : relative;
+    width         : 80%;
+    min-height    : 30px;
+    top           : 50%;
+    margin        : 2px auto;
+    padding       : 5px;
+    text-align    : center;
+    border-radius : 5px;
+    background    : #0000FF22;
+    box-shadow    : 0px 1px 2px #000088,
+                    0px 1px 3px darkgrey;
 }
 .remark {
-    background-color : #ffff0077;
-    border           : 1px solid yellow;
-    border-radius    : 5px;
+    background-color : #FFFF0077;
+    box-shadow       : 0px 1px 2px #888800,
+                       0px 1px 3px darkgrey;
 }
-.feedback {
-    background-color : #ff000077;
-    border-radius    : 5px;
+.feedback-good {
+    background-color : #00FF0077;
+    box-shadow       : 0px 1px 2px #008800,
+                       0px 1px 3px darkgrey;
+}
+.feedback-bad {
+    background-color : #FF000077;
+    box-shadow       : 0px 1px 2px #880000,
+                       0px 1px 3px darkgrey;
 }
 .qBtn {
     position         : absolute;

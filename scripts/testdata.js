@@ -115,12 +115,12 @@ var t7 = {
 var a0 = {
     'id'       : 1000,
     'test'     : t0,
-    'answers'  : ["Here's my answer for q0, it's not a very good one. Lets make it a bit longer with some more giberish writing about nothing. Alright that should be good."],
-    'grades'   : [0],
+    'answers'  : ["def inRange() Here's my answer for q0, it's not a very good one. Lets make it a bit longer with some more giberish writing about nothing. Alright that should be good."],
+    'grades'   : [2],
     'comment'  : "I wasn't prepared for this test, go easy on me",
     'feedback' : [
-        ["No colon after first line -2.5pts", "Incorrect function name -2.5pts",
-         "Didn't pass testcase #1 -5pts", "Didn't pass testcase #2 -5pts"]
+        ["bNo colon after first line -1pts", "gCorrect function name +2pts",
+         "bDidn't pass testcase #1 -6pts", "bDidn't pass testcase #2 -6pts"]
     ],
     'remarks'  : ["This answer was just awful, see me after class."],
 
@@ -133,10 +133,10 @@ var a1 = {
     'grades'   : [0, 30],
     'comment'  : "I wasn't prepared for this test, go easy on me",
     'feedback' : [
-        ["No colon after first line -2.5pts", "Incorrect function name -2.5pts",
-         "Didn't pass testcase #1 -5pts", "Didn't pass testcase #2 -5pts"],
-        ["Found no errors"]
+        ["bNo colon after first line -1pts", "bIncorrect function name -2pts",
+         "bDidn't pass inRange(4,1,7)=True -6pts", "bDidn't pass inRange(4,6,7)=false -6pts"],
+        ["gFound no errors"]
     ],
     'remarks'  : ["This answer was just awful, see me after class.", 
-                  "I'll let you pass on this one because the autograder didn't find anything wrong"],
+                  "Good work on this one! See me after class ;)"],
 }
