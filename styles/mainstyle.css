@@ -1,11 +1,12 @@
 * {
-	box-sizing        : border-box;
-	margin            : 0px;
+	box-sizing  : border-box;
+	margin      : 0px;
+    font-family : times;
 }
 .box {
-	float             : left;
-	height            : calc(100vh - 40px);
-	overflow          : auto;
+	float    : left;
+	height   : calc(100vh - 40px);
+	overflow : auto;
 
 }
 
@@ -15,482 +16,472 @@
 }
 
 .alert {
-    font-family: monospace;
-    position: absolute;
-    z-index: 3;
-    min-width: 400px;
-    height: 50px;
-    padding: 0 15px;
-    line-height: 50px;
-    text-align: center;
-    left: calc(50% - 200px);
-    top: 20px;
-    border-radius: 5px;
-    box-shadow: 0px 2px 2px -1px black, 0px 1px 5px darkgrey;
+    font-family   : monospace;
+    position      : absolute;
+    z-index       : 3;
+    min-width     : 400px;
+    height        : 50px;
+    padding       : 0 15px;
+    line-height   : 50px;
+    text-align    : center;
+    left          : calc(50% - 200px);
+    top           : 20px;
+    border-radius : 5px;
+    box-shadow    : 0px 2px 2px -1px black, 0px 1px 5px darkgrey;
 }
 
 .alert-error {
-    background-color: #F007;
-    font-weight: bold;
-    color: white;
-    text-shadow: 0 0 5px black;
-    display: none;
+    background-color : #F007;
+    font-weight      : bold;
+    color            : white;
+    text-shadow      : 0 0 5px black;
+    display          : none;
 }
 
 .alert-success {
-    background-color: #0C07;
-    font-weight: bold;
-    color: white;
-    text-shadow: 0 0 5px black;
-    display:none;
+    background-color : #0C07;
+    font-weight      : bold;
+    color            : white;
+    text-shadow      : 0 0 5px black;
+    display          : none;
 }
  
                             /* Header elements */
 body {
-    background: aliceblue;
-    overflow: hidden;
+    background : aliceblue;
+    overflow   : hidden;
 }
 body>header{
-    position: absolute;
-    z-index: 1;
-    height : 40px;
-    width : 100vw;
-    min-width: 950px;
-    text-align : center;
-    color: ghostwhite;
-    text-shadow: 0px 0px 1px black;
-    line-height : 40px;
-    background-color: #729FCF;
-    box-shadow: 0px 1px 2px #880000, 0px 1px 5px darkgrey;
+    position         : absolute;
+    z-index          : 1;
+    height           : 40px;
+    width            : 100vw;
+    min-width        : 950px;
+    text-align       : center;
+    color            : ghostwhite;
+    text-shadow      : 0px 0px 1px black;
+    line-height      : 40px;
+    background-color : #729FCF;
+    box-shadow       : 0px 1px 2px #880000, 0px 1px 5px darkgrey;
 }
 body>header main {
-    position: relative;
-    width :950px;
-    margin: auto;
+    position : relative;
+    width    : 950px;
+    margin   : auto;
 }
 body>header nav {
-    position: absolute;
-    background-color: inherit;
-    margin: 0px;
-    padding: 0px;
-    width : 120px;
+    position         : absolute;
+    background-color : inherit;
+    margin           : 0px;
+    padding          : 0px;
+    width            : 120px;
 }
 body>header section {
-    position: absolute;
-    left: 120px;
-    width: 530px;
-    margin: 0px;
+    position : absolute;
+    left     : 120px;
+    width    : 530px;
+    margin   : 0px;
 }
 body>header aside {
-    position: absolute;
-    right: 0px;
-    width: 300px;
-    margin: 0px;
+    position : absolute;
+    right    : 0px;
+    width    : 300px;
+    margin   : 0px;
 }
 body>header a {
-    display: block;
-    text-decoration: none;
-    color: inherit;
+    display         : block;
+    text-decoration : none;
+    color           : inherit;
 }
-body>header nav a:hover {
-    color: white;
-    text-shadow: 0px 0px 2px black, 0px 0px 3px white;
+body>header nav a : hover {
+    color         : white;
+    text-shadow   : 0px 0px 2px black, 0px 0px 3px white;
 }
 .asideButtons {
-    height: 40px;
-    display: flex;
-    flex-direction: row-reverse;
+    position       : relative;
+    height         : 40px;
+    display        : flex;
+    flex-direction : row-reverse;
+    right          : 20px;
 }
 .asideButton {
-    margin: 5px;
-    padding: 0 5px;
-    height: 26px;
-    line-height: 26px;
-    font-size: .8em;
-    color: darkgrey;
-    background-color: whitesmoke;
-    box-shadow: 0px 1px 3px darkgrey;
-    border-radius: 5px;    
+    margin           : 5px;
+    padding          : 0 5px;
+    height           : 26px;
+    line-height      : 26px;
+    font-size        : .6em;
+    font-family      : arial;
+    color            : black;
+    background-color : whitesmoke;
+    box-shadow       : 0px 1px 3px darkgrey;
+    border-radius    : 5px;
 }
-.asideButton:hover {
-    box-shadow: 0px 1px 3px darkgrey;
-    background-color: snow;
-    color: black;
-    box-shadow: 0px 1px 2px #880000, 0px 1px 5px darkgrey;
+.asideButton         : hover {
+    box-shadow       : 0px 1px 3px darkgrey;
+    background-color : snow;
+    box-shadow       : 0px 1px 2px #880000, 0px 1px 5px darkgrey;
+    font-weight      : bold;
 }
 body>main {
-    position: relative;
-    top: 40px;
+    position : relative;
+    top      : 40px;
 }
 body>main nav {
-    width : 120px;
-    margin: 0px;
+    width  : 120px;
+    margin : 0px;
 }
 body>main nav ul {
-    list-style-type: none;
-    text-align: center;
-    padding: 5px;
-    width: 100px;
-    margin: auto;
+    list-style-type : none;
+    text-align      : center;
+    padding         : 5px;
+    width           : 100px;
+    margin          : auto;
 }
 body>main nav li {
-    height: 30px;
-    line-height: 30px;
-    margin: 10px 0px;
-    border-radius: 8px;
-    box-shadow: 0px 1px 3px darkgrey;
-    background-color: whitesmoke;
-    /* color: darkgrey; */
+    height           : 30px;
+    line-height      : 30px;
+    margin           : 10px 0px;
+    border-radius    : 8px;
+    box-shadow       : 0px 1px 3px darkgrey;
+    background-color : whitesmoke;
 }
-body>main nav li:hover {
-    box-shadow: 0px 1px 3px darkgrey;
-    background-color: snow;
-    color: black;
-    font-weight: bold;
-    box-shadow: 0px 1px 2px #880000, 0px 1px 5px darkgrey;
+body>main nav li     : hover {
+    box-shadow       : 0px 1px 3px darkgrey;
+    background-color : snow;
+    color            : black;
+    font-weight      : bold;
+    box-shadow       : 0px 1px 2px #880000, 0px 1px 5px darkgrey;
 }
 body>main nav li a {
-    display: block;
-    text-decoration: none;
-    color: inherit;
+    display         : block;
+    text-decoration : none;
+    color           : inherit;
 }
 .currTab,
-.currTab:hover {
-    color: black;
-    box-shadow: 0px 1px 2px #880000, 0px 1px 5px darkgrey;
-    background-color: #BADCEE;
+.currTab             : hover {
+    color            : black;
+    box-shadow       : 0px 1px 2px #880000, 0px 1px 5px darkgrey;
+    background-color : #BADCEE;
 }
 .currTab:hover {
-    font-weight: bold;
+    font-weight : bold;
 }
 body>main section {
-    position: relative;
-    padding: 0px 5px;
-    width : 530px;
-    overflow: hidden;
+    position : relative;
+    padding  : 0px 5px;
+    width    : 530px;
+    overflow : hidden;
 }
 body>main section p { /* Styles the welcome page messages */
-    background: ghostwhite;
-    text-align: left;
-    width: 95%;
-    margin: 15px auto;
-    padding : 15px;
-    box-shadow: 0px 0px 5px darkgrey;
+    background : ghostwhite;
+    text-align : left;
+    width      : 95%;
+    margin     : 15px auto;
+    padding    : 15px;
+    box-shadow : 0px 0px 5px darkgrey;
 }
 #iActiveInfo {
-    background: #badcee;
-    border-radius: 5px;
-    box-shadow: 0px 1px 2px #880000, 0px 1px 5px darkgrey;
-    text-align: center;
+    background    : #badcee;
+    border-radius : 5px;
+    box-shadow    : 0px 1px 2px #880000, 0px 1px 5px darkgrey;
+    text-align    : center;
 }
 body>main aside {
-    padding: 0px 5px;
-    width : 300px;
+    padding : 0px 5px;
+    width   : 300px;
 }
 fieldset {
-    margin: 10px 0px;
-	background-color  : ghostwhite;
-    border-radius: 15px;
-    width: 270px;
-    padding: 10px 20px;
-    border: 0px;
-    box-shadow: 0px 1px 2px #880000, 0px 1px 5px darkgrey;
+    margin           : 10px 0px;
+	background-color : ghostwhite;
+    border-radius    : 15px;
+    width            : 270px;
+    padding          : 10px 20px;
+    border           : 0px;
+    box-shadow       : 0px 1px 2px #880000, 0px 1px 5px darkgrey;
 }
 button {
-    margin: 8px 5px;
-    border-radius: 8px;
-    border: 0px;
-    box-shadow: 0px 1px 3px darkgrey;
-    background-color: whitesmoke;
+    margin           : 8px 5px;
+    border-radius    : 8px;
+    border           : 0px;
+    box-shadow       : 0px 1px 3px darkgrey;
+    background-color : whitesmoke;
 }
 button:hover {
-    background-color: snow;
-    box-shadow: 0px 1px 2px #800, 0px 1px 5px darkgrey;
+    background-color : snow;
+    box-shadow       : 0px 1px 2px #800, 0px 1px 5px darkgrey;
 }
 .rangeDiv {
     width : 80%;
 }
 input[type=range] {
-    -webkit-appearance:none;
-    margin 18px 0;
-    width: 100%;
-    background: transparent;
+    -webkit-appearance : none;
+    margin             : 18px 0;
+    width              : 100%;
+    background         : transparent;
 }
 input[type=range]:focus {
-    outline: none;
+    outline : none;
 }
 input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    box-shadow: 0px 1px 2px #800, 0px  1px 5px darkgrey;
-    background: white;
-    height: 20px;
-    width:  5px;
-    border-radius: 3px;
-    margin-top: -8px;
+    -webkit-appearance : none;
+    box-shadow         : 0px 1px 2px #800, 0px  1px 5px darkgrey;
+    background         : white;
+    height             : 20px;
+    width              : 5px;
+    border-radius      : 3px;
+    margin-top         : -8px;
 }
 input[type=range]::-webkit-slider-runnable-track {
-    width: 100%;
-    height: 5px;
-    cursor: pointer;
-    background: white;
-    border-radius: 1.3px;
-    border: 0.2px solid #010101;
-    box-shadow: 0px 1px 3px darkgrey;
+    width         : 100%;
+    height        : 5px;
+    cursor        : pointer;
+    background    : white;
+    border-radius : 1.3px;
+    border        : 0.2px solid #010101;
+    box-shadow    : 0px 1px 3px darkgrey;
 }
 #ticks,
 #addCons {
-    display : flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    padding: 0 10px;
+    display         : flex;
+    flex-wrap       : wrap;
+    justify-content : space-between;
+    padding         : 0 10px;
 }
 #searchDiffs,
 #addCons {
-    width: 80%;
-    display : flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    padding: 0 10px 0 0;
+    width           : 80%;
+    display         : flex;
+    flex-wrap       : wrap;
+    justify-content : flex-start;
+    padding         : 0 10px 0 0;
 }
 #searchDiffs label,
 #addCons label {
-    margin: 0 5px;
-    flex-grow: 2;
+    margin    : 0 5px;
+    flex-grow : 2;
 }
 .shortDiff {
-    flex-grow: 1;
-    text-align: right;
+    flex-grow  : 1;
+    text-align : right;
 }
 .tick {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    width: 1px;
-    background: white;
-    color: white;
-    /* box-shadow: 0 0 2px black; */
-    box-shadow: 0px 1px 2px #800, 0px 1px 3px darkgrey;
-    line-height: 10px;
-    /* margin: 0 0 20px 0; */
+    position        : relative;
+    display         : flex;
+    justify-content : center;
+    text-align      : center;
+    width           : 1px;
+    background      : white;
+    color           : white;
+    box-shadow      : 0px 1px 2px #800, 0px 1px 3px darkgrey;
+    line-height     : 10px;
 }
 input[type=range]:focus::-webkit-slider-runnable-track {
-    box-shadow: 0px 1px 2px #800, 0px 1px 3px darkgrey;
+    box-shadow : 0px 1px 2px #800,
+                 0px 1px 3px darkgrey;
 }
 .clearfix {
-    width : 950px;
-    margin : auto;
-    box-shadow: 0px 0px 5px gainsboro;
-    outline: 1px solid gainsboro;
+    width      : 950px;
+    margin     : auto;
+    box-shadow : 0px 0px 5px gainsboro;
+    outline    : 1px solid gainsboro;
 }
 .clearfix::after {
-	content           : "";
-	clear             : both;
-	display           : table;
+	content : "";
+	clear   : both;
+	display : table;
 }
 ul {
-	/* text-align        : center; */
-	list-style-type   : none;
-	margin            : 0;
-	padding           : 0;
+	list-style-type : none;
+	margin          : 0;
+	padding         : 0;
 }
 .tTop,
 .aTop {
-    text-align: center;
-    font-weight: bold;
-    padding: 5px;
-    /* background-color: gainsboro; */
+    text-align  : center;
+    font-weight : bold;
+    padding     : 5px;
 }
 .mTop {
-    padding: 5px;
-    margin: 0 0 10px 0;
+    padding : 5px;
+    margin  : 0 0 10px 0;
 }
 .tBot,
 .aBot,
 .mBot {
-    padding: 10px 15px;
-    box-shadow: 0px 0px 5px darkgrey inset;
-    background-color: ghostwhite;
+    padding          : 10px 15px;
+    box-shadow       : 0px 0px 5px darkgrey inset;
+    background-color : ghostwhite;
 }
 section li {
-    width: 95%;
-    margin: 20px auto;
-    border-radius: 5px;
+    width         : 95%;
+    margin        : 20px auto;
+    border-radius : 5px;
 }
 #iActiveList,
 #iMatchedList {
-    overflow: auto;
-    max-height: 46.5vh;
-    width: 505px;
-    margin: 6px;
-    border-radius: 5px;
+    overflow      : auto;
+    max-height    : 46.5vh;
+    width         : 505px;
+    margin        : 6px;
+    border-radius : 5px;
 }
 #iMatchedList {
-    position: absolute;
-    bottom: 0px;
+    position : absolute;
+    bottom   : 0px;
 }
 #iActiveList {
-    box-shadow: 0px 1px 2px #880000, 0px 1px 5px darkgrey;
-    background-color: #BADCEE;
+    box-shadow       : 0px 1px 2px #880000, 0px 1px 5px darkgrey;
+    background-color : #BADCEE;
 }
 #iMatchedList {
-    box-shadow: 0px 1px 2px #888, 0px 1px 5px darkgrey;
+    box-shadow : 0px 1px 2px #888, 0px 1px 5px darkgrey;
 }
 .available {
-    width: 95%;
-    padding: 10px;
-    background-color: whitesmoke;
-    box-shadow: 0px 1px 3px darkgrey;
-    border-radius: 5px;
+    width            : 95%;
+    padding          : 10px;
+    background-color : whitesmoke;
+    box-shadow       : 0px 1px 3px darkgrey;
+    border-radius    : 5px;
 }
 .available:hover,
 .matched:hover {
-    background-color: snow;
+    background-color : snow;
 }
 .matched,
 .selected {
-	text-align        : left;
-	list-style-type   : none;
-	background        : whitesmoke;
-	margin            : 15px;
-	padding           : 10px;
-    border-radius: 5px;
-    box-shadow: 0px 1px 8px darkgrey;
+	text-align      : left;
+	list-style-type : none;
+	background      : whitesmoke;
+	margin          : 15px;
+	padding         : 10px;
+    border-radius   : 5px;
+    box-shadow      : 0px 1px 8px darkgrey;
 }
 .active,
 .qDiv {
-    position: relative;
-    overflow: hidden;
-    padding: 3%;
-    /* padding-top: 20px; */
-    background-color: whitesmoke;
-    box-shadow: 0px 1px 8px darkgrey;
-    border-radius: 5px;
-    white-space: pre-wrap;
+    position         : relative;
+    overflow         : hidden;
+    padding          : 3%;
+    background-color : whitesmoke;
+    box-shadow       : 0px 1px 8px darkgrey;
+    border-radius    : 5px;
+    white-space      : pre-wrap;
 }
 .active {
-    background-color: snow;
-    box-shadow: 0px 0px 5px darkgrey;
-    /* padding: 3% 5%; */
+    background-color : snow;
+    box-shadow       : 0px 0px 5px darkgrey;
 }
 .qTop {
-    min-height: 36px;
-    margin-bottom: 10px;
+    min-height    : 36px;
+    margin-bottom : 10px;
 }
 .qTopLeft {
-    padding: 0px 5px;
-    float: left;
+    padding : 0px 5px;
+    float   : left;
 }
 .qTopMid,
 .activeBot {
-    width: 90%;
-    text-align: left;
+    width      : 90%;
+    text-align : left;
 }
 .qTopRight {
-    position: absolute;
-    padding: 1%;
-    right: 0px;
-    top: 5px;
-    float: right;
+    position : absolute;
+    padding  : 1%;
+    right    : 0px;
+    top      : 5px;
+    float    : right;
 }
-/* .ptsSpan { */
-/*     font-weight: bold; */
-/* } */
 .lowGradeSpan {
-    font-weight: bold;
-    color: red;
+    font-weight : bold;
+    color       : red;
 }
 .midGradeSpan {
-    font-weight: bold;
-    color: orange;
+    font-weight : bold;
+    color       : orange;
 }
 .highGradeSpan {
-    font-weight: bold;
-    color: green;
+    font-weight : bold;
+    color       : green;
 }
 .qBot {
-    width: 100%;
-    /* min-height: 150px; */
-    /* margin: auto; */
+    width : 100%;
 }
 .qAns,
 .aAns {
-    width: 100%;
-    margin: 10px auto;
-    box-shadow: 0 0 3px darkgrey inset;
-    text-align: left;
-    padding: 2%;
-    overflow: hidden;
-    font-family: monospace;
+    width       : 100%;
+    margin      : 10px 0 0 0 auto;
+    box-shadow  : 0 0 3px darkgrey inset;
+    text-align  : left;
+    padding     : 2%;
+    overflow    : hidden;
+    font-family : monospace;
 }
 .qAns {
-    background-color: white;
-    resize: vertical;
-    min-height: 150px;
+    background-color : white;
+    resize           : vertical;
+    min-height       : 150px;
 }
 .aAns {
-    /* min-height: 90px; */
-    background-color: ghostwhite;
+    background-color : ghostwhite;
 }
 .remark,
 .feedback {
-    position: relative;
-    width: 80%;
-    min-height: 30px;
-    top: 50%;
-    margin: 2px auto;
-    padding: 5px;
-    text-align: center;
-    /* box-shadow: 0px 1px 3px darkgrey; */
-    box-shadow: 0px 1px 2px #880000, 0px 1px 3px darkgrey;
+    position   : relative;
+    width      : 80%;
+    min-height : 30px;
+    top        : 50%;
+    margin     : 2px auto;
+    padding    : 5px;
+    text-align : center;
+    box-shadow : 0px 1px 2px #880000,
+                 0px 1px 3px darkgrey;
 }
 .remark {
-    background-color: #ffff0077;
-    border: 1px solid yellow;
-    border-radius: 5px;
+    background-color : #ffff0077;
+    border           : 1px solid yellow;
+    border-radius    : 5px;
 }
 .feedback {
-    background-color: #ff000077;
-    /* border: 1px solid red; */
-    border-radius: 5px;
+    background-color : #ff000077;
+    border-radius    : 5px;
 }
 .qBtn {
-    position:absolute;
-    right: 18px;
-    bottom: 15px;
-    background-color: ghostwhite;
-    border-radius: 50px;
-    box-shadow: 0px 1px 3px darkgrey;
-    border: 1px outset silver;
-    color: #A00;
+    position         : absolute;
+    right            : 18px;
+    bottom           : 15px;
+    background-color : ghostwhite;
+    border-radius    : 50px;
+    box-shadow       : 0px 1px 3px darkgrey;
+    border           : 1px outset silver;
+    color            : #A00;
 }
 .qBtn:hover {
-    background-color: white;
-    border-radius: 50px;
-    box-shadow: 0px 1px 2px #880000, 0px 1px 3px darkgrey;
-    color: #F00;
+    background-color : white;
+    border-radius    : 50px;
+    box-shadow       : 0px 1px 2px #880000, 0px 1px 3px darkgrey;
+    color            : #F00;
 }
 *::-webkit-scrollbar {
-    width: 5px;
-    outline: 1px solid darkgrey;
-    box-shadow: 0px 0px 3px darkgrey inset;
+    width      : 5px;
+    outline    : 1px solid darkgrey;
+    box-shadow : 0px 0px 3px darkgrey inset;
 }
 *::-webkit-scrollbar-thumb {
-    box-shadow: 0px 0px 3px #880000 inset;
-    background-color: white;
-    width: 5px;
-    border-radius: 15px;
+    box-shadow       : 0px 0px 3px #880000 inset;
+    background-color : white;
+    width            : 5px;
+    border-radius    : 15px;
 }
 textarea {
-    width: 100%;
-    min-height: 90px;
-    resize: vertical;
-    box-shadow: 0 0 3px darkgrey inset;
-    border: none;
-    white-space: pre-wrap;
+    width       : 100%;
+    min-height  : 90px;
+    resize      : vertical;
+    box-shadow  : 0 0 3px darkgrey inset;
+    border      : none;
+    white-space : pre-wrap;
 }
 input[type=text] {
-    width: 80%;
-    box-shadow: 0 0px 3px darkgrey inset;
-    border: none;
+    width      : 80%;
+    box-shadow : 0 0px 3px darkgrey inset;
+    border     : none;
 }
