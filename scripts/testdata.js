@@ -1,7 +1,7 @@
 var q0 = {
 	'id'    : 1000,
 	'desc'  : 'Write a function named inRange() that tests whether a given number falls within a specified range. The function inRange() takes three parameters: testNum, floor, ceiling. The function inRange() should return True if testNum is greater than or equal to floor and less than or equal to ceiling.',
-	'topic' : 'Conditionals',
+	'topic' : '12345678901234567890',
 	'diff'  : 1,
 	'tests' : [ 'inRange(4,1,7)=True', 'inRange(4,6,7)=false' ],
     'cons'  : [],
@@ -9,24 +9,24 @@ var q0 = {
 var q1 = {
 	'id'    : 1001,
 	'desc'  : 'Write a function named greet() that takes two parameters: greeting and name. The functino should then print out a message greeting the user by name with a comma between the greeting and the name.',
-	'topic' : 'Output',
-	'diff'  : 1,
+	'topic' : 'MMMMMMMMMMMMMMM',
+	'diff'  : 5,
 	'tests' : [ 'greet("Cheerio", "Gabriel")="Cheerio, Gabriel"', 'greet("a", "b")="a, b"' ],
     'cons'  : ["print"]
 };
 var q2 = {
 	'id'    : 1002,
 	'desc'  : 'Write a function named containsLetter() that identifies all of the strings in a list that contain a specified letter and returns a list of those strings. The function takes two parameters: a string of length 1, aLetter; a list of strings, strList.',
-	'topic' : 'Strings',
-	'diff'  : 3,
+	'topic' : 'Output',
+	'diff'  : 5,
 	'tests' : [ 'containsLetter("i", ["you","like"])=["like"]', 'containsLetter("z", ["bag"])=[]' ],
     'cons'  : ['for'],
 };
 var q3 = {
 	'id'    : 1003,
 	'desc'  : 'Write a function called getSign() that takes an integer and returns whether it is positive, negative or zero.',
-	'topic' : 'Conditionals',
-	'diff'  : 2,
+	'topic' : 'A',
+	'diff'  : 1,
 	'tests' : [ 'getSign(-4)="negative"', 'getSign(0)="zero"', 'getSign(300)="positive"' ],
     'cons'  : [],
 };
@@ -68,7 +68,7 @@ var t1 = {
 	'rel'   : 1,
 	'sub'   : 0,
 	'ques'  : [q0, q1],
-    'pts': ["15", "30"]
+    'pts': ["999", "999"]
 };
 var t2 = {
 	'id'    : 1002,
@@ -125,8 +125,8 @@ var a0 = {
     'grades'   : [2],
     'comment'  : "I wasn't prepared for this test, go easy on me",
     'feedback' : [
-        ["bNo colon after first line -1pts", "gCorrect function name +2pts",
-         "bDidn't pass testcase #1 -6pts", "bDidn't pass testcase #2 -6pts"]
+        ["b1pNo colon after first line", "g2pCorrect function name",
+         "b6pDidn't pass testcase #1", "b6pDidn't pass testcase #2"]
     ],
     'remarks'  : ["This answer was just awful, see me after class."],
 
@@ -135,12 +135,13 @@ var a1 = {
     'test'     : t1,
     'answers'  : ["Here's my answer for q0, it's not a very good one. Lets make it a bit longer with some more giberish writing about nothing. Alright that should be good.",
                   "def greet(greeting, name): print( greeting + \", \" + name )"],
-    'grades'   : [0, 30],
+    'grades'   : [999, 999],
     'comment'  : "I wasn't prepared for this test, go easy on me",
     'feedback' : [
-        ["bNo colon after first line -1pts", "bIncorrect function name -2pts",
-         "bDidn't pass inRange(4,1,7)=True -6pts", "bDidn't pass inRange(4,6,7)=false -6pts"],
-        ["gFound no errors"]
+        ["b1pNo colon after first line", "b2pIncorrect function name",
+         "b6pDidn't pass inRange(4,1,7)=True", "b6pDidn't pass inRange(4,6,7)=false, Instead we got true, or perhaps something other than a boolean, IDK I'm not the grader!"],
+        ["g3pCorrect Name", "g3pColon at end of first line is right there where it should be which is greate so no points deducted from you for this one!", 
+         "g12pTest #1 passed!", "b12pTest #2 failed!"]
     ],
     'remarks'  : ["This answer was just awful, see me after class.", 
                   "Good work on this one! See me after class ;)"],

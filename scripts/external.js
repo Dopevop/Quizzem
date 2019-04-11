@@ -242,24 +242,24 @@ function validateForm(type) {
 function toggleSelected(listItemId) {
 	var id = listItemId.substring(1);
 	if(listItemId[0] == "t") { // add test with id to sSelectedT 
-        sSelectedT.push(sLocalT.filter((t) => t.id == id)[0]);
+        sSelectedT.push(sLocalT.filter(t => t.id == id)[0]);
         console.log(sSelectedT);
 		updateDisplays(["sMainSection", "sMainAside", "sHeadSection"]);
 	}
 	else if ( listItemId[0] == "m") { // add Q to iSelectedQ, remove from iMatchedQ
-        let clickedQ = iMatchedQ.filter((q) => q.id == id)[0];
+        let clickedQ = iMatchedQ.filter(q => q.id == id)[0];
         iSelectedQ.push(clickedQ);
         iMatchedQ = removeItemFromArray(clickedQ.id, iMatchedQ);
         updateDisplays(["iMainSection", "iMainAside"]);
 	}
 	else if ( listItemId[0] == "s") { // add Q to iMatchedQ, remove from iSelectedQ
-        let clickedQ = iSelectedQ.filter((q) => q.id == id)[0];
+        let clickedQ = iSelectedQ.filter(q => q.id == id)[0];
         iMatchedQ.push(clickedQ);
         iSelectedQ = removeItemFromArray(clickedQ.id, iSelectedQ);
         updateDisplays(["iMainSection", "iMainAside"]);
 	}
     else if( listItemId[0] == "a" ) { // add attempt with id to sSelectedA
-        let clickedA = sLocalA.filter( (a) => a.test.id == id )[0];
+        let clickedA = sLocalA.filter(a => a.test.id == id)[0];
         sSelectedA.push(clickedA);
         updateDisplays(["sMainSection"]);
     }
@@ -396,7 +396,7 @@ function getRelArr(displayId) {
             console.log(relArr);
             break;
         case "sAttemptDisp":
-            relArr = (sSelectedA.length === 1)? buildQuestionList(sSelectedA[0], "attempt") :
+            relArr = (sSelectedA.length === 1)? buildQuestionList(sSelectedA[0], "review") :
                                                 sLocalA;
             console.log(relArr);
             break;
@@ -410,21 +410,21 @@ function getRelArr(displayId) {
 // this returns an array of objects that can be turned into display items
 function buildQuestionList(obj, type) {
     let list = [];
-    let limit = (type == "attempt")? obj.answers.length : obj.length;
+    let limit = (type == "review")? obj.answers.length : obj.length;
     for(let i=0; i<limit; i++) {
         let thisObj    = {
             'num'      : i+1,
-            'id'       : (type == "attempt") ? obj.test.id            : obj[i].id,
-            'diff'     : (type == "attempt") ? obj.test.ques[i].diff  : obj[i].diff,
-            'topic'    : (type == "attempt") ? obj.test.ques[i].topic : obj[i].topic,
-            'desc'     : (type == "attempt") ? obj.test.ques[i].desc  : obj[i].desc,
-            'cons'     : (type == "attempt") ? obj.test.ques[i].cons  : obj[i].cons,
-            'max'      : (type == "attempt") ? obj.test.pts[i]        :
-                         (type == "active")  ? sSelectedT[0].pts[i]   : null,
-            'grade'    : (type == "attempt") ? obj.grades[i]          : null,
-            'answer'   : (type == "attempt") ? obj.answers[i]         : null,
-            'remark'   : (type == "attempt") ? obj.remarks[i]         : null,
-            'feedback' : (type == "attempt") ? obj.feedback[i]        : null,
+            'id'       : (type == "review") ? obj.test.id            : obj[i].id,
+            'diff'     : (type == "review") ? obj.test.ques[i].diff  : obj[i].diff,
+            'topic'    : (type == "review") ? obj.test.ques[i].topic : obj[i].topic,
+            'desc'     : (type == "review") ? obj.test.ques[i].desc  : obj[i].desc,
+            'cons'     : (type == "review") ? obj.test.ques[i].cons  : obj[i].cons,
+            'max'      : (type == "review") ? obj.test.pts[i]        :
+                         (type == "active") ? sSelectedT[0].pts[i]   : "",
+            'grade'    : (type == "review") ? obj.grades[i]          : "",
+            'answer'   : (type == "review") ? obj.answers[i]         : "",
+            'remark'   : (type == "review") ? obj.remarks[i]         : "",
+            'feedback' : (type == "review") ? obj.feedback[i]        : [],
         }
         list.push(thisObj);
     }
@@ -518,18 +518,24 @@ function addItemToDisplay(newItem, displayId, num) {
     var item;
     switch(displayId) {
         case "iMatchedList":
-            item = buildMatchedQuestionItem(newItem, num, "matched");
+            // item = buildMatchedQuestionItem(newItem, num, "matched");
+            item = buildGeneralQuestionItem(newItem, "matched");
             break;
         case "iSelectedList":
-            item = buildSelectedQuestionItem(newItem, num, "");
+            // item = buildSelectedQuestionItem(newItem, num, "");
+            item = buildGeneralQuestionItem(newItem, "selected");
             break;
         case "sTestDisp":
+            // item = (sSelectedT.length === 0)? buildTestSummaryItem(newItem, num) :
+            //                                   buildQuestionItem(newItem, num);
             item = (sSelectedT.length === 0)? buildTestSummaryItem(newItem, num) :
-                                            buildQuestionItem(newItem, num);
+                                              buildGeneralQuestionItem(newItem, "active");
             break;
         case "sAttemptDisp":
+            // item = (sSelectedA.length === 0)? buildAttemptSummaryItem(newItem, num) :
+            //                                   buildAttemptItem(newItem, num);
             item = (sSelectedA.length === 0)? buildAttemptSummaryItem(newItem, num) :
-                                            buildAttemptItem(newItem, num);
+                                              buildGeneralQuestionItem(newItem, "sReview");
             break;
         default:
             item = document.createTextNode(displayId + " not handled by addItemToDisplay!");
@@ -537,10 +543,13 @@ function addItemToDisplay(newItem, displayId, num) {
 	document.getElementById(displayId).appendChild(item);
 }
 
-function buildGeneralQuestion(newItem, type) {
-    let thisDiff   = document.createTextNode(newItem.diff);  // Gather the info
+function buildGeneralQuestionItem(newItem, type) {
+    let thisId     = (type=="matched")  ? "m"+newItem.id :
+                     (type=="selected") ? "s"+newItem.id :
+                                          "?"+newItem.id;
+    let thisDiff   = document.createTextNode(convertDiffFormat(newItem.diff));  // Gather the info
     let thisTopic  = document.createTextNode(newItem.topic); // that will go on
-    let thisGrade  = document.createTextNode(newItem.grade+" / "); // the question
+    let thisGrade  = document.createTextNode(newItem.grade+" /"); // the question
     let thisMax    = document.createTextNode(newItem.max);
     let thisPtsStr = document.createTextNode("Pts");
     let thisFor    = document.createTextNode("For Loop");
@@ -551,9 +560,9 @@ function buildGeneralQuestion(newItem, type) {
     let thisAns    = document.createTextNode(newItem.answer);
     let thisRemark = document.createTextNode(newItem.remark);
     let thisBtn    = document.createTextNode("X");
-    let thisConStr = document.createTextNode("Must use:");
+    let thisConStr = document.createTextNode("Must use: ");
     let thisCons   = newItem.cons;
-    let thisFeed   = newItem.feed;
+    let thisFeed   = newItem.feedback;
 
     let qItem   = document.createElement("DIV");
     let qDiv    = document.createElement("DIV");
@@ -563,6 +572,7 @@ function buildGeneralQuestion(newItem, type) {
     let qPts    = document.createElement("DIV");
     let qGrade  = document.createElement("SPAN");
     let qMax    = document.createElement("SPAN");     
+    let qPtsStr = document.createElement("SPAN");     
     let qInput  = document.createElement("INPUT");
     let qCons   = document.createElement("DIV");
     let qFor    = document.createElement("DIV");     
@@ -573,108 +583,147 @@ function buildGeneralQuestion(newItem, type) {
     let qAns    = document.createElement("TEXTAREA");
     let qList   = document.createElement("DIV");
     let qLine   = document.createElement("DIV");
+    let qRight  = document.createElement("DIV");
     let qRemark = document.createElement("DIV");
     let qBtn    = document.createElement("BUTTON");
 
-    qItem.appendChild(qDiv);
-    qItem.appendChild(qList);
-    qItem.setAttribute("class", "qItem");
-    qDiv.appendChild(qInfo);
-    qDiv.appendChild(qCons);
-    qDiv.appendChild(qDesc);
-    qDiv.appendChild(qAns);
-    qDiv.setAttribute("class", "qDiv");
-    qInfo.appendChild(qDiff);
-    qInfo.appendChild(qTopic);
-    qInfo.appendChild(qPts);
-    qInfo.setAttribute("class", "qInfo");
-    qDiff.appendChild(thisDiff);
-    qDiff.setAttribute("class", "qDiff");
-    qTopic.appendChild(thisTopic);
-    qTopic.setAttribute("class", "qTopic");
-    qPts.appendChild(qGrade);
-    qPts.appendChild(qMax);
-    qPts.appendChild(qInput);
-    qPts.appendChild(qPtsStr);
-    qPts.setAttribute("class", "qPts");
-    qGrade.appendChild(thisGrade);
-    qGrade.setAttribute("class", "qGrade");
-    qMax.appendChild(thisMax);
-    qMax.setAttribute("class", "qMax");
-    qInput.setAttribute("class", "qInput");
-    qCons.appendChild(qFor);
-    qCons.appendChild(qWhile);
-    qCons.appendChild(qPrint);
-    qCons.setAttribute("class", "qCons");
-    qFor.appendChild(thisFor);
-    qFor.setAttribute("class", "qFor");
-    qWhile.appendChild(thisWhile);
-    qWhile.setAttribute("class", "qWhile");
-    qPrint.appendChild(thisPrint);
-    qPrint.setAttribute("class", "qPrint");
-    qDesc.appendChild(qNum);
-    qDesc.appendChild(qBtn);
-    qDesc.setAttribute("class", "qDesc");
-    qNum.appendChild(thisNum);
-    qNum.setAttribute("class", "qNum");
-    qBtn.appendChild(thisBtn);
-    qBtn.setAttribute("class", "qBtn");
-    qAns.appendChild(thisAns);
-    qAns.setAttribute("class", "qAns");
-    qList.appendChild(qLine);
-    qList.setAttribute("class", "qList");
-    qLine.appendChild(qRemark);
-    qLine.setAttribute("class", "qLine");
+      qItem.appendChild(qDiv);
+      qItem.appendChild(qList);
+      qItem.setAttribute("class", "qItem");
+       qDiv.appendChild(qInfo);
+       qDiv.appendChild(qCons);
+       qDiv.appendChild(qDesc);
+       qDiv.appendChild(qBtn);
+       qDiv.appendChild(qAns);
+       qDiv.setAttribute("class", "qDiv");
+      qInfo.appendChild(qDiff);
+      qInfo.appendChild(qTopic);
+      qInfo.appendChild(qPts);
+      qInfo.setAttribute("class", "qInfo");
+      qDiff.appendChild(thisDiff);
+      qDiff.setAttribute("class", "qDiff");
+     qTopic.appendChild(thisTopic);
+     qTopic.setAttribute("class", "qTopic");
+       qPts.appendChild(qGrade);
+       qPts.appendChild(qMax);
+       qPts.appendChild(qInput);
+       qPts.appendChild(thisPtsStr);
+       qPts.setAttribute("class", "qPts");
+     qGrade.appendChild(thisGrade);
+     qGrade.setAttribute("class", "qGrade");
+       qMax.appendChild(thisMax);
+       qMax.setAttribute("class", "qMax");
+     qInput.setAttribute("class", "qInput");
+     qInput.setAttribute("maxlength", 3);
+      qCons.appendChild(thisConStr);
+      qCons.appendChild(qFor);
+      qCons.appendChild(qWhile);
+      qCons.appendChild(qPrint);
+      qCons.setAttribute("class", "qCons");
+       qFor.appendChild(thisFor);
+       qFor.setAttribute("class", "qFor");
+     qWhile.appendChild(thisWhile);
+     qWhile.setAttribute("class", "qWhile");
+     qPrint.appendChild(thisPrint);
+     qPrint.setAttribute("class", "qPrint");
+      qDesc.appendChild(qNum);
+      qDesc.appendChild(thisDesc);
+      qDesc.setAttribute("class", "qDesc");
+       qNum.appendChild(thisNum);
+       qNum.setAttribute("class", "qNum");
+       qBtn.appendChild(thisBtn);
+       qBtn.setAttribute("class", "qBtn");
+       qAns.appendChild(thisAns);
+       qAns.setAttribute("class", "qAns");
+       qAns.readOnly = (type==="active")? false : true;
+      qList.appendChild(qLine);
+      qList.setAttribute("class", "qList");
+      qLine.appendChild(qRight);
+      qLine.setAttribute("class", "qLine");
+     qRight.appendChild(qRemark);
+     qRight.setAttribute("class", "qRight");
     qRemark.appendChild(thisRemark);
     qRemark.setAttribute("class", "qRemark");
-    for(let i=0; i<thisFeed.length; i++) {
-        let thisType  = thisFeed[i][0];                    // Get the information
-        let tildePos  = thisFeed[i].indexOf("p");          // that will go into
-        let thisSub   = thisFeed[i].substring(1,tildePos); // this qLine
-        let thisMsg   = thisFeed[i].substring(tildePos+1);
-        let thisClass = (thisType === "g")? "qFeed qFeed-good" : 
-                        (thisType === "b")? "qFeed qFeed-bad" :
-                                            "qFeed";
-        let qLine = document.createElement("DIV");     // Create the elements
-        let qFeed = document.createElement("DIV");     // that the information
-        let qSub  = document.createElement("DIV");     // will go on
-        let qAlt  = document.createElement("INPUT");
-        qLine.appendChild(qFeed);
-        qLine.appendChild(qAlt);
-        qLine.setAttribute("class", "qLine");
-        qFeed.appendChild(qSub);
-        qFeed.setAttribute("class", thisClass);
-        qSub.appendChild(thisSub);
-        qSub.setAttribute("class", "qSub");
-        qAlt.setAttribute("class", "qAlt");
-        qList.appendChild(newFeedDiv);
+
+    if(type === "sReview" || type === "iReview") {
+        for(let i=0; i<thisFeed.length; i++) {
+            let thisType  = thisFeed[i][0];                  
+            let pos       = thisFeed[i].indexOf("p");         
+            let thisSub   = document.createTextNode(thisFeed[i].substring(1,pos));
+            let thisMsg   = document.createTextNode(thisFeed[i].substring(pos+1));
+            let thisClass = (thisType === "g")? "qFeed qFeed-good" : 
+                            (thisType === "b")? "qFeed qFeed-bad"  :
+                                                "qFeed";
+            let qLine  = document.createElement("DIV");     // Create the elements
+            let qRight = document.createElement("DIV");
+            let qFeed  = document.createElement("DIV");     // that the information
+            let qSub   = document.createElement("DIV");     // will go on
+            let qAlt   = document.createElement("INPUT");
+            qLine.appendChild(qRight);
+            qLine.setAttribute("class", "qLine");
+            qRight.appendChild(qFeed);
+            qRight.appendChild(qAlt);
+            qRight.setAttribute("class", "qRight");
+            qFeed.appendChild(thisMsg);
+            qFeed.appendChild(qSub);
+            qFeed.setAttribute("class", thisClass);
+            qSub.appendChild(thisSub);
+            qSub.setAttribute("class", "qSub");
+            qAlt.setAttribute("class", "qAlt");
+            qAlt.setAttribute("maxlength", 3);
+            if(thisType!=="b") qAlt.style.display = "none";
+            qList.appendChild(qLine);
+            // Hide elements of this Feedback line based on type
+            // if(type === "sReview") qAlt.style.display = "none"; // Type of question
+            if(thisType === "n")   qSub.style.display = "none"; // Type of feedback
+        }
     }
     // Hide things that are not visible for given type
-    if(thisCons.length === 0) {
-        qCons.style.display = "none";
-    }
-    else {
-        if(!thisCons.includes("for"))   qFor.style.display = "none";
-        if(!thisCons.includes("while")) qWhile.style.display = "none";
-        if(!thisCons.includes("print")) qPrint.style.display = "none";
-    }
-    qBut.style.display = "none";
     switch(type) {
         case "matched":
-            break;
+            qNum.style.display    = "none";
+            qPts.style.display    = "none";
         case "selected":
-            qBut.style.display = "block";
-            break;
+            qAns.style.display    = "none";
+            qMax.style.display    = "none";
         case "active":
-            qList.style.display = "none";
+            qRemark.style.display = "none";
+            qLine.style.display   = "none";
+            qList.style.display   = "none";
+            qGrade.style.display  = "none";
+        case "sReview":
+        case "iReview":
+            qInput.style.display  = "none";
+            qBtn.style.display    = "none";
             break;
-        case "attempt":
-            // let alts = document.getElementsByClassName("qAlt");   <--- eventually uncomment
-            // for(let i=0; i<alts.length; i++)                      <--- Only instructor
-            //     alts[i].style.display = "none";                   <--- should see alt inputs
-            if(thisRemark === "") qRemark.style.display = "none";
+        default:
+            console.log("Type of Question unknown in buildGeneralQuestion()");
             break;
     }
+    if(type === "selected") {
+        qInput.style.display = "block";
+          qBtn.style.display = "block";
+    }
+    // Hide constraints if not applied
+    if(thisCons.length === 0)       qCons.style.display  = "none";
+    if(!thisCons.includes("for"))   qFor.style.display   = "none";
+    if(!thisCons.includes("while")) qWhile.style.display = "none";
+    if(!thisCons.includes("print")) qPrint.style.display = "none";
+    // Hide remark if empty 
+    if(thisRemark == "") qRemark.style.display = "none";
+    // Make textareas editable/resizeable only for "active" questions
+    if(type === "active") {
+        qAns.contentEditable = "true";
+        qAns.style.resize = "vertical";
+    } else {
+        qAns.contentEditable = "false";
+        qAns.style.resize = "none";
+    }
+    // Set event listeners
+    if(type === "matched") qItem.addEventListener("click",  () => toggleSelected(thisId));
+    if(type === "selected") qBtn.addEventListener("click",  () => toggleSelected(thisId));
+    if(type === "active")   qAns.addEventListener("keydown", e => insertTab(e));
+
     return qItem;
 }
 
@@ -727,7 +776,6 @@ function buildAttemptItem(newItem, num) {
     qTopRight.appendChild(qPtsSpan);
          qBot.setAttribute("class", "qBot");
          qBot.appendChild(aAns);
-
          aAns.appendChild(document.createTextNode(thisAns));
          aAns.setAttribute("class", "aAns");
          aAns.setAttribute("contenteditable", "false");

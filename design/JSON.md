@@ -28,7 +28,6 @@ TEST = {
 ## ATTEMPT:
 ```javascript
 ATTEMPT = { 
-    id       : INT,
     test     : {TEST},
     answers  : [STR],
     grades   : [INT],
