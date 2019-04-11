@@ -45,9 +45,9 @@
   <script src="../scripts/testdata.js"></script>
   <script>
     var sLocalA  = [a0, a1]; // Always holds all known attempts
-    var sActiveA = [];                       // Should only ever have at most one attempt 
+    var sSelectedA = [];                       // Should only ever have at most one attempt 
     console.log(sLocalA);
-    console.log(sActiveA); 
+    console.log(sSelectedA); 
     updateDisplays(["sMainSection"]);
     fetch('getA') // As soon as page is accessed, download all attempts
     .catch(() => alertUser("error", "Could not download graded tests!"))

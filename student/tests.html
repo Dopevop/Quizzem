@@ -53,8 +53,8 @@
   <script src="../scripts/testdata.js"></script>
   <script>
     var sLocalT  = [t0, t1, t2, t3, t4, t5]; // Always holds all known tests
-    var sActiveT = []; // Should only ever have at most one test inside of it
-    console.log(sLocalT, sActiveT);
+    var sSelectedT = []; // Should only ever have at most one test inside of it
+    console.log(sLocalT, sSelectedT);
     updateDisplays(["sMainSection"]);
     fetch('getT')
     .then( x => { // As soon as page is accessed, download all tests
@@ -72,7 +72,7 @@
         .then(() => alertUser("success", "Test Submitted"))
         .then(() => timeout(3000))
         .then(() => clearForm("finAttemptForm"))
-        .then(() => sActiveT.length = 0)
+        .then(() => sSelectedT.length = 0)
         .then(() => updateDisplays(["sMainSection", "sMainAside"]))
         .then(() => enableButton("finAttemptBtn"))
         .catch(() => alertUser("error", "Could not submit test!"));

@@ -37,10 +37,10 @@
       <p id="iBuildInfo">
         To build a test, begin by creating a new question, or searching for existing questions using the fields on the right.
       </p>
-      <p id="iActiveInfo" style="display:none;">
+      <p id="iSelectedInfo" style="display:none;">
         Select questions from the list below to add to your new test.
       </p>
-      <ul id="iActiveList"> 
+      <ul id="iSelectedList"> 
       </ul>
       <p id="iMatchedInfo" style="display:none;">
         Create and search for more questions, or make a new test with the selected questions by using the forms on the right.
@@ -120,7 +120,7 @@
 	<script type="text/javascript" src="../scripts/testdata.js"></script>
 	<script>
 		var iMatchedQ  = [];
-		var iActiveQ = [];
+		var iSelectedQ = [];
 		var iLocalQ  = [q0, q1, q2, q3, q4, q5, q6];
     var iLocalT  = [];
     fetch('getQ').then( x => {

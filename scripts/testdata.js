@@ -4,6 +4,7 @@ var q0 = {
 	'topic' : 'Conditionals',
 	'diff'  : 1,
 	'tests' : [ 'inRange(4,1,7)=True', 'inRange(4,6,7)=false' ],
+    'cons'  : [],
 };
 var q1 = {
 	'id'    : 1001,
@@ -11,6 +12,7 @@ var q1 = {
 	'topic' : 'Output',
 	'diff'  : 1,
 	'tests' : [ 'greet("Cheerio", "Gabriel")="Cheerio, Gabriel"', 'greet("a", "b")="a, b"' ],
+    'cons'  : ["print"]
 };
 var q2 = {
 	'id'    : 1002,
@@ -18,6 +20,7 @@ var q2 = {
 	'topic' : 'Strings',
 	'diff'  : 3,
 	'tests' : [ 'containsLetter("i", ["you","like"])=["like"]', 'containsLetter("z", ["bag"])=[]' ],
+    'cons'  : ['for'],
 };
 var q3 = {
 	'id'    : 1003,
@@ -25,6 +28,7 @@ var q3 = {
 	'topic' : 'Conditionals',
 	'diff'  : 2,
 	'tests' : [ 'getSign(-4)="negative"', 'getSign(0)="zero"', 'getSign(300)="positive"' ],
+    'cons'  : [],
 };
 var q4 = {
 	'id'    : 1004,
@@ -32,6 +36,7 @@ var q4 = {
 	'topic' : 'Strings',
 	'diff'  : 4,
 	'tests' : [ 'print(mostlyVowels("Our lives begin to end the day we become silent about things that matter"))=["our", "about"]', 'print(mostlyVowels("Youth lives begin to end the day we become silent about things that matter"))=["about"]' ],
+    'cons'  : ["while"],
 };
 var q5 = {
 	'id'    : 1005,
@@ -39,6 +44,7 @@ var q5 = {
 	'topic' : 'Conditionals',
 	'diff'  : 2,
 	'tests' : [ 'compare(0, 1)="<"', 'compare("abc", "a")=">"', 'compare([],[])="=="' ],
+    'cons'  : [],
 };
 var q6 = {
 	'id'    : 1006,
@@ -46,6 +52,7 @@ var q6 = {
 	'topic' : 'Algorithms',
 	'diff'  : 5,
 	'tests' : [ 'neat("The edge of knowledge.", 10)=370', 'neat("The edge of all the edges.", 10)=8', 'compare([],[])="=="' ],
+    'cons'  : ["for", "while", "print"],
 };
 var t0 = {
 	'id'    : 1000,
@@ -113,7 +120,6 @@ var t7 = {
 };
 
 var a0 = {
-    'id'       : 1000,
     'test'     : t0,
     'answers'  : ["def inRange() Here's my answer for q0, it's not a very good one. Lets make it a bit longer with some more giberish writing about nothing. Alright that should be good."],
     'grades'   : [2],
@@ -126,7 +132,6 @@ var a0 = {
 
 }
 var a1 = {
-    'id'       : 1001,
     'test'     : t1,
     'answers'  : ["Here's my answer for q0, it's not a very good one. Lets make it a bit longer with some more giberish writing about nothing. Alright that should be good.",
                   "def greet(greeting, name): print( greeting + \", \" + name )"],

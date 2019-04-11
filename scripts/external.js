@@ -120,7 +120,7 @@ function buildPostBody(type, source) {
 				'type' : 'addT',
 				'desc' : testDesc.value,
 				'rel'  : getCheckedValue("testRelease"),
-				'ques' : iActiveQ,
+				'ques' : iSelectedQ,
                 'pts'  : Array.from(document.getElementsByClassName("qPts")).map(i=>i.value),
 			}
 			break;
@@ -133,7 +133,7 @@ function buildPostBody(type, source) {
         case 'addA':
             jsonObj = {
                 'type'    : 'addA',
-                'test'    : sActiveT[0],
+                'test'    : sSelectedT[0],
                 'comment' : finAttemptCmt.value,
                 'answers' : getStudentAnswers(),
             }
@@ -169,7 +169,7 @@ function displaySearchResults() {
 	var keys  = getNonEmptyInputs("searchKeys").map(k=>k.toLowerCase());
 	var matches  = localSearch(topic, diffs, keys);
 	iMatchedQ.length = 0;
-    iMatchedQ = matches.filter(q=>(!iMatchedQ.includes(q))&&(!iActiveQ.includes(q)));
+    iMatchedQ = matches.filter(q=>(!iMatchedQ.includes(q))&&(!iSelectedQ.includes(q)));
 	iMatchedQ.sort( (a,b) => a.diff - b.diff );
 	updateDisplays(["iMainSection"]);
 }
@@ -214,7 +214,7 @@ function validateForm(type) {
                     .then(() => timeout(1000))
                     .then(() => enableButton("testSub"))
                     .then(() => clearForm("testForm"))
-                    .then(() => { iActiveQ.length = 0; iMatchedQ.length = 0 })
+                    .then(() => { iSelectedQ.length = 0; iMatchedQ.length = 0 })
                     .then(() => updateDisplays(["iMainSection", "iMainAside"]))
                     .catch(() => {
                         alertUser("error", "Something went wrong.. test not submitted!")
@@ -237,34 +237,30 @@ function validateForm(type) {
 	}
 }
 
-/* Toggles whether the clicked on question is in iActiveQ 
+/* Toggles whether the clicked on question is in iSelectedQ 
  * listItemId: The id of the List Item that the question appears in */
 function toggleSelected(listItemId) {
 	var id = listItemId.substring(1);
-	if(listItemId[0] == "t") {
-		// add test with id to sActiveT 
-        sActiveT.push(sLocalT.filter((t) => t.id == id)[0]);
-        console.log(sActiveT);
+	if(listItemId[0] == "t") { // add test with id to sSelectedT 
+        sSelectedT.push(sLocalT.filter((t) => t.id == id)[0]);
+        console.log(sSelectedT);
 		updateDisplays(["sMainSection", "sMainAside", "sHeadSection"]);
 	}
-	else if ( listItemId[0] == "m") { // Selected Item is a matchList question
-		// add Q to iActiveQ, remove from iMatchedQ
+	else if ( listItemId[0] == "m") { // add Q to iSelectedQ, remove from iMatchedQ
         let clickedQ = iMatchedQ.filter((q) => q.id == id)[0];
-        iActiveQ.push(clickedQ);
+        iSelectedQ.push(clickedQ);
         iMatchedQ = removeItemFromArray(clickedQ.id, iMatchedQ);
         updateDisplays(["iMainSection", "iMainAside"]);
 	}
-	else if ( listItemId[0] == "s") { // Selected Item is a iActiveList question
-		// add Q to iMatchedQ, remove from iActiveQ
-        let clickedQ = iActiveQ.filter((q) => q.id == id)[0];
+	else if ( listItemId[0] == "s") { // add Q to iMatchedQ, remove from iSelectedQ
+        let clickedQ = iSelectedQ.filter((q) => q.id == id)[0];
         iMatchedQ.push(clickedQ);
-        iActiveQ = removeItemFromArray(clickedQ.id, iActiveQ);
+        iSelectedQ = removeItemFromArray(clickedQ.id, iSelectedQ);
         updateDisplays(["iMainSection", "iMainAside"]);
 	}
-    else if( listItemId[0] == "a" ) {
-        // add attempt with id to sActiveA
+    else if( listItemId[0] == "a" ) { // add attempt with id to sSelectedA
         let clickedA = sLocalA.filter( (a) => a.test.id == id )[0];
-        sActiveA.push(clickedA);
+        sSelectedA.push(clickedA);
         updateDisplays(["sMainSection"]);
     }
 	else {
@@ -402,13 +398,13 @@ function updateDisplay(displayId) {
 }
 
 function updateSHeadSection() { 
-    if(sActiveT.length === 1) {
-        document.getElementById("sHeadSummary").innerHTML = sActiveT[0].desc;
+    if(sSelectedT.length === 1) {
+        document.getElementById("sHeadSummary").innerHTML = sSelectedT[0].desc;
     }
 }
 
 function updateSMainAside() {
-    if(sActiveT.length === 0) {
+    if(sSelectedT.length === 0) {
         hideElement("finAttemptForm");
     } else {
         showElement("finAttemptForm");
@@ -416,7 +412,7 @@ function updateSMainAside() {
 }
 
 function updateSMainSection() {
-    if(typeof sActiveT !== 'undefined') {
+    if(typeof sSelectedT !== 'undefined') {
         clearInnerHTML("sTestDisp"); // On student/test.html
         addItemsToDisplay("sTestDisp");
     } else {
@@ -426,7 +422,7 @@ function updateSMainSection() {
 }
 
 function updateIMainAside() {
-    if(iActiveQ.length === 0) {
+    if(iSelectedQ.length === 0) {
         hideElement("testForm");
     } else {
         showElement("testForm");
@@ -435,27 +431,27 @@ function updateIMainAside() {
 
 function updateIMainSection() {
     clearInnerHTML("iMatchedList");
-    clearInnerHTML("iActiveList");
+    clearInnerHTML("iSelectedList");
     addItemsToDisplay("iMatchedList");
-    addItemsToDisplay("iActiveList");
-    if(iMatchedQ.length + iActiveQ.length === 0) {
+    addItemsToDisplay("iSelectedList");
+    if(iMatchedQ.length + iSelectedQ.length === 0) {
         showElement("iBuildInfo");
-        hideElement("iActiveInfo");
+        hideElement("iSelectedInfo");
         hideElement("iMatchedInfo");
     }
-    else if(iActiveQ.length === 0) {
+    else if(iSelectedQ.length === 0) {
         hideElement("iBuildInfo");
-        showElement("iActiveInfo");
+        showElement("iSelectedInfo");
         hideElement("iMatchedInfo");
     }
     else if(iMatchedQ.length === 0) {
         hideElement("iBuildInfo");
-        hideElement("iActiveInfo");
+        hideElement("iSelectedInfo");
         showElement("iMatchedInfo");
     }
     else {
         hideElement("iBuildInfo");
-        hideElement("iActiveInfo");
+        hideElement("iSelectedInfo");
         hideElement("iMatchedInfo");
     }
 }
@@ -465,17 +461,17 @@ function addItemToDisplay(newItem, displayId, num) {
     var item;
     switch(displayId) {
         case "iMatchedList":
-            item = buildMatchedQuestionItem(newItem, num);
+            item = buildMatchedQuestionItem(newItem, num, "matched");
             break;
-        case "iActiveList":
-            item = buildActiveQuestionItem(newItem, num);
+        case "iSelectedList":
+            item = buildSelectedQuestionItem(newItem, num, "");
             break;
         case "sTestDisp":
-            item = (sActiveT.length === 0)? buildTestSummaryItem(newItem, num) :
+            item = (sSelectedT.length === 0)? buildTestSummaryItem(newItem, num) :
                                             buildQuestionItem(newItem, num);
             break;
         case "sAttemptDisp":
-            item = (sActiveA.length === 0)? buildAttemptSummaryItem(newItem, num) :
+            item = (sSelectedA.length === 0)? buildAttemptSummaryItem(newItem, num) :
                                             buildAttemptItem(newItem, num);
             break;
         default:
@@ -484,33 +480,63 @@ function addItemToDisplay(newItem, displayId, num) {
 	document.getElementById(displayId).appendChild(item);
 }
 
-function buildGeneralQuestion(newItem, num) {
+function buildGeneralQuestion(newItem, num, type) {
+    // Gather the information that will go on the Question
     let thisDiff;
     let thisTopic;
-    let thisPts;
+    let thisGrd;
     let thisMax;
     let thisCons;
     let thisDesc;
+    let thisNum;
+    let thisBtn;
     let thisAns;
     let thisRemark;
     let thisFeed;
 
-    let qItem;
-      let qDiv;
-        let qInfo;
-          let qDiff;
-          let qTopic;
-          let qPts;
-        let qCons;
-        let qDesc;
-          let qNum;
-        let qAns;
-      let qList;
-        let qItem;
-          let qRemark;
-          let qFeed;
-          let qSub;
-          let qAlt;
+    // Build the elements that will make up the Question
+    let qItem   = createElement("DIV");
+    let qDiv    = createElement("DIV");
+    let qInfo   = createElement("DIV");
+    let qDiff   = createElement("SPAN");
+    let qTopic  = createElement("SPAN");
+    let qPts    = createElement("DIV");
+    let qGrd    = createElement("SPAN");
+    let qMax    = createElement("SPAN");     // Has to be created dynamically
+    let qCons   = createElement("DIV");
+    let qFor    = createElement("SPAN");     // Has to be shown dynamically
+    let qWhile  = createElement("SPAN");     // Has to be shown dynamically
+    let qPrint  = createElement("SPAN");     // Has to be shown dynamically
+    let qDesc   = createElement("DIV");
+    let qNum    = createElement("DIV");      // Shown Dynamically
+    let qAns    = createElement("TEXTAREA");
+    let qList   = createElement("UL");
+    let qLine   = createElement("LI");
+    let qRemark = createElement("DIV");
+    let qFeed   = createElement("DIV");      // Has to be added dynamically (must be var too)
+    let qSub    = createElement("DIV");      // Has to be added dynamically (must be var too)
+    let qAlt    = createElement("INPUT");    // Has to be added dynamically (must be var too)
+
+    // qItem─┬→ qDiv─┬→ qInfo─┬→ qDiff
+    //       │       │        ├→ qTopic
+    //       │       │        └→ qPts
+    //       │       ├→ qCons─┬→ qFor
+    //       │       │        ├→ qWhile
+    //       │       │        └→ qPrint
+    //       │       ├→ qDesc─→ qNum
+    //       │       └→ qAns
+    //       └→ qList──→ qItem─┬→ qRemark
+    //                         ├→ qFeed*
+    //                         ├→ qSub*
+    //                         └→ qAlt*
+    qItem.appendChild(qDiv);
+    qItem.appendChild(qList);
+    qDiv.appendChild(qInfo);
+    qDiv.appendChild(qCons);
+    qDiv.appendChild(qDesc);
+    qDiv.appendChild(qAns);
+    
+    
 
 }
 
@@ -520,7 +546,7 @@ function buildAttemptItem(newItem, num) {
     var thisDesc       = newItem.desc;
     var thisFeed       = newItem.feedback; // an array of auto-generated feedback strings
     var thisGrade      = newItem.grade;
-    var thisPts        = newItem.maxPts;
+    var thisPts        = newItem.max;
     var thisRemark     = newItem.remark;
     var gradeSpanClass = (thisGrade <= (thisPts/2))   ? "lowGradeSpan" :
                          (thisGrade <= (3*thisPts/4)) ? "midGradeSpan" : "highGradeSpan";
@@ -662,17 +688,17 @@ function buildMatchedQuestionItem(newItem, num) {
     return item;
 }
 
-function buildActiveQuestionItem(newItem, num) {
-    var thisDesc  = newItem.desc;                          // Variables specific
-    var thisNum   = num + 1;                                  // to this quetion
-    var thisPts   = 5;
+function buildSelectedQuestionItem(newItem, num) {
+    var thisDesc  = newItem.desc;                   // Variables specific
+    var thisNum   = newItem.num;                    // to this quetion
+    // var thisNum   = num + 1;                     // to this quetion
     var thisId    = "s" + newItem.id;
     var thisDiff  = convertDiffFormat(newItem.diff);
     var thisTopic = newItem.topic;
 
-    var item      = document.createElement("LI");            // Build the elements
-    var qDiv      = document.createElement("DIV");           // that will go into
-    var qTop      = document.createElement("DIV");           // this question
+    var item      = document.createElement("LI");  // Build the elements
+    var qDiv      = document.createElement("DIV"); // that will go into
+    var qTop      = document.createElement("DIV"); // this question
     var qTopLeft  = document.createElement("DIV");
     var qTopMid   = document.createElement("DIV");
     var qTopRight = document.createElement("DIV");
@@ -683,15 +709,15 @@ function buildActiveQuestionItem(newItem, num) {
     var qDesc     = document.createTextNode(thisDesc);
     var qPtsInput = document.createElement("INPUT");
     var qPtsText  = document.createTextNode(" Pts");
-    var qDiff = document.createTextNode("Difficulty: " + thisDiff);
-    var qTopic = document.createTextNode("Topic: " + thisTopic);
+    var qDiff     = document.createTextNode("Difficulty: " + thisDiff);
+    var qTopic    = document.createTextNode("Topic: " + thisTopic);
 
-         qDiv.setAttribute("class", "qDiv active");          // Set attributes of
-         qDiv.setAttribute("id", thisId);                     // and append children to
-         qDiv.appendChild(qTop);                             // the elements
-         qDiv.appendChild(qBot);             
-         qDiv.appendChild(qBtn);             
-         qTop.setAttribute("class", "qTop"); 
+         qDiv.setAttribute("class", "qDiv active"); // Set attributes of
+         qDiv.setAttribute("id", thisId);           // and append children to
+         qDiv.appendChild(qTop);                    // the elements
+         qDiv.appendChild(qBot);
+         qDiv.appendChild(qBtn);
+         qTop.setAttribute("class", "qTop");
          qTop.appendChild(qTopLeft);
          qTop.appendChild(qTopMid);
          qTop.appendChild(qTopRight);
@@ -709,11 +735,12 @@ function buildActiveQuestionItem(newItem, num) {
     qPtsInput.setAttribute("maxlength", "3");
     qPtsInput.setAttribute("size", "1");
     qPtsInput.setAttribute("tabindex", thisNum);
-         qBot.setAttribute("class", "mBot"); 
-    qBot.appendChild(qDiff);
-    qBot.appendChild(document.createElement("BR"));
-    qBot.appendChild(qTopic);
-         item.appendChild(qDiv); 
+         qBot.setAttribute("class", "mBot");
+         qBot.appendChild(qDiff);
+         qBot.appendChild(document.createElement("BR"));
+         qBot.appendChild(qTopic);
+         item.appendChild(qDiv);
+
     return item;
 }
 
@@ -783,7 +810,8 @@ function buildTestSummaryItem(newItem, num) {
 function buildQuestionItem(newItem, num) {
     thisDesc = newItem.desc;      // Variables specific
     thisNum  = num + 1;              // to this quetion
-    thisPts  = sActiveT[0].pts[num]; //
+    thisMax  = newItem.max; //
+    // thisMax  = sSelectedT[0].pts[num]; //
 
     var item      = document.createElement("LI");  // Build the elements
     var qDiv      = document.createElement("DIV"); // that will go into
@@ -795,7 +823,7 @@ function buildQuestionItem(newItem, num) {
     var qAns      = document.createElement("TEXTAREA");
     var qNum      = document.createTextNode(thisNum + ".)");
     var qDesc     = document.createTextNode(thisDesc);
-    var qPoints   = document.createTextNode(thisPts + " Pts");
+    var qPoints   = document.createTextNode(thisMax + " Pts");
     
          qDiv.setAttribute("class", "qDiv"); // Set attributes of
          qDiv.appendChild(qTop);             // and append children to
@@ -922,22 +950,31 @@ function removeItemFromArray(id, A) {
 	return A;
 }
 
-/* Determines which array (iActiveQ or iMatchedQ) is associated with a display */
+/* Determines which array (iSelectedQ or iMatchedQ) is associated with a display */
 function getRelArr(displayId) {
 	var relArr;
     switch(displayId) {
         case "iMatchedList":
-            relArr = iMatchedQ;
+            // relArr = iMatchedQ;
+            relArr = buildQuestionList(iMatchedQ, "matched");
+            console.log(relArr);
             break;
-        case "iActiveList":
-            relArr = iActiveQ;
+        case "iSelectedList":
+            // relArr = iSelectedQ;
+            relArr = buildQuestionList(iSelectedQ, "selected");
+            console.log(relArr);
             break;
         case "sTestDisp":
-            relArr = (sActiveT.length == 1)? sActiveT[0].ques :
-                                             sLocalT.filter(t=>Number(t.rel)===1&&Number(t.sub)===0);
+            // relArr = (sSelectedT.length === 1)? sSelectedT[0].ques :
+            //          sLocalT.filter(t=>Number(t.rel)===1&&Number(t.sub)===0);
+            relArr = (sSelectedT.length === 1)? buildQuestionList(sSelectedT[0].ques, "active") :
+                     sLocalT.filter(t=>Number(t.rel)===1&&Number(t.sub)===0);
+            console.log(relArr);
             break;
         case "sAttemptDisp":
-            relArr = (sActiveA.length == 1)? buildAttemptList(sActiveA[0]) : sLocalA;
+            relArr = (sSelectedA.length === 1)? buildQuestionList(sSelectedA[0], "attempt") :
+                                                sLocalA;
+            console.log(relArr);
             break;
         default:
             relArr = [{'desc':"No",'topic':"relArr",'id':"for",'diff':"this",'tests':["display"] }];
@@ -947,26 +984,23 @@ function getRelArr(displayId) {
 }
 
 // this returns an array of objects that can be turned into display items
-function buildAttemptList(attempt) {
+function buildQuestionList(obj, type) {
     let list = [];
-    // Need: Q desc, maxpts, grade, answer, feedback, remarks
-    for(let i=0; i<attempt.answers.length; i++) {
-        let thisDesc   = attempt.test.ques[i].desc; // Description of Q
-        let thisMaxPts = attempt.test.pts[i];  // Max grade for this Q
-        if(typeof attempt.grades !== 'undefined')
-            var thisGrade  = attempt.grades[i];    // Student's grade for this Q
-        else
-            var thisGrade  = "?";    // Student's grade for this Q
-        let thisAns    = attempt.answers[i];   // Student's answer for this Q
-        let thisFeed   = attempt.feedback[i];  // An array of auto-generated feedback
-        let thisRemark = attempt.remarks[i];   // A single str from instructor
+    let limit = (type == "attempt")? obj.answers.length : obj.length;
+    for(let i=0; i<limit; i++) {
         let thisObj    = {
-            'desc'     : thisDesc,
-            'maxPts'   : thisMaxPts,
-            'grade'    : thisGrade,
-            'answer'   : thisAns,
-            'feedback' : thisFeed,
-            'remark'   : thisRemark,
+            'num'      : i+1,
+            'id'       : (type == "attempt") ? obj.test.id            : obj[i].id,
+            'diff'     : (type == "attempt") ? obj.test.ques[i].diff  : obj[i].diff,
+            'topic'    : (type == "attempt") ? obj.test.ques[i].topic : obj[i].topic,
+            'desc'     : (type == "attempt") ? obj.test.ques[i].desc  : obj[i].desc,
+            'cons'     : (type == "attempt") ? obj.test.ques[i].cons  : obj[i].cons,
+            'max'      : (type == "attempt") ? obj.test.pts[i]        :
+                         (type == "active")  ? sSelectedT[0].pts[i]   : null,
+            'grade'    : (type == "attempt") ? obj.grades[i]          : null,
+            'answer'   : (type == "attempt") ? obj.answers[i]         : null,
+            'remark'   : (type == "attempt") ? obj.remarks[i]         : null,
+            'feedback' : (type == "attempt") ? obj.feedback[i]        : null,
         }
         list.push(thisObj);
     }

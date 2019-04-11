@@ -169,7 +169,7 @@ body>main section p { /* Styles the welcome page messages */
     padding    : 15px;
     box-shadow : 0px 0px 5px darkgrey;
 }
-#iActiveInfo {
+#iSelectedInfo {
     background    : #badcee;
     border-radius : 5px;
     box-shadow    : 0px 1px 2px #880000, 0px 1px 5px darkgrey;
@@ -306,7 +306,7 @@ section li {
     margin        : 20px auto;
     border-radius : 5px;
 }
-#iActiveList,
+#iSelectedList,
 #iMatchedList {
     overflow      : auto;
     max-height    : 46.5vh;
@@ -318,7 +318,7 @@ section li {
     position : absolute;
     bottom   : 0px;
 }
-#iActiveList {
+#iSelectedList {
     box-shadow       : 0px 1px 2px #880000, 0px 1px 5px darkgrey;
     background-color : #BADCEE;
 }
@@ -346,7 +346,7 @@ section li {
     border-radius   : 5px;
     box-shadow      : 0px 1px 8px darkgrey;
 }
-.active,
+.selected,
 .qDiv {
     position         : relative;
     overflow         : hidden;
@@ -357,7 +357,7 @@ section li {
     border-radius    : 5px;
     white-space      : pre-wrap;
 }
-.active {
+.selected {
     background-color : snow;
     box-shadow       : 0px 0px 5px darkgrey;
 }
@@ -370,7 +370,7 @@ section li {
     float   : left;
 }
 .qTopMid,
-.activeBot {
+.selectedBot {
     width      : 90%;
     text-align : left;
 }
