@@ -121,7 +121,7 @@ function buildPostBody(type, source) {
 				'desc' : testDesc.value,
 				'rel'  : getCheckedValue("testRelease"),
 				'ques' : iSelectedQ,
-                'pts'  : Array.from(document.getElementsByClassName("qPts")).map(i=>i.value),
+                'pts'  : Array.from(document.getElementsByClassName("qInput")).map(i=>i.value),
 			}
 			break;
 		case 'getT':
@@ -261,7 +261,7 @@ function toggleSelected(listItemId) {
     else if( listItemId[0] == "a" ) { // add attempt with id to sSelectedA
         let clickedA = sLocalA.filter(a => a.test.id == id)[0];
         sSelectedA.push(clickedA);
-        updateDisplays(["sMainSection"]);
+        updateDisplays(["sMainSection", "sHeadSection"]);
     }
 	else {
 		console.log("in toggleSelected, "+listItemId[0]+" was not 't', 'm', or 's'");
@@ -460,8 +460,13 @@ function updateDisplay(displayId) {
 }
 
 function updateSHeadSection() { 
-    if(sSelectedT.length === 1) {
-        document.getElementById("sHeadSummary").innerHTML = sSelectedT[0].desc;
+    if(typeof sSelectedT !== 'undefined') {
+        if(sSelectedT.length === 1) 
+            document.getElementById("sHeadSummary").innerHTML = sSelectedT[0].desc;
+    }
+    else {
+        if(sSelectedA.length === 1)
+            document.getElementById("sHeadSummary").innerHTML = sSelectedA[0].test.desc;
     }
 }
 
