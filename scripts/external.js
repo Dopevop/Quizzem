@@ -374,6 +374,63 @@ function addItemsToDisplay(thisId) {
     }
 }
 
+/* Determines which array (iSelectedQ or iMatchedQ) is associated with a display */
+function getRelArr(displayId) {
+	var relArr;
+    switch(displayId) {
+        case "iMatchedList":
+            // relArr = iMatchedQ;
+            relArr = buildQuestionList(iMatchedQ, "matched");
+            console.log(relArr);
+            break;
+        case "iSelectedList":
+            // relArr = iSelectedQ;
+            relArr = buildQuestionList(iSelectedQ, "selected");
+            console.log(relArr);
+            break;
+        case "sTestDisp":
+            // relArr = (sSelectedT.length === 1)? sSelectedT[0].ques :
+            //          sLocalT.filter(t=>Number(t.rel)===1&&Number(t.sub)===0);
+            relArr = (sSelectedT.length === 1)? buildQuestionList(sSelectedT[0].ques, "active") :
+                     sLocalT.filter(t=>Number(t.rel)===1&&Number(t.sub)===0);
+            console.log(relArr);
+            break;
+        case "sAttemptDisp":
+            relArr = (sSelectedA.length === 1)? buildQuestionList(sSelectedA[0], "attempt") :
+                                                sLocalA;
+            console.log(relArr);
+            break;
+        default:
+            relArr = [{'desc':"No",'topic':"relArr",'id':"for",'diff':"this",'tests':["display"] }];
+            break;
+	}
+	return relArr;
+}
+
+// this returns an array of objects that can be turned into display items
+function buildQuestionList(obj, type) {
+    let list = [];
+    let limit = (type == "attempt")? obj.answers.length : obj.length;
+    for(let i=0; i<limit; i++) {
+        let thisObj    = {
+            'num'      : i+1,
+            'id'       : (type == "attempt") ? obj.test.id            : obj[i].id,
+            'diff'     : (type == "attempt") ? obj.test.ques[i].diff  : obj[i].diff,
+            'topic'    : (type == "attempt") ? obj.test.ques[i].topic : obj[i].topic,
+            'desc'     : (type == "attempt") ? obj.test.ques[i].desc  : obj[i].desc,
+            'cons'     : (type == "attempt") ? obj.test.ques[i].cons  : obj[i].cons,
+            'max'      : (type == "attempt") ? obj.test.pts[i]        :
+                         (type == "active")  ? sSelectedT[0].pts[i]   : null,
+            'grade'    : (type == "attempt") ? obj.grades[i]          : null,
+            'answer'   : (type == "attempt") ? obj.answers[i]         : null,
+            'remark'   : (type == "attempt") ? obj.remarks[i]         : null,
+            'feedback' : (type == "attempt") ? obj.feedback[i]        : null,
+        }
+        list.push(thisObj);
+    }
+    return list;
+}
+
 function updateDisplay(displayId) {
     switch(displayId) {
         case "iHeadSection":
@@ -480,64 +537,145 @@ function addItemToDisplay(newItem, displayId, num) {
 	document.getElementById(displayId).appendChild(item);
 }
 
-function buildGeneralQuestion(newItem, num, type) {
-    // Gather the information that will go on the Question
-    let thisDiff;
-    let thisTopic;
-    let thisGrd;
-    let thisMax;
-    let thisCons;
-    let thisDesc;
-    let thisNum;
-    let thisBtn;
-    let thisAns;
-    let thisRemark;
-    let thisFeed;
+function buildGeneralQuestion(newItem, type) {
+    let thisDiff   = document.createTextNode(newItem.diff);  // Gather the info
+    let thisTopic  = document.createTextNode(newItem.topic); // that will go on
+    let thisGrade  = document.createTextNode(newItem.grade+" / "); // the question
+    let thisMax    = document.createTextNode(newItem.max);
+    let thisPtsStr = document.createTextNode("Pts");
+    let thisFor    = document.createTextNode("For Loop");
+    let thisWhile  = document.createTextNode("While Loop");
+    let thisPrint  = document.createTextNode("Print Statement");
+    let thisDesc   = document.createTextNode(newItem.desc);
+    let thisNum    = document.createTextNode(newItem.num+".)");
+    let thisAns    = document.createTextNode(newItem.answer);
+    let thisRemark = document.createTextNode(newItem.remark);
+    let thisBtn    = document.createTextNode("X");
+    let thisConStr = document.createTextNode("Must use:");
+    let thisCons   = newItem.cons;
+    let thisFeed   = newItem.feed;
 
-    // Build the elements that will make up the Question
-    let qItem   = createElement("DIV");
-    let qDiv    = createElement("DIV");
-    let qInfo   = createElement("DIV");
-    let qDiff   = createElement("SPAN");
-    let qTopic  = createElement("SPAN");
-    let qPts    = createElement("DIV");
-    let qGrd    = createElement("SPAN");
-    let qMax    = createElement("SPAN");     // Has to be created dynamically
-    let qCons   = createElement("DIV");
-    let qFor    = createElement("SPAN");     // Has to be shown dynamically
-    let qWhile  = createElement("SPAN");     // Has to be shown dynamically
-    let qPrint  = createElement("SPAN");     // Has to be shown dynamically
-    let qDesc   = createElement("DIV");
-    let qNum    = createElement("DIV");      // Shown Dynamically
-    let qAns    = createElement("TEXTAREA");
-    let qList   = createElement("UL");
-    let qLine   = createElement("LI");
-    let qRemark = createElement("DIV");
-    let qFeed   = createElement("DIV");      // Has to be added dynamically (must be var too)
-    let qSub    = createElement("DIV");      // Has to be added dynamically (must be var too)
-    let qAlt    = createElement("INPUT");    // Has to be added dynamically (must be var too)
+    let qItem   = document.createElement("DIV");
+    let qDiv    = document.createElement("DIV");
+    let qInfo   = document.createElement("DIV");
+    let qDiff   = document.createElement("DIV");
+    let qTopic  = document.createElement("DIV");
+    let qPts    = document.createElement("DIV");
+    let qGrade  = document.createElement("SPAN");
+    let qMax    = document.createElement("SPAN");     
+    let qInput  = document.createElement("INPUT");
+    let qCons   = document.createElement("DIV");
+    let qFor    = document.createElement("DIV");     
+    let qWhile  = document.createElement("DIV");    
+    let qPrint  = document.createElement("DIV");   
+    let qDesc   = document.createElement("DIV");
+    let qNum    = document.createElement("DIV");    
+    let qAns    = document.createElement("TEXTAREA");
+    let qList   = document.createElement("DIV");
+    let qLine   = document.createElement("DIV");
+    let qRemark = document.createElement("DIV");
+    let qBtn    = document.createElement("BUTTON");
 
-    // qItem─┬→ qDiv─┬→ qInfo─┬→ qDiff
-    //       │       │        ├→ qTopic
-    //       │       │        └→ qPts
-    //       │       ├→ qCons─┬→ qFor
-    //       │       │        ├→ qWhile
-    //       │       │        └→ qPrint
-    //       │       ├→ qDesc─→ qNum
-    //       │       └→ qAns
-    //       └→ qList──→ qItem─┬→ qRemark
-    //                         ├→ qFeed*
-    //                         ├→ qSub*
-    //                         └→ qAlt*
     qItem.appendChild(qDiv);
     qItem.appendChild(qList);
+    qItem.setAttribute("class", "qItem");
     qDiv.appendChild(qInfo);
     qDiv.appendChild(qCons);
     qDiv.appendChild(qDesc);
     qDiv.appendChild(qAns);
-    
-    
-
+    qDiv.setAttribute("class", "qDiv");
+    qInfo.appendChild(qDiff);
+    qInfo.appendChild(qTopic);
+    qInfo.appendChild(qPts);
+    qInfo.setAttribute("class", "qInfo");
+    qDiff.appendChild(thisDiff);
+    qDiff.setAttribute("class", "qDiff");
+    qTopic.appendChild(thisTopic);
+    qTopic.setAttribute("class", "qTopic");
+    qPts.appendChild(qGrade);
+    qPts.appendChild(qMax);
+    qPts.appendChild(qInput);
+    qPts.appendChild(qPtsStr);
+    qPts.setAttribute("class", "qPts");
+    qGrade.appendChild(thisGrade);
+    qGrade.setAttribute("class", "qGrade");
+    qMax.appendChild(thisMax);
+    qMax.setAttribute("class", "qMax");
+    qInput.setAttribute("class", "qInput");
+    qCons.appendChild(qFor);
+    qCons.appendChild(qWhile);
+    qCons.appendChild(qPrint);
+    qCons.setAttribute("class", "qCons");
+    qFor.appendChild(thisFor);
+    qFor.setAttribute("class", "qFor");
+    qWhile.appendChild(thisWhile);
+    qWhile.setAttribute("class", "qWhile");
+    qPrint.appendChild(thisPrint);
+    qPrint.setAttribute("class", "qPrint");
+    qDesc.appendChild(qNum);
+    qDesc.appendChild(qBtn);
+    qDesc.setAttribute("class", "qDesc");
+    qNum.appendChild(thisNum);
+    qNum.setAttribute("class", "qNum");
+    qBtn.appendChild(thisBtn);
+    qBtn.setAttribute("class", "qBtn");
+    qAns.appendChild(thisAns);
+    qAns.setAttribute("class", "qAns");
+    qList.appendChild(qLine);
+    qList.setAttribute("class", "qList");
+    qLine.appendChild(qRemark);
+    qLine.setAttribute("class", "qLine");
+    qRemark.appendChild(thisRemark);
+    qRemark.setAttribute("class", "qRemark");
+    for(let i=0; i<thisFeed.length; i++) {
+        let thisType  = thisFeed[i][0];                    // Get the information
+        let tildePos  = thisFeed[i].indexOf("p");          // that will go into
+        let thisSub   = thisFeed[i].substring(1,tildePos); // this qLine
+        let thisMsg   = thisFeed[i].substring(tildePos+1);
+        let thisClass = (thisType === "g")? "qFeed qFeed-good" : 
+                        (thisType === "b")? "qFeed qFeed-bad" :
+                                            "qFeed";
+        let qLine = document.createElement("DIV");     // Create the elements
+        let qFeed = document.createElement("DIV");     // that the information
+        let qSub  = document.createElement("DIV");     // will go on
+        let qAlt  = document.createElement("INPUT");
+        qLine.appendChild(qFeed);
+        qLine.appendChild(qAlt);
+        qLine.setAttribute("class", "qLine");
+        qFeed.appendChild(qSub);
+        qFeed.setAttribute("class", thisClass);
+        qSub.appendChild(thisSub);
+        qSub.setAttribute("class", "qSub");
+        qAlt.setAttribute("class", "qAlt");
+        qList.appendChild(newFeedDiv);
+    }
+    // Hide things that are not visible for given type
+    if(thisCons.length === 0) {
+        qCons.style.display = "none";
+    }
+    else {
+        if(!thisCons.includes("for"))   qFor.style.display = "none";
+        if(!thisCons.includes("while")) qWhile.style.display = "none";
+        if(!thisCons.includes("print")) qPrint.style.display = "none";
+    }
+    qBut.style.display = "none";
+    switch(type) {
+        case "matched":
+            break;
+        case "selected":
+            qBut.style.display = "block";
+            break;
+        case "active":
+            qList.style.display = "none";
+            break;
+        case "attempt":
+            // let alts = document.getElementsByClassName("qAlt");   <--- eventually uncomment
+            // for(let i=0; i<alts.length; i++)                      <--- Only instructor
+            //     alts[i].style.display = "none";                   <--- should see alt inputs
+            if(thisRemark === "") qRemark.style.display = "none";
+            break;
+    }
+    return qItem;
 }
 
 function buildAttemptItem(newItem, num) {
@@ -912,6 +1050,11 @@ function timeout(delay) {
     });
 }
 
+function getStudentAnswers() {
+    let inputs = Array.from(document.getElementsByClassName("qAns"));
+    return inputs.map( i=>i.value );
+}
+
 /* Returns all non-empty input values in an array 
  * Takes the Id of a div element */
 function getNonEmptyInputs(divId) {
@@ -948,68 +1091,6 @@ function removeItemFromArray(id, A) {
 		}
 	}
 	return A;
-}
-
-/* Determines which array (iSelectedQ or iMatchedQ) is associated with a display */
-function getRelArr(displayId) {
-	var relArr;
-    switch(displayId) {
-        case "iMatchedList":
-            // relArr = iMatchedQ;
-            relArr = buildQuestionList(iMatchedQ, "matched");
-            console.log(relArr);
-            break;
-        case "iSelectedList":
-            // relArr = iSelectedQ;
-            relArr = buildQuestionList(iSelectedQ, "selected");
-            console.log(relArr);
-            break;
-        case "sTestDisp":
-            // relArr = (sSelectedT.length === 1)? sSelectedT[0].ques :
-            //          sLocalT.filter(t=>Number(t.rel)===1&&Number(t.sub)===0);
-            relArr = (sSelectedT.length === 1)? buildQuestionList(sSelectedT[0].ques, "active") :
-                     sLocalT.filter(t=>Number(t.rel)===1&&Number(t.sub)===0);
-            console.log(relArr);
-            break;
-        case "sAttemptDisp":
-            relArr = (sSelectedA.length === 1)? buildQuestionList(sSelectedA[0], "attempt") :
-                                                sLocalA;
-            console.log(relArr);
-            break;
-        default:
-            relArr = [{'desc':"No",'topic':"relArr",'id':"for",'diff':"this",'tests':["display"] }];
-            break;
-	}
-	return relArr;
-}
-
-// this returns an array of objects that can be turned into display items
-function buildQuestionList(obj, type) {
-    let list = [];
-    let limit = (type == "attempt")? obj.answers.length : obj.length;
-    for(let i=0; i<limit; i++) {
-        let thisObj    = {
-            'num'      : i+1,
-            'id'       : (type == "attempt") ? obj.test.id            : obj[i].id,
-            'diff'     : (type == "attempt") ? obj.test.ques[i].diff  : obj[i].diff,
-            'topic'    : (type == "attempt") ? obj.test.ques[i].topic : obj[i].topic,
-            'desc'     : (type == "attempt") ? obj.test.ques[i].desc  : obj[i].desc,
-            'cons'     : (type == "attempt") ? obj.test.ques[i].cons  : obj[i].cons,
-            'max'      : (type == "attempt") ? obj.test.pts[i]        :
-                         (type == "active")  ? sSelectedT[0].pts[i]   : null,
-            'grade'    : (type == "attempt") ? obj.grades[i]          : null,
-            'answer'   : (type == "attempt") ? obj.answers[i]         : null,
-            'remark'   : (type == "attempt") ? obj.remarks[i]         : null,
-            'feedback' : (type == "attempt") ? obj.feedback[i]        : null,
-        }
-        list.push(thisObj);
-    }
-    return list;
-}
-
-function getStudentAnswers() {
-    let inputs = Array.from(document.getElementsByClassName("qAns"));
-    return inputs.map( i=>i.value );
 }
 
 /* Checks the given item's Id against all Ids in localQ
