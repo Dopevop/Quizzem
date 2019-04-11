@@ -269,12 +269,16 @@ function toggleSelected(listItemId) {
 }
 
 function validatePts() {
-    let pts = Array.from(document.getElementsByClassName("qPts"));
+    let pts = Array.from(document.getElementsByClassName("qInput"));
     const emptyPt = p => p.value === ""; 
     const nanPt   = p => isNaN(p.value);
     const anyTrue = (a,b) => a||b;
-    if( pts.map(emptyPt).reduce(anyTrue) || pts.map(nanPt).reduce(anyTrue) ) {
-        alertUser("error", "All points must be filled out with integers!");
+    if( pts.map(emptyPt).reduce(anyTrue) ) {
+        alertUser("error", "All points must be filled out!");
+        return false;
+    } 
+    else if( pts.map(nanPt).reduce(anyTrue) ) {
+        alertUser("error", "All points must be integers!");
         return false;
     }
     return true;
@@ -426,6 +430,7 @@ function buildQuestionList(obj, type) {
             'remark'   : (type == "review") ? obj.remarks[i]         : "",
             'feedback' : (type == "review") ? obj.feedback[i]        : [],
         }
+        if(thisObj.cons == null) thisObj.cons = [];
         list.push(thisObj);
     }
     return list;
@@ -606,7 +611,7 @@ function buildGeneralQuestionItem(newItem, type) {
      qTopic.setAttribute("class", "qTopic");
        qPts.appendChild(qGrade);
        qPts.appendChild(qMax);
-       qPts.appendChild(qInput);
+      if(type=="selected") qPts.appendChild(qInput);
        qPts.appendChild(thisPtsStr);
        qPts.setAttribute("class", "qPts");
      qGrade.appendChild(thisGrade);
