@@ -144,8 +144,96 @@ function buildPostBody(type, source) {
                 'ids'  : [],
             }
             break;
+        case 'modA':
+            jsonObj = extractModifications();
+            break;
 	}
 	return JSON.stringify(jsonObj);
+}
+
+function extractModifications() {
+    let remarkInputs = Array.from(document.getElementsByClassName("qTextBox"));
+    let subInputs    = Array.from(document.getElementsByClassName("qSub"));
+    let altInputs    = Array.from(document.getElementsByClassName("qAlt"));
+    let feedElems    = Array.from(document.getElementsByClassName("qFeed"));
+    let thisA        = iSelectedA[0];
+    let thisT        = thisA.test;
+    let thisTID      = thisT.id;
+    let thisRel      = thisA.rel;
+    let theseQ       = thisT.ques;
+    let theseR       = thisA.remarks;
+    let theseF       = thisA.feedback;
+    let theseG       = thisA.grades;
+    let newRelease   = getCheckedValue("modARel");      
+    let newRemarks   = []; 
+    let newFeedback  = [];
+    let newGrades    = [];
+    let feedSeen = 0;
+    console.log(thisA);
+    for(let i=0; i<theseQ.length; i++) {
+        console.log("thisQ:", theseQ[i]);
+        console.log("thisR:", remarkInputs[i]);
+        let changedFeed = false;
+        let thisQID = theseQ[i].id;
+        let newR = {
+            "tId"  : thisTID,
+            "qId"  : thisQID,
+            "newR" : remarkInputs[i].value,
+        }
+        if(newR.newR !== "") newRemarks.push(newR);
+        let curGrade = thisA.grades[i];
+        for(let j=0; j<thisA.feedback[i].length; j++) {
+            if(isHidden(altInputs[feedSeen])) {
+                console.log("skipping this one, it is neutral");
+                feedSeen += 1;
+                continue;
+            }
+            else if(altInputs[feedSeen].value === "") {
+                console.log("skipping this one, modification not made");
+                feedSeen += 1;
+                continue;
+            }
+            else {
+                console.log("processing this to make newF and newG");
+                changedFeed = true;
+                let type = (feedElems[feedSeen].classList.contains("qFeed-bad"))? "b" : "g";
+                let msg  = feedElems[feedSeen].childNodes[0].nodeValue;
+                let newSub = altInputs[feedSeen].value;
+                let newFeed = type+newSub+"p"+msg;
+                let oldSub = Number(subInputs[feedSeen].innerHTML);
+                curGrade = (type==="b")? curGrade + (oldSub - newSub):
+                                         curGrade - (oldSub - newSub);
+                let newF = {
+                    "tId"  : thisTID,
+                    "qId"  : thisQID,
+                    "newF" : newFeed,
+                };
+                console.log("newF", newF);
+                newFeedback.push(newF);
+                feedSeen += 1;
+            }
+        }
+        if(changedFeed) {
+            let newG = {
+                "tId"  : thisTID,
+                "qId"  : thisQID,
+                "newG" : curGrade,
+            }
+            newGrades.push(newG);
+            console.log("newG", newG);
+        }
+    }
+    console.log("newRelease", newRelease);
+    console.log("newRemarks", newRemarks);
+    console.log("newFeedback", newFeedback);
+    console.log("newGrades", newGrades);
+    return {
+        "type" : "modA",
+        "rel"  : newRelease,
+        "remarks" : newRemarks,
+        "feedback" : newFeedback,
+        "grades" : newGrades,
+    }
 }
 
 /* Searches through local questions returning matches
@@ -236,28 +324,43 @@ function validateForm(type) {
             let remarkInputs = Array.from(document.getElementsByClassName("qTextBox"));
             let subInputs    = Array.from(document.getElementsByClassName("qSub"));
             let altInputs    = Array.from(document.getElementsByClassName("qAlt"));
-            let thisA        = iActiveA[0];
-            let thisT        = thisA.test;
-            let thisRel      = thisA.rel;
-            let theseQ       = thisT.ques;
-            let theseR       = thisA.remarks;
-            let theseF       = thisA.feedback;
-            let theseG       = thisA.grades;
-            let newRelease   = getCheckedValue("modARel");      
-            let newRemarks   = []; 
-            let newFeed      = [];
-            let newGrades    = [];
-                
-            // check if comments have changed
-            for(let i=0; i<theseQ.length; i++) {
+            let feedElems    = Array.from(document.getElementsByClassName("qFeed"));
+            let changedR = remarkInputs.map(r=>(r.value!=="")?true:false).reduce((a,b)=>a||b);
+            let changedF = altInputs.map(f=>(f.value!=="")?true:false).reduce((a,b)=>a||b);
+            if(changedF) {
+                // Make sure any new alt values are integers
+                let nonEmptyF = altInputs.filter(f=>f.value!=="");
+                console.log("nonEmptyF", nonEmptyF);
+                let nonEmptyV = nonEmptyF.map(f=>f.value);
+                console.log("nonEmptyV", nonEmptyV);
+                let areVNums  = nonEmptyV.map(v=>Number.isInteger(Number(v)));
+                console.log("areVNums",areVNums);
+                let allInts   = areVNums.reduce((a,b)=>a&&b);
+                if(allInts) {
+                    console.log("All feed inputs are Integers, returning true");
+                    return true;
+                } else {
+                    alertUser("error", "All new feedback points must be integers!");
+                    return false;
+                }
+            }
+            let changedRel = (getCheckedValue("modARel") === "1")? true : false;
+            if(changedR || changedF || changedRel) {
+                console.log("Changes found, returning true");
+                return true;
+            } else {
+                alertUser("error", "No changes to submit!");
+                return false;
             }
             
-            // check if points have changed
-            // check if release has changed
             break;
 		default:
 			console.log("Invalid type to validate");
 	}
+}
+
+function isHidden(el) {
+    return (el.offsetParent === null)
 }
 
 /* Toggles whether the clicked on question is in iSelectedQ 
@@ -793,7 +896,6 @@ function buildGeneralQuestionItem(newItem, type) {
     if(!thisCons.includes("while")) qWhile.style.display = "none";
     if(!thisCons.includes("print")) qPrint.style.display = "none";
     // Hide remark if empty 
-    console.log("["+thisRemark.nodeValue+"]");
     if(thisRemark.nodeValue === "") qRemark.style.display = "none";
     // Make textareas editable/resizeable only for "active" questions
     if(type === "active") {
@@ -889,7 +991,6 @@ function buildAttemptItem(newItem, num) {
 
 function buildAttemptSummaryItem(newItem, num) {
     // Gather the information from newItem that will be displayed to user
-    console.log(newItem);
     let testName   = newItem.test.desc;
     let maxPts     = newItem.test.pts.map(a => Number(a)).reduce((a,b) => a + b, 0);
     let graded     = typeof newItem.grades !== 'undefined';
