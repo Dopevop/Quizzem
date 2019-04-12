@@ -45,12 +45,12 @@
       <form id="modAForm" style="display:none;"> 
         <fieldset>
           <legend>Update Graded Test</legend>
-          <div id="testRelease">
+          <p class="hint">Use inputs below a question to modify grades or add comments.</p>
+          <div id="modARel">
             Release to student:</br>
             <label><input type="radio" name="release" value="1">Yes</label>
             <label><input type="radio" name="release" value="0" checked>No</label></br>
           </div>
-          <p class="hint">Use inputs below a question to modify the grade.</p>
           <button id="modASub" type="button">Save Changes</button> 
         </fieldset>
       </form>
@@ -69,6 +69,8 @@
       handleReply(x, "instructor")
       })
     .catch(() => alertUser("error", "Could not download graded tests!"))
+
+    modASub.setAttribute("click", ()=>validateForm("modA"));
 	</script>
 </body>
 </html>
