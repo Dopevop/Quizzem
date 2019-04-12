@@ -129,6 +129,7 @@ var a0 = {
          "b6pDidn't pass testcase #1", "b6pDidn't pass testcase #2"]
     ],
     'remarks'  : ["This answer was just awful, see me after class."],
+    'rel'      : 0,
 
 }
 var a1 = {
@@ -145,6 +146,7 @@ var a1 = {
     ],
     'remarks'  : ["This answer was just awful, see me after class.", 
                   "Good work on this one! See me after class ;)"],
+    'rel'      : 1,
 }
 var a2 = {
     'test'     : t6,
@@ -158,5 +160,6 @@ var a2 = {
         ["g15pTest case 1 passed", "b15pTest case 2 failed"]
     ],
     'remarks'  : ["", "Try harder", "This is excellent work, truly visionary. You might just win a nobel peace prize if you keep this up."],
+    'rel'      : 1,
 
 }
