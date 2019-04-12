@@ -24,7 +24,6 @@ TEST = {
 }
 ```
 
-
 ## ATTEMPT:
 ```javascript
 ATTEMPT = { 
@@ -65,7 +64,6 @@ GRADE = {
 }
 ```
 
-
 ---------------------
 ## modA
 ```javascript
@@ -75,6 +73,13 @@ request = {
     remarks  : [{REMARK}],
     feedback : [{FEED}],
     grades   : [{GRADE}]
+}
+```
+```javascript
+reply = {
+    type     : "modA",
+    error    : INT,
+    attempt  : {ATTEMPT}
 }
 ```
 
