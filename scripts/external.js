@@ -232,6 +232,16 @@ function validateForm(type) {
 		case "addA":
 			alertUser("error", "Adding Answer!");
 			break;
+        case "modA":
+            let newRemarks = []; //  [ { id:INT, remark:STR } ]
+            let newFeed    = []; //  [ { id:INT, index:INT, feed:STR } ]
+            let newGrades  = []; //  [ {  } ]
+                
+            // check if comments have changed
+            
+            // check if points have changed
+            // check if release has changed
+            break;
 		default:
 			console.log("Invalid type to validate");
 	}
@@ -695,7 +705,7 @@ function buildGeneralQuestionItem(newItem, type) {
       qRemark.setAttribute("class", "qRemark");
         if(type == "iReview") {
             thisRemark.setAttribute("class", "qTextBox");
-            thisRemark.placeholder = newItem.remark;
+            thisRemark.placeholder = "Current Comment: \""+newItem.remark+"\"";
         }
     }
 
@@ -717,9 +727,8 @@ function buildGeneralQuestionItem(newItem, type) {
             qLine.setAttribute("class", "qLine");
             qRight.appendChild(qFeed);
             qRight.appendChild(qAlt);
-            if(type=="iReview") {
-                if(thisType !== "n")
-                    qRight.setAttribute("class", "qRightAlt");
+            if(type=="iReview" && thisType !== "n") {
+                qRight.setAttribute("class", "qRightAlt");
             } else {
                 qRight.setAttribute("class", "qRight");
             }
