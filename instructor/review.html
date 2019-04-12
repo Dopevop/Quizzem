@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<meta name="description" content="Instructor's page for creating questions and building tests.">
+	<meta name="keywords"    content="Computer Science, Exam, Questions, Instructor, NJIT, Python">
+	<meta name="author"      content="Devon J O'Connor">
+	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
+	<title>Quizzem Instructor</title>
+	<link rel="stylesheet" type="text/css" href="../styles/mainstyle.css">
+</head>
+<body>
+  <div id="successDiv" class="alert alert-success">Here's an alert-success</div>
+  <div id="errorDiv"   class="alert alert-error">Here's an alert-error</div>
+  <header>
+    <main>
+      <nav id="iHeadNav"><h2><a href='welcome.html'>Quizzem</a></h2></nav>
+      <section id="iHeadSection"><h4 id="iHeadSummary">Review Grades</h4></section>
+      <aside id="iHeadAside">
+        <ul class="asideButtons">
+          <li class="asideButton"><a href="../login.html">Log Out</a></li>
+        </ul>
+      </aside>
+    </main>
+  </header>
+  <main class="clearfix">
+
+    <nav id="iMainNav" class=box>
+      <ul id="navList">
+        <li><a href='build.html'>Build</a></li>
+        <li class="currTab"><a href='review.html'>Review</a></li>
+        <li style="display:none;">Edit</li>
+      </ul>
+    </nav>
+
+    <section id="iMainSection" class="box">
+      <p id="iReviewInfo">Use the form to the right to search for graded tests to review</p>
+      <p id="iNoTestsInfo" style="display:none;">There are currently no graded tests to review</p>
+      <ul id="iSelectedList"> 
+      </ul>
+      <p id="iMatchedInfo" style="display:none;">
+        Create and search for more questions, or make a new test with the selected questions by using the forms on the right.
+      </p>
+      <ul id="iMatchedList">
+      </ul>
+    </section>
+
+    <aside id="iMainAside" class="box">
+      <form id="testForm">
+        <fieldset>
+          <legend>Create Exam</legend>
+          Exam Name</br>
+          <input id="testDesc" type="text"> </br>
+          <div id="testRelease">
+            Release Exam Now:</br>
+            <label><input type="radio" name="release" value="1">Yes</label>
+            <label><input type="radio" name="release" value="0" checked>No</label></br>
+          </div>
+          <button id="testSub" type="button">Submit</button> 
+        </fieldset>
+      </form>
+
+      <form id="addForm">
+        <fieldset>
+          <legend>Create Question:</legend>
+          Description </br>
+          <textarea id="addDesc"></textarea> </br>
+          Topic </br>
+          <input id="addTopic" type="text" maxlength="15"> </br>
+          Constraints </br>
+          <div id="addCons">
+            <label><input type="checkbox" value="for"> For</label>
+            <label><input type="checkbox" value="while"> While</label>
+            <label><input type="checkbox" value="print"> Print</label>
+          </div>
+          <div id="addDiff">
+            Difficulty: <span id ="addSpan">Medium</span></br>
+            <div class="rangeDiv">
+              <div id="ticks">
+                <div class="tick">.</div>
+                <div class="tick">.</div>
+                <div class="tick">.</div>
+                <div class="tick">.</div>
+                <div class="tick">.</div>
+              </div>
+              <input id="addRange" type="range" name="diff" list="ticks" min="1" max="5">
+            </div>
+          </div>
+          <div    id="addTests" class="modular tests"></div>
+          <button id="addSub"   type="button">Submit</button> 
+        </fieldset>
+      </form>	
+
+      <form id="searchForm">
+        <fieldset>
+          <legend>Search for Questions</legend>
+          Topic </br>
+          <input id="searchTopic" type="text"> </br>
+          Difficulty </br>
+          <div id="searchDiffs">
+            <label><input type="checkbox" value="1">Very Easy</label></br>
+            <label class="shortDiff"><input type="checkbox" value="2">Easy	    </label></br>
+            <label><input type="checkbox" value="3">Medium   </label></br>
+            <label class="shortDiff"><input type="checkbox" value="4">Hard	    </label></br>
+            <label><input type="checkbox" value="5">Very Hard</label></br>
+          </div>
+          <div id   ="searchKeys" class="modular keys"></div>
+          <button id="searchSub" type="button">Search</button> 
+          <button id="searchReset" type="reset">Clear</button> 
+        </fieldset>
+      </form>
+
+    </aside>
+  </main>
+	<script type="text/javascript" src="../scripts/external.js"></script>
+	<script type="text/javascript" src="../scripts/testdata.js"></script>
+	<script>
+		var iMatchedQ  = [];
+		var iSelectedQ = [];
+		var iLocalQ  = [q0, q1, q2, q3, q4, q5, q6];
+    var iLocalT  = [];
+    fetch('getQ').then( x => {
+      console.log(x);
+      handleReply(x);
+    } );
+		
+    addForm.addEventListener("mousemove", () => { updateDiff()            } );
+    addRange.addEventListener("mouseup" , () => { updateDiff()            } );
+    addRange.addEventListener("keyup"   , () => { updateDiff()            } );
+    searchSub.addEventListener("click"  , () => { displaySearchResults()  } );
+    searchReset.addEventListener("click", () => { clearForm("searchForm") } );
+    searchReset.addEventListener("click", () => { clearMatches()          } );
+    addSub.addEventListener("click", 
+      () => {
+        disableButton("addSub")
+        .then(() => validateForm("addQ"))
+      }
+    );
+    testSub.addEventListener("click",
+      () => { 
+        disableButton("testSub")
+        .then(() => validateForm("addT"))
+      } 
+    );
+
+		/* Initializes the modular elements */
+		resetModal("Test Cases", "addTests"  , 'addInput("addTests")');
+		resetModal("Keywords"  , "searchKeys", 'addInput("searchKeys")');
+	</script>
+</body>
+</html>
