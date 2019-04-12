@@ -646,14 +646,16 @@ function buildGeneralQuestionItem(newItem, type) {
        qAns.appendChild(thisAns);
        qAns.setAttribute("class", "qAns");
        qAns.readOnly = (type==="active")? false : true;
-      qList.appendChild(qLine);
-      qList.setAttribute("class", "qList");
-      qLine.appendChild(qRight);
-      qLine.setAttribute("class", "qLine");
-     qRight.appendChild(qRemark);
-     qRight.setAttribute("class", "qRight");
-    qRemark.appendChild(thisRemark);
-    qRemark.setAttribute("class", "qRemark");
+    if(thisRemark.nodeValue !== "") {
+        qList.appendChild(qLine);
+        qList.setAttribute("class", "qList");
+        qLine.appendChild(qRight);
+        qLine.setAttribute("class", "qLine");
+       qRight.appendChild(qRemark);
+       qRight.setAttribute("class", "qRight");
+      qRemark.appendChild(thisRemark);
+      qRemark.setAttribute("class", "qRemark");
+    }
 
     if(type === "sReview" || type === "iReview") {
         for(let i=0; i<thisFeed.length; i++) {
@@ -684,7 +686,7 @@ function buildGeneralQuestionItem(newItem, type) {
             if(thisType!=="b") qAlt.style.display = "none";
             qList.appendChild(qLine);
             // Hide elements of this Feedback line based on type
-            // if(type === "sReview") qAlt.style.display = "none"; // Type of question
+            if(type === "sReview") qAlt.style.display = "none"; // Type of question
             if(thisType === "n")   qSub.style.display = "none"; // Type of feedback
         }
     }
@@ -720,7 +722,8 @@ function buildGeneralQuestionItem(newItem, type) {
     if(!thisCons.includes("while")) qWhile.style.display = "none";
     if(!thisCons.includes("print")) qPrint.style.display = "none";
     // Hide remark if empty 
-    if(thisRemark == "") qRemark.style.display = "none";
+    console.log("["+thisRemark.nodeValue+"]");
+    if(thisRemark.nodeValue === "") qRemark.style.display = "none";
     // Make textareas editable/resizeable only for "active" questions
     if(type === "active") {
         qAns.contentEditable = "true";
