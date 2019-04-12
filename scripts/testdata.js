@@ -1,16 +1,16 @@
 var q0 = {
 	'id'    : 1000,
 	'desc'  : 'Write a function named inRange() that tests whether a given number falls within a specified range. The function inRange() takes three parameters: testNum, floor, ceiling. The function inRange() should return True if testNum is greater than or equal to floor and less than or equal to ceiling.',
-	'topic' : '12345678901234567890',
-	'diff'  : 1,
+	'topic' : 'Conditionals',
+	'diff'  : 2,
 	'tests' : [ 'inRange(4,1,7)=True', 'inRange(4,6,7)=false' ],
     'cons'  : [],
 };
 var q1 = {
 	'id'    : 1001,
 	'desc'  : 'Write a function named greet() that takes two parameters: greeting and name. The functino should then print out a message greeting the user by name with a comma between the greeting and the name.',
-	'topic' : 'MMMMMMMMMMMMMMM',
-	'diff'  : 5,
+	'topic' : 'Strings',
+	'diff'  : 1,
 	'tests' : [ 'greet("Cheerio", "Gabriel")="Cheerio, Gabriel"', 'greet("a", "b")="a, b"' ],
     'cons'  : ["print"]
 };
@@ -20,7 +20,7 @@ var q2 = {
 	'topic' : 'Output',
 	'diff'  : 5,
 	'tests' : [ 'containsLetter("i", ["you","like"])=["like"]', 'containsLetter("z", ["bag"])=[]' ],
-    'cons'  : ['for'],
+    'cons'  : ['for', 'print', 'while'],
 };
 var q3 = {
 	'id'    : 1003,
@@ -28,7 +28,7 @@ var q3 = {
 	'topic' : 'A',
 	'diff'  : 1,
 	'tests' : [ 'getSign(-4)="negative"', 'getSign(0)="zero"', 'getSign(300)="positive"' ],
-    'cons'  : [],
+    'cons'  : ['for', 'while'],
 };
 var q4 = {
 	'id'    : 1004,
@@ -68,7 +68,7 @@ var t1 = {
 	'rel'   : 1,
 	'sub'   : 0,
 	'ques'  : [q0, q1],
-    'pts': ["999", "999"]
+    'pts': ["15", "30"]
 };
 var t2 = {
 	'id'    : 1002,
@@ -129,13 +129,14 @@ var a0 = {
          "b6pDidn't pass testcase #1", "b6pDidn't pass testcase #2"]
     ],
     'remarks'  : ["This answer was just awful, see me after class."],
+    'rel'      : 0,
 
 }
 var a1 = {
     'test'     : t1,
     'answers'  : ["Here's my answer for q0, it's not a very good one. Lets make it a bit longer with some more giberish writing about nothing. Alright that should be good.",
                   "def greet(greeting, name): print( greeting + \", \" + name )"],
-    'grades'   : [999, 999],
+    'grades'   : [0, 18],
     'comment'  : "I wasn't prepared for this test, go easy on me",
     'feedback' : [
         ["b1pNo colon after first line", "b2pIncorrect function name",
@@ -145,4 +146,20 @@ var a1 = {
     ],
     'remarks'  : ["This answer was just awful, see me after class.", 
                   "Good work on this one! See me after class ;)"],
+    'rel'      : 1,
+}
+var a2 = {
+    'test'     : t6,
+    'answers'  : ["return true", "print false", "while(false)"],
+    'grades'   : [2, 3, 7],
+    'comment'  : "I wasn't prepared for this test, go easy on me",
+    'feedback' : [
+        ["b1pNo colon after first line", "n2pCorrect function name",
+         "b6pDidn't pass testcase #1", "n6pDidn't pass testcase #2"],
+        [],
+        ["g15pTest case 1 passed", "b15pTest case 2 failed"]
+    ],
+    'remarks'  : ["", "Try harder", "This is excellent work, truly visionary. You might just win a nobel peace prize if you keep this up."],
+    'rel'      : 1,
+
 }

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<meta name="description" content="Instructor's page for creating questions and building tests.">
+	<meta name="keywords"    content="Computer Science, Exam, Questions, Instructor, NJIT, Python">
+	<meta name="author"      content="Devon J O'Connor">
+	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
+	<title>Quizzem Instructor</title>
+	<link rel="stylesheet" type="text/css" href="../styles/mainstyle.css">
+</head>
+<body>
+  <div id="successDiv" class="alert alert-success">Here's an alert-success</div>
+  <div id="errorDiv"   class="alert alert-error">Here's an alert-error</div>
+  <header>
+    <main>
+      <nav id="iHeadNav"><h2><a href='welcome.html'>Quizzem</a></h2></nav>
+      <section id="iHeadSection"><h4 id="iHeadSummary">Review Grades</h4></section>
+      <aside id="iHeadAside">
+        <ul class="asideButtons">
+          <li class="asideButton"><a href="../login.html">Log Out</a></li>
+        </ul>
+      </aside>
+    </main>
+  </header>
+  <main class="clearfix">
+
+    <nav id="iMainNav" class=box>
+      <ul id="navList">
+        <li><a href='build.html'>Build</a></li>
+        <li class="currTab"><a href='review.html'>Review</a></li>
+        <li style="display:none;">Edit</li>
+      </ul>
+    </nav>
+
+    <section id="iMainSection" class="box">
+      <p  id="iReviewInfo" style="display:none;">Use the form to the right to search for graded tests to review</p>
+      <p id="iNoTestsInfo" style="text-align:center">There are no graded tests to be reviewed</p>
+      <ul id="iAttemptList"> </ul>
+    </section>
+
+    <aside id="iMainAside" class="box">
+
+      <!-- This will be displayed when an attempt is clicked -->
+      <form id="modAForm" style="display:none;"> 
+        <fieldset>
+          <legend>Update Graded Test</legend>
+          <p class="hint">Use inputs below a question to modify grades or add comments.</p>
+          <div id="modARel">
+            Release to student:</br>
+            <label><input type="radio" name="release" value="1">Yes</label>
+            <label><input type="radio" name="release" value="0" checked>No</label></br>
+          </div>
+          <button id="modASub" type="button">Save Changes</button> 
+        </fieldset>
+      </form>
+
+    </aside>
+  </main>
+	<script type="text/javascript" src="../scripts/external.js"></script>
+	<script type="text/javascript" src="../scripts/testdata.js"></script>
+	<script>
+    var iLocalA  = [a0, a1, a2]; // Always holds all known attempts
+    var iSelectedA = [];                       // Should only ever have at most one attempt 
+    updateDisplays(["iMainSection"]);
+    fetch('getA') // As soon as page is accessed, download all attempts
+    .then( x => { 
+      console.log("Rcvd:", x);
+      handleReply(x, "instructor")
+      })
+    .catch(() => alertUser("error", "Could not download graded tests!"))
+
+    modASub.addEventListener("click", ()=>console.log("modASub Clicked"));
+    modASub.addEventListener("click", ()=> {
+      if(validateForm("modA")) {
+        fetch('modA')
+          .then(x=>console.log(x))
+          .catch(x=>console.log(x))
+      }
+    });
+	</script>
+</body>
+</html>

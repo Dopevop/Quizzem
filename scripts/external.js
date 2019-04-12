@@ -144,8 +144,96 @@ function buildPostBody(type, source) {
                 'ids'  : [],
             }
             break;
+        case 'modA':
+            jsonObj = extractModifications();
+            break;
 	}
 	return JSON.stringify(jsonObj);
+}
+
+function extractModifications() {
+    let remarkInputs = Array.from(document.getElementsByClassName("qTextBox"));
+    let subInputs    = Array.from(document.getElementsByClassName("qSub"));
+    let altInputs    = Array.from(document.getElementsByClassName("qAlt"));
+    let feedElems    = Array.from(document.getElementsByClassName("qFeed"));
+    let thisA        = iSelectedA[0];
+    let thisT        = thisA.test;
+    let thisTID      = thisT.id;
+    let thisRel      = thisA.rel;
+    let theseQ       = thisT.ques;
+    let theseR       = thisA.remarks;
+    let theseF       = thisA.feedback;
+    let theseG       = thisA.grades;
+    let newRelease   = getCheckedValue("modARel");      
+    let newRemarks   = []; 
+    let newFeedback  = [];
+    let newGrades    = [];
+    let feedSeen = 0;
+    console.log(thisA);
+    for(let i=0; i<theseQ.length; i++) {
+        console.log("thisQ:", theseQ[i]);
+        console.log("thisR:", remarkInputs[i]);
+        let changedFeed = false;
+        let thisQID = theseQ[i].id;
+        let newR = {
+            "tId"  : thisTID,
+            "qId"  : thisQID,
+            "newR" : remarkInputs[i].value,
+        }
+        if(newR.newR !== "") newRemarks.push(newR);
+        let curGrade = thisA.grades[i];
+        for(let j=0; j<thisA.feedback[i].length; j++) {
+            if(isHidden(altInputs[feedSeen])) {
+                console.log("skipping this one, it is neutral");
+                feedSeen += 1;
+                continue;
+            }
+            else if(altInputs[feedSeen].value === "") {
+                console.log("skipping this one, modification not made");
+                feedSeen += 1;
+                continue;
+            }
+            else {
+                console.log("processing this to make newF and newG");
+                changedFeed = true;
+                let type = (feedElems[feedSeen].classList.contains("qFeed-bad"))? "b" : "g";
+                let msg  = feedElems[feedSeen].childNodes[0].nodeValue;
+                let newSub = altInputs[feedSeen].value;
+                let newFeed = type+newSub+"p"+msg;
+                let oldSub = Number(subInputs[feedSeen].innerHTML);
+                curGrade = (type==="b")? curGrade + (oldSub - newSub):
+                                         curGrade - (oldSub - newSub);
+                let newF = {
+                    "tId"  : thisTID,
+                    "qId"  : thisQID,
+                    "newF" : newFeed,
+                };
+                console.log("newF", newF);
+                newFeedback.push(newF);
+                feedSeen += 1;
+            }
+        }
+        if(changedFeed) {
+            let newG = {
+                "tId"  : thisTID,
+                "qId"  : thisQID,
+                "newG" : curGrade,
+            }
+            newGrades.push(newG);
+            console.log("newG", newG);
+        }
+    }
+    console.log("newRelease", newRelease);
+    console.log("newRemarks", newRemarks);
+    console.log("newFeedback", newFeedback);
+    console.log("newGrades", newGrades);
+    return {
+        "type" : "modA",
+        "rel"  : newRelease,
+        "remarks" : newRemarks,
+        "feedback" : newFeedback,
+        "grades" : newGrades,
+    }
 }
 
 /* Searches through local questions returning matches
@@ -232,9 +320,47 @@ function validateForm(type) {
 		case "addA":
 			alertUser("error", "Adding Answer!");
 			break;
+        case "modA":
+            let remarkInputs = Array.from(document.getElementsByClassName("qTextBox"));
+            let subInputs    = Array.from(document.getElementsByClassName("qSub"));
+            let altInputs    = Array.from(document.getElementsByClassName("qAlt"));
+            let feedElems    = Array.from(document.getElementsByClassName("qFeed"));
+            let changedR = remarkInputs.map(r=>(r.value!=="")?true:false).reduce((a,b)=>a||b);
+            let changedF = altInputs.map(f=>(f.value!=="")?true:false).reduce((a,b)=>a||b);
+            if(changedF) {
+                // Make sure any new alt values are integers
+                let nonEmptyF = altInputs.filter(f=>f.value!=="");
+                console.log("nonEmptyF", nonEmptyF);
+                let nonEmptyV = nonEmptyF.map(f=>f.value);
+                console.log("nonEmptyV", nonEmptyV);
+                let areVNums  = nonEmptyV.map(v=>Number.isInteger(Number(v)));
+                console.log("areVNums",areVNums);
+                let allInts   = areVNums.reduce((a,b)=>a&&b);
+                if(allInts) {
+                    console.log("All feed inputs are Integers, returning true");
+                    return true;
+                } else {
+                    alertUser("error", "All new feedback points must be integers!");
+                    return false;
+                }
+            }
+            let changedRel = (getCheckedValue("modARel") === "1")? true : false;
+            if(changedR || changedF || changedRel) {
+                console.log("Changes found, returning true");
+                return true;
+            } else {
+                alertUser("error", "No changes to submit!");
+                return false;
+            }
+            
+            break;
 		default:
 			console.log("Invalid type to validate");
 	}
+}
+
+function isHidden(el) {
+    return (el.offsetParent === null)
 }
 
 /* Toggles whether the clicked on question is in iSelectedQ 
@@ -259,9 +385,16 @@ function toggleSelected(listItemId) {
         updateDisplays(["iMainSection", "iMainAside"]);
 	}
     else if( listItemId[0] == "a" ) { // add attempt with id to sSelectedA
-        let clickedA = sLocalA.filter(a => a.test.id == id)[0];
-        sSelectedA.push(clickedA);
-        updateDisplays(["sMainSection", "sHeadSection"]);
+        if(typeof sLocalA !== 'undefined') {
+            let clickedA = sLocalA.filter(a => a.test.id == id)[0];
+            sSelectedA.push(clickedA);
+            updateDisplays(["sMainSection", "sHeadSection"]);
+        }
+        else {
+            let clickedA = iLocalA.filter(a => a.test.id == id)[0];
+            iSelectedA.push(clickedA);
+            updateDisplays(["iMainSection", "iHeadSection", "iMainAside"]);
+        }
     }
 	else {
 		console.log("in toggleSelected, "+listItemId[0]+" was not 't', 'm', or 's'");
@@ -392,17 +525,21 @@ function getRelArr(displayId) {
             relArr = buildQuestionList(iSelectedQ, "selected");
             console.log(relArr);
             break;
-        case "sTestDisp":
+        case "sTestList":
             // relArr = (sSelectedT.length === 1)? sSelectedT[0].ques :
             //          sLocalT.filter(t=>Number(t.rel)===1&&Number(t.sub)===0);
             relArr = (sSelectedT.length === 1)? buildQuestionList(sSelectedT[0].ques, "active") :
                      sLocalT.filter(t=>Number(t.rel)===1&&Number(t.sub)===0);
             console.log(relArr);
             break;
-        case "sAttemptDisp":
+        case "sAttemptList":
             relArr = (sSelectedA.length === 1)? buildQuestionList(sSelectedA[0], "review") :
                                                 sLocalA;
             console.log(relArr);
+            break;
+        case "iAttemptList":
+            relArr = (iSelectedA.length === 1)? buildQuestionList(iSelectedA[0], "review") :
+                                                iLocalA;
             break;
         default:
             relArr = [{'desc':"No",'topic':"relArr",'id':"for",'diff':"this",'tests':["display"] }];
@@ -439,9 +576,11 @@ function buildQuestionList(obj, type) {
 function updateDisplay(displayId) {
     switch(displayId) {
         case "iHeadSection":
+            updateIHeadSection();
             break;
         case "iMainSection":
             updateIMainSection();
+            break;
         case "iMainAside":
             updateIMainAside();
             break;
@@ -459,6 +598,12 @@ function updateDisplay(displayId) {
     }
 }
 
+function updateIHeadSection() {
+    if(iSelectedA.length === 1) {
+        document.getElementById("iHeadSummary").innerHTML = iSelectedA[0].test.desc;
+    }
+}
+
 function updateSHeadSection() { 
     if(typeof sSelectedT !== 'undefined') {
         if(sSelectedT.length === 1) 
@@ -471,55 +616,66 @@ function updateSHeadSection() {
 }
 
 function updateSMainAside() {
-    if(sSelectedT.length === 0) {
-        hideElement("finAttemptForm");
-    } else {
+    if(sSelectedT.length === 1)
         showElement("finAttemptForm");
-    }
 }
 
 function updateSMainSection() {
     if(typeof sSelectedT !== 'undefined') {
-        clearInnerHTML("sTestDisp"); // On student/test.html
-        addItemsToDisplay("sTestDisp");
+        clearInnerHTML("sTestList"); // On student/test.html
+        addItemsToDisplay("sTestList");
     } else {
-        clearInnerHTML("sAttemptDisp"); // On student/grades.html
-        addItemsToDisplay("sAttemptDisp");
+        clearInnerHTML("sAttemptList"); // On student/grades.html
+        addItemsToDisplay("sAttemptList");
     }
 }
 
 function updateIMainAside() {
-    if(iSelectedQ.length === 0) {
-        hideElement("testForm");
-    } else {
-        showElement("testForm");
+    if(typeof iLocalQ !== 'undefined') {
+        if(iSelectedQ.length === 0) hideElement("testForm");
+        else                        showElement("testForm");
+    }
+    else {
+        if(iSelectedA.length === 0) hideElement("modAForm");
+        else                        showElement("modAForm");
     }
 }
 
 function updateIMainSection() {
-    clearInnerHTML("iMatchedList");
-    clearInnerHTML("iSelectedList");
-    addItemsToDisplay("iMatchedList");
-    addItemsToDisplay("iSelectedList");
-    if(iMatchedQ.length + iSelectedQ.length === 0) {
-        showElement("iBuildInfo");
-        hideElement("iSelectedInfo");
-        hideElement("iMatchedInfo");
-    }
-    else if(iSelectedQ.length === 0) {
-        hideElement("iBuildInfo");
-        showElement("iSelectedInfo");
-        hideElement("iMatchedInfo");
-    }
-    else if(iMatchedQ.length === 0) {
-        hideElement("iBuildInfo");
-        hideElement("iSelectedInfo");
-        showElement("iMatchedInfo");
+    if(typeof iLocalA !== 'undefined') {
+        clearInnerHTML("iAttemptList"); 
+        addItemsToDisplay("iAttemptList");
+        if(iLocalA.length === 0) {
+           document.getElementById("iNoTestsInfo").style.display = "block";
+        } else {
+           document.getElementById("iNoTestsInfo").style.display = "none";
+        }
     }
     else {
-        hideElement("iBuildInfo");
-        hideElement("iSelectedInfo");
-        hideElement("iMatchedInfo");
+        clearInnerHTML("iMatchedList");
+        clearInnerHTML("iSelectedList");
+        addItemsToDisplay("iMatchedList");
+        addItemsToDisplay("iSelectedList");
+        if(iMatchedQ.length + iSelectedQ.length === 0) {
+            showElement("iBuildInfo");
+            hideElement("iSelectedInfo");
+            hideElement("iMatchedInfo");
+        }
+        else if(iSelectedQ.length === 0) {
+            hideElement("iBuildInfo");
+            showElement("iSelectedInfo");
+            hideElement("iMatchedInfo");
+        }
+        else if(iMatchedQ.length === 0) {
+            hideElement("iBuildInfo");
+            hideElement("iSelectedInfo");
+            showElement("iMatchedInfo");
+        }
+        else {
+            hideElement("iBuildInfo");
+            hideElement("iSelectedInfo");
+            hideElement("iMatchedInfo");
+        }
     }
 }
 
@@ -528,24 +684,22 @@ function addItemToDisplay(newItem, displayId, num) {
     var item;
     switch(displayId) {
         case "iMatchedList":
-            // item = buildMatchedQuestionItem(newItem, num, "matched");
             item = buildGeneralQuestionItem(newItem, "matched");
             break;
         case "iSelectedList":
-            // item = buildSelectedQuestionItem(newItem, num, "");
             item = buildGeneralQuestionItem(newItem, "selected");
             break;
-        case "sTestDisp":
-            // item = (sSelectedT.length === 0)? buildTestSummaryItem(newItem, num) :
-            //                                   buildQuestionItem(newItem, num);
+        case "sTestList":
             item = (sSelectedT.length === 0)? buildTestSummaryItem(newItem, num) :
                                               buildGeneralQuestionItem(newItem, "active");
             break;
-        case "sAttemptDisp":
-            // item = (sSelectedA.length === 0)? buildAttemptSummaryItem(newItem, num) :
-            //                                   buildAttemptItem(newItem, num);
+        case "sAttemptList":
             item = (sSelectedA.length === 0)? buildAttemptSummaryItem(newItem, num) :
                                               buildGeneralQuestionItem(newItem, "sReview");
+            break;
+        case "iAttemptList":
+            item = (iSelectedA.length === 0)? buildAttemptSummaryItem(newItem, num) :
+                                              buildGeneralQuestionItem(newItem, "iReview");
             break;
         default:
             item = document.createTextNode(displayId + " not handled by addItemToDisplay!");
@@ -554,12 +708,26 @@ function addItemToDisplay(newItem, displayId, num) {
 }
 
 function buildGeneralQuestionItem(newItem, type) {
-    let thisId     = (type=="matched")  ? "m"+newItem.id :
-                     (type=="selected") ? "s"+newItem.id :
-                                          "?"+newItem.id;
-    let thisDiff   = document.createTextNode(convertDiffFormat(newItem.diff));  // Gather the info
-    let thisTopic  = document.createTextNode(newItem.topic); // that will go on
-    let thisGrade  = document.createTextNode(newItem.grade+" /"); // the question
+    let thisId;
+    let thisBtnClass;
+    if(type=="matched") {
+        thisId = "m"+newItem.id;
+        thisBtn = document.createTextNode("+");
+        thisBtnClass = "qBtn qBtn-add";
+    } else if(type=="selected") {
+        thisId = "s"+newItem.id;
+        thisBtn = document.createTextNode("X");
+        thisBtnClass = "qBtn qBtn-remove";
+    } else {
+        thisId = "?"+newItem.id;
+        thisBtn = document.createTextNode("?");
+        thisBtnClass = "qBtn";
+    }
+    let thisRemark = (type === "iReview")? document.createElement("TEXTAREA") :
+                                           document.createTextNode(newItem.remark);
+    let thisDiff   = document.createTextNode(convertDiffFormat(newItem.diff));
+    let thisTopic  = document.createTextNode(newItem.topic);
+    let thisGrade  = document.createTextNode(newItem.grade+" /");
     let thisMax    = document.createTextNode(newItem.max);
     let thisPtsStr = document.createTextNode("Pts");
     let thisFor    = document.createTextNode("For Loop");
@@ -568,35 +736,31 @@ function buildGeneralQuestionItem(newItem, type) {
     let thisDesc   = document.createTextNode(newItem.desc);
     let thisNum    = document.createTextNode(newItem.num+".)");
     let thisAns    = document.createTextNode(newItem.answer);
-    let thisRemark = document.createTextNode(newItem.remark);
-    let thisBtn    = document.createTextNode("X");
     let thisConStr = document.createTextNode("Must use: ");
     let thisCons   = newItem.cons;
     let thisFeed   = newItem.feedback;
-
-    let qItem   = document.createElement("DIV");
-    let qDiv    = document.createElement("DIV");
-    let qInfo   = document.createElement("DIV");
-    let qDiff   = document.createElement("DIV");
-    let qTopic  = document.createElement("DIV");
-    let qPts    = document.createElement("DIV");
-    let qGrade  = document.createElement("SPAN");
-    let qMax    = document.createElement("SPAN");     
-    let qPtsStr = document.createElement("SPAN");     
-    let qInput  = document.createElement("INPUT");
-    let qCons   = document.createElement("DIV");
-    let qFor    = document.createElement("DIV");     
-    let qWhile  = document.createElement("DIV");    
-    let qPrint  = document.createElement("DIV");   
-    let qDesc   = document.createElement("DIV");
-    let qNum    = document.createElement("DIV");    
-    let qAns    = document.createElement("TEXTAREA");
-    let qList   = document.createElement("DIV");
-    let qLine   = document.createElement("DIV");
-    let qRight  = document.createElement("DIV");
-    let qRemark = document.createElement("DIV");
-    let qBtn    = document.createElement("BUTTON");
-
+    let qItem      = document.createElement("DIV");
+    let qDiv       = document.createElement("DIV");
+    let qInfo      = document.createElement("DIV");
+    let qDiff      = document.createElement("DIV");
+    let qTopic     = document.createElement("DIV");
+    let qPts       = document.createElement("DIV");
+    let qGrade     = document.createElement("SPAN");
+    let qMax       = document.createElement("SPAN");
+    let qPtsStr    = document.createElement("SPAN");
+    let qInput     = document.createElement("INPUT");
+    let qCons      = document.createElement("DIV");
+    let qFor       = document.createElement("DIV");
+    let qWhile     = document.createElement("DIV");
+    let qPrint     = document.createElement("DIV");
+    let qDesc      = document.createElement("DIV");
+    let qNum       = document.createElement("DIV");
+    let qAns       = document.createElement("TEXTAREA");
+    let qList      = document.createElement("DIV");
+    let qLine      = document.createElement("DIV");
+    let qRight     = document.createElement("DIV");
+    let qRemark    = document.createElement("DIV");
+    let qBtn       = document.createElement("BUTTON");
       qItem.appendChild(qDiv);
       qItem.appendChild(qList);
       qItem.setAttribute("class", "qItem");
@@ -642,18 +806,24 @@ function buildGeneralQuestionItem(newItem, type) {
        qNum.appendChild(thisNum);
        qNum.setAttribute("class", "qNum");
        qBtn.appendChild(thisBtn);
-       qBtn.setAttribute("class", "qBtn");
+       qBtn.setAttribute("class", thisBtnClass);
        qAns.appendChild(thisAns);
        qAns.setAttribute("class", "qAns");
        qAns.readOnly = (type==="active")? false : true;
-      qList.appendChild(qLine);
-      qList.setAttribute("class", "qList");
-      qLine.appendChild(qRight);
-      qLine.setAttribute("class", "qLine");
-     qRight.appendChild(qRemark);
-     qRight.setAttribute("class", "qRight");
-    qRemark.appendChild(thisRemark);
-    qRemark.setAttribute("class", "qRemark");
+    if(thisRemark.nodeValue !== "" || type == "iReview") {
+        qList.appendChild(qLine);
+        qList.setAttribute("class", "qList");
+        qLine.appendChild(qRight);
+        qLine.setAttribute("class", "qLine");
+       qRight.appendChild(qRemark);
+       qRight.setAttribute("class", "qRight");
+      qRemark.appendChild(thisRemark);
+      qRemark.setAttribute("class", "qRemark");
+        if(type == "iReview") {
+            thisRemark.setAttribute("class", "qTextBox");
+            thisRemark.placeholder = "Current Comment: \""+newItem.remark+"\"";
+        }
+    }
 
     if(type === "sReview" || type === "iReview") {
         for(let i=0; i<thisFeed.length; i++) {
@@ -673,7 +843,11 @@ function buildGeneralQuestionItem(newItem, type) {
             qLine.setAttribute("class", "qLine");
             qRight.appendChild(qFeed);
             qRight.appendChild(qAlt);
-            qRight.setAttribute("class", "qRight");
+            if(type=="iReview" && thisType !== "n") {
+                qRight.setAttribute("class", "qRightAlt");
+            } else {
+                qRight.setAttribute("class", "qRight");
+            }
             qFeed.appendChild(thisMsg);
             qFeed.appendChild(qSub);
             qFeed.setAttribute("class", thisClass);
@@ -681,10 +855,10 @@ function buildGeneralQuestionItem(newItem, type) {
             qSub.setAttribute("class", "qSub");
             qAlt.setAttribute("class", "qAlt");
             qAlt.setAttribute("maxlength", 3);
-            if(thisType!=="b") qAlt.style.display = "none";
+            if(thisType==="n") qAlt.style.display = "none";
             qList.appendChild(qLine);
             // Hide elements of this Feedback line based on type
-            // if(type === "sReview") qAlt.style.display = "none"; // Type of question
+            if(type === "sReview") qAlt.style.display = "none"; // Type of question
             if(thisType === "n")   qSub.style.display = "none"; // Type of feedback
         }
     }
@@ -710,9 +884,11 @@ function buildGeneralQuestionItem(newItem, type) {
             console.log("Type of Question unknown in buildGeneralQuestion()");
             break;
     }
-    if(type === "selected") {
-        qInput.style.display = "block";
-          qBtn.style.display = "block";
+    switch(type) {
+        case "selected":
+            qInput.style.display = "block";
+        case "matched":
+            qBtn.style.display = "block";
     }
     // Hide constraints if not applied
     if(thisCons.length === 0)       qCons.style.display  = "none";
@@ -720,7 +896,7 @@ function buildGeneralQuestionItem(newItem, type) {
     if(!thisCons.includes("while")) qWhile.style.display = "none";
     if(!thisCons.includes("print")) qPrint.style.display = "none";
     // Hide remark if empty 
-    if(thisRemark == "") qRemark.style.display = "none";
+    if(thisRemark.nodeValue === "") qRemark.style.display = "none";
     // Make textareas editable/resizeable only for "active" questions
     if(type === "active") {
         qAns.contentEditable = "true";
@@ -815,14 +991,10 @@ function buildAttemptItem(newItem, num) {
 
 function buildAttemptSummaryItem(newItem, num) {
     // Gather the information from newItem that will be displayed to user
-    console.log(newItem);
     let testName   = newItem.test.desc;
     let maxPts     = newItem.test.pts.map(a => Number(a)).reduce((a,b) => a + b, 0);
     let graded     = typeof newItem.grades !== 'undefined';
-    if(graded)
-        var grade  = newItem.grades.map(a => Number(a)).reduce((a,b) => a + b, 0);
-    else
-        var grade  = '?';
+    let grade      = (graded) ? newItem.grades.map(a => Number(a)).reduce((a,b) => a + b, 0) : '?';
     let reviewed   = newItem.remarks.filter((str) => str !== "").length !== 0;
     let statusText = (!graded)? "Not Graded" : (reviewed)? "Reviewed by Instructor" : "Auto-Graded";
     let itemId     = "a"+newItem.test.id;
