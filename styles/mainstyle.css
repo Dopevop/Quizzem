@@ -389,9 +389,9 @@ input[type=text] {
     margin        : 5px 0;
     padding       : 3px 5px;
     font-size     : .9em;
-    background    : snow;
     border-radius : 3px;
-    box-shadow    : 0px 1px 2px #880, 0px 1px 5px darkgrey;
+    background: #badcee;
+    box-shadow: 0 1px 2px #800, 0 1px 3px darkgrey;
 }
 
 .qItem   {
