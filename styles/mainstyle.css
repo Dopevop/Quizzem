@@ -95,6 +95,7 @@ body>header nav a:hover {
     height         : 40px;
     line-height    : 40px;
     display        : flex;
+    align-items    : center;
     flex-direction : row-reverse;
     right          : 20px;
 }
@@ -345,44 +346,6 @@ section li {
     border-radius   : 5px;
     box-shadow      : 0px 1px 8px darkgrey;
 }
-.oldselected,
-.oldqDiv {
-    position         : relative;
-    overflow         : hidden;
-    padding          : 3%;
-    padding-top      : 28px;
-    background-color : whitesmoke;
-    box-shadow       : 0px 1px 8px darkgrey;
-    border-radius    : 5px;
-    white-space      : pre-wrap;
-}
-.selected {
-    background-color : snow;
-    box-shadow       : 0px 0px 5px darkgrey;
-}
-.oldqTop {
-    min-height    : 36px;
-    margin-bottom : 10px;
-}
-.oldqTopLeft {
-    padding : 0px 5px;
-    float   : left;
-}
-.oldqTopMid,
-.selectedBot {
-    width      : 90%;
-    text-align : left;
-}
-.oldqTopRight {
-    position : absolute;
-    right    : 3%;
-    padding: 2px 8px;
-    top      : 5px;
-    float    : right;
-    background: ghostwhite;
-    box-shadow  : 0 0 3px darkgrey inset;
-    font-size: .9em;
-}
 .lowGradeSpan {
     font-weight : bold;
     color       : red;
@@ -394,69 +357,6 @@ section li {
 .highGradeSpan {
     font-weight : bold;
     color       : green;
-}
-.oldqBot {
-    width : 100%;
-}
-.oldqAns,
-.aAns {
-    width       : 100%;
-    box-shadow  : 0 0 3px darkgrey inset;
-    text-align  : left;
-    overflow    : hidden;
-    font-family : monospace;
-}
-.oldqAns {
-    background-color : white;
-    min-height       : 150px;
-}
-.aAns {
-    background-color : ghostwhite;
-}
-.remark,
-.oldqFeed {
-    position      : relative;
-    width         : 80%;
-    min-height    : 30px;
-    top           : 50%;
-    margin        : 2px auto;
-    padding       : 5px;
-    text-align    : center;
-    border-radius : 5px;
-    background    : #0000FF22;
-    box-shadow    : 0px 1px 2px #000088,
-                    0px 1px 3px darkgrey;
-}
-.remark {
-    background-color : #FFFF0077;
-    box-shadow       : 0px 1px 2px #888800,
-                       0px 1px 3px darkgrey;
-}
-.oldqFeed-good {
-    background-color : #00FF0077;
-    box-shadow       : 0px 1px 2px #008800,
-                       0px 1px 3px darkgrey;
-}
-.oldqFeed-bad {
-    background-color : #FF000077;
-    box-shadow       : 0px 1px 2px #880000,
-                       0px 1px 3px darkgrey;
-}
-.oldqBtn {
-    position         : absolute;
-    right            : 18px;
-    bottom           : 15px;
-    background-color : ghostwhite;
-    border-radius    : 50px;
-    box-shadow       : 0px 1px 3px darkgrey;
-    border           : 1px outset silver;
-    color            : #A00;
-}
-.oldqBtn:hover {
-    background-color : white;
-    border-radius    : 50px;
-    box-shadow       : 0px 1px 2px #880000, 0px 1px 3px darkgrey;
-    color            : #F00;
 }
 *::-webkit-scrollbar {
     width      : 5px;
@@ -485,6 +385,15 @@ input[type=text] {
     font-family : "ubuntu mono", monospace;
 }
 
+.hint {
+    margin        : 5px 0;
+    padding       : 3px 5px;
+    font-size     : .9em;
+    background    : snow;
+    border-radius : 3px;
+    box-shadow    : 0px 1px 2px #880, 0px 1px 5px darkgrey;
+}
+
 .qItem   {
     margin : 15px 0;
     position : relative;
@@ -500,20 +409,20 @@ input[type=text] {
 }
 .qInfo,
 .qCons { 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: ghostwhite;
-    box-shadow  : 0 0 3px darkgrey inset,
-                  0 0 3px #badcee  inset;
-    padding: 0 3px;
-    height: 25px;
-    line-height: 25px;
-    font-size: .85em;
+    display         : flex;
+    align-items     : center;
+    justify-content : space-between;
+    background      : ghostwhite;
+    padding         : 0 3px;
+    height          : 25px;
+    line-height     : 25px;
+    font-size       : .85em;
+    box-shadow      : 0 0 3px darkgrey inset,
+                      0 0 3px #badcee  inset;
 }
 .qCons   { 
-    padding: 0 8px;
-    justify-content: flex-start;
+    padding         : 0 8px;
+    justify-content : flex-start;
 }
 .qDiff,
 .qTopic,
@@ -521,109 +430,138 @@ input[type=text] {
 .qFor,
 .qWhile,
 .qPrint {
-    margin: 0px 5px;
+    margin : 0px 5px;
 }
 .qPts    { 
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    align-self: flex-end;
-    flex-grow: 2;
+    display         : flex;
+    align-items     : center;
+    justify-content : flex-end;
+    align-self      : flex-end;
+    flex-grow       : 2;
 }
 .qGrade,
 .qMax, 
 .qInput {
-    margin: 0 2px;
+    margin : 0 2px;
 }
 .qInput  { 
-    width: 30px;
-    height: 18px;
+    width  : 30px;
+    height : 18px;
 }
 .qFor,    
 .qWhile, 
 .qPrint {
     border-radius : 3px;
-    padding: 0px 5px;
+    padding       : 0px 5px;
     height        : 15px;
     line-height   : 15px;
     box-shadow    : 0px 1px 2px #880000, 0px 1px 2px darkgrey;
 
 }
-.qDesc   {
-    padding: 10px 5px;
+.qDesc {
+    padding : 10px 5px;
 }
-.qNum    { 
-    float: left;
-    padding: 0px 5px;
+.qNum { 
+    float   : left;
+    padding : 0px 5px;
 }
-.qBtn    { 
-    position: absolute;
-    bottom: 0px;
-    right: 0px;
-    color: red;
+.qBtn {
+    position : absolute;
+    bottom   : 0px;
+    right    : 0px;
+}
+/* .qBtn:hover { */
+/*     background-color : white; */
+/*     box-shadow       : 0px 1px 3px darkgrey; */
+/* } */
+.qBtn-add { 
+    color    : #0A0;
+}
+.qBtn-add:hover {
+    background-color : white;
+    box-shadow       : 0px 1px 2px #0A0, 0px 1px 3px darkgrey;
+    color            : #0D0;
+}
+.qBtn-remove { 
+    color    : #A00;
+}
+.qBtn-remove:hover {
+    background-color : white;
+    box-shadow       : 0px 1px 2px #800, 0px 1px 3px darkgrey;
+    color            : #F00;
 }
 .qAns    { 
-    width: 100%;
-    padding: 10px 5px;
-    min-height: 150px;
+    width       : 100%;
+    padding     : 10px 5px;
+    min-height  : 150px;
     box-shadow  : 0 0 3px darkgrey inset;
     text-align  : left;
     overflow    : hidden;
     font-family : monospace;
-    border: none;
+    border      : none;
 }
 .qList   { }
 .qLine   { 
-    min-height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+    min-height      : 40px;
+    display         : flex;
+    align-items     : center;
+    justify-content : flex-end;
 }
 .qFeed,
 .qRemark { 
-    width         : 80%;
-    min-height    : 40px;
-    padding       : 5px 10px;
-    border-radius : 5px;
-    background    : #0000FF22;
-    box-shadow    : 0px 1px 2px #000088,
-                    0px 1px 3px darkgrey;
-    width: 85%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    width           : 80%;
+    min-height      : 40px;
+    padding         : 5px 10px;
+    border-radius   : 5px;
+    background      : #0000FF0A;
+    width           : 85%;
+    display         : flex;
+    align-items     : center;
+    justify-content : space-between;
+    box-shadow      : 0px 1px 2px #800,
+                      0px 1px 3px darkgrey;
 }
 .qRemark { 
     background-color : #FFFF0077;
-    box-shadow       : 0px 1px 2px #888800,
+    box-shadow       : 0px 1px 2px #800,
                        0px 1px 3px darkgrey;
 }
+.qTextBox {
+    width : 100%;
+    min-height : 100px;
+}
 .qFeed-bad {
-    background: #FF000088;
+    background : #FF000088;
 }
 .qFeed-good {
-    background: #00FF0088;
+    background : #00FF0088;
 }
-.qRight {
-    display: flex;
-    width: 90%;
-    justify-content: flex-start;
+.qRight,
+.qRightAlt {
+    display         : flex;
+    width           : 90%;
+    justify-content : flex-start;
+}
+.qRightAlt {
+    background    : #BADCEE;
+    border-radius : 5px;
+    box-shadow    : 0px 1px 2px #880000, 0px 1px 5px darkgrey;
 }
 .qSub,
 .qAlt { 
     width      : 30px;
     height     : 18px;
     box-shadow : 0 0 3px darkgrey inset;
-    text-align: right;
-    padding: 0px 3px;
+    text-align : right;
+    padding    : 0px 3px;
 }
 .qSub {
-    min-width: 30px;
+    min-width  : 30px;
     background : ghostwhite;
-    align-self: flex-start;
+    align-self : flex-start;
 }
 .qAlt    { 
     background : white;
-    margin: 5px 10px;
-    border: none;  
+    margin     : 5px 10px;
+    border     : none;
 }

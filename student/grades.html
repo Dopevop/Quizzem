@@ -33,7 +33,7 @@
     </nav>
 
     <section id="sMainSection" class="box">
-      <ul id="sAttemptDisp">
+      <ul id="sAttemptList">
       </ul>
     </section>
     
@@ -46,8 +46,6 @@
   <script>
     var sLocalA  = [a0, a1, a2]; // Always holds all known attempts
     var sSelectedA = [];                       // Should only ever have at most one attempt 
-    console.log(sLocalA);
-    console.log(sSelectedA); 
     updateDisplays(["sMainSection"]);
     fetch('getA') // As soon as page is accessed, download all attempts
     .catch(() => alertUser("error", "Could not download graded tests!"))
