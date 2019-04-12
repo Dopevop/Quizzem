@@ -233,11 +233,24 @@ function validateForm(type) {
 			alertUser("error", "Adding Answer!");
 			break;
         case "modA":
-            let newRemarks = []; //  [ { id:INT, remark:STR } ]
-            let newFeed    = []; //  [ { id:INT, index:INT, feed:STR } ]
-            let newGrades  = []; //  [ {  } ]
+            let remarkInputs = Array.from(document.getElementsByClassName("qTextBox"));
+            let subInputs    = Array.from(document.getElementsByClassName("qSub"));
+            let altInputs    = Array.from(document.getElementsByClassName("qAlt"));
+            let thisA        = iActiveA[0];
+            let thisT        = thisA.test;
+            let thisRel      = thisA.rel;
+            let theseQ       = thisT.ques;
+            let theseR       = thisA.remarks;
+            let theseF       = thisA.feedback;
+            let theseG       = thisA.grades;
+            let newRelease   = getCheckedValue("modARel");      
+            let newRemarks   = []; 
+            let newFeed      = [];
+            let newGrades    = [];
                 
             // check if comments have changed
+            for(let i=0; i<theseQ.length; i++) {
+            }
             
             // check if points have changed
             // check if release has changed
