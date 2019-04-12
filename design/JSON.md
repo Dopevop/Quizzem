@@ -33,11 +33,52 @@ ATTEMPT = {
     grades   : [INT],
     comment  : STR,
     feedback : [STR],
-    remarks  : [STR]
+    remarks  : [STR],
+    rel      : INT
 }
 ```
 
+## REMARK:
+```javascript
+REMARK = {
+    tId  : INT
+    qId  : INT
+    newR : STR
+}
+```
+
+## FEED:
+```javascript
+FEED = {
+    tId  : INT
+    qId  : INT
+    newF : STR
+}
+```
+
+## GRADE:
+```javascript
+GRADE = {
+    tId  : INT
+    qId  : INT
+    newG : INT
+}
+```
+
+
 ---------------------
+## modA
+```javascript
+request = {
+    type     : "modA",
+    release  : INT,
+    remarks  : [{REMARK}],
+    feedback : [{FEED}],
+    grades   : [{GRADE}]
+}
+```
+
+
 ## addQ
 ```javascript
 request = {
