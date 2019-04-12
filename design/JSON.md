@@ -6,6 +6,7 @@ QUESTION = {
     id    : INT,
     desc  : STR,
     topic : STR,
+    cons  : [STR],
     diff  : INT,
     tests : [STR]
 }
@@ -23,21 +24,66 @@ TEST = {
 }
 ```
 
-
 ## ATTEMPT:
 ```javascript
 ATTEMPT = { 
-    id       : INT,
     test     : {TEST},
     answers  : [STR],
     grades   : [INT],
     comment  : STR,
     feedback : [STR],
-    remarks  : [STR]
+    remarks  : [STR],
+    rel      : INT
+}
+```
+
+## REMARK:
+```javascript
+REMARK = {
+    tId  : INT
+    qId  : INT
+    newR : STR
+}
+```
+
+## FEED:
+```javascript
+FEED = {
+    tId  : INT
+    qId  : INT
+    newF : STR
+}
+```
+
+## GRADE:
+```javascript
+GRADE = {
+    tId  : INT
+    qId  : INT
+    newG : INT
 }
 ```
 
 ---------------------
+## modA
+```javascript
+request = {
+    type     : "modA",
+    release  : INT,
+    remarks  : [{REMARK}],
+    feedback : [{FEED}],
+    grades   : [{GRADE}]
+}
+```
+```javascript
+reply = {
+    type     : "modA",
+    error    : INT,
+    attempt  : {ATTEMPT}
+}
+```
+
+
 ## addQ
 ```javascript
 request = {
