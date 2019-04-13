@@ -500,6 +500,7 @@ input[type=text] {
     font-family : monospace;
     border      : none;
     background  : white;
+    white-space : pre-wrap;
 }
 .qList   { }
 .qLine   { 
