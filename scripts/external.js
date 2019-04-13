@@ -86,8 +86,15 @@ function handleReply(replyText, source) {
             break;
         case 'getA':
             let DBA = replyObj.attempts;
-            sLocalA = DBA;
-            updateDisplays(["sMainSection"]);
+            if(typeof sLocalA !== 'undefined') {
+                sLocalA = DBA;
+                updateDisplays(["sMainSection"]);
+            }
+            else {
+                iLocalA = DBA;
+                updateDisplays(["iMainSection"]);
+            }
+            
             break;
 	}
 }
@@ -254,6 +261,9 @@ function localSearch(topic, diffs, keys) {
 function displaySearchResults() {
 	var topic = searchTopic.value.toLowerCase();
 	var diffs = getCheckedValues("searchDiffs").map(d=>Number(d));
+	if(diffs.length === 0)
+		diffs = [1,2,3,4,5];
+
 	var keys  = getNonEmptyInputs("searchKeys").map(k=>k.toLowerCase());
 	var matches  = localSearch(topic, diffs, keys);
 	iMatchedQ.length = 0;
@@ -1307,8 +1317,6 @@ function getCheckedValue(divId) {
 function getCheckedValues(divId) {
 	let elems   = Array.from(document.getElementById(divId).getElementsByTagName("INPUT"));
     let checked = elems.filter(e=>e.checked).map(e=>e.value);
-	if(checked.length === 0)
-		checked = [1,2,3,4,5];
 	return checked;
 }
 
