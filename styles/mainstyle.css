@@ -499,6 +499,7 @@ input[type=text] {
     overflow    : hidden;
     font-family : monospace;
     border      : none;
+    background  : white;
 }
 .qList   { }
 .qLine   { 

@@ -765,7 +765,8 @@ function buildGeneralQuestionItem(newItem, type) {
     let qPrint     = document.createElement("DIV");
     let qDesc      = document.createElement("DIV");
     let qNum       = document.createElement("DIV");
-    let qAns       = document.createElement("TEXTAREA");
+    let qAns       = (type=="iReview"||type=="sReview")? document.createElement("DIV"):
+                                                         document.createElement("TEXTAREA");
     let qList      = document.createElement("DIV");
     let qLine      = document.createElement("DIV");
     let qRight     = document.createElement("DIV");
