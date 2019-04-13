@@ -720,10 +720,12 @@ function addItemToDisplay(newItem, displayId, num) {
 function buildGeneralQuestionItem(newItem, type) {
     let thisId;
     let thisBtnClass;
+    let thisDivClass = "qDiv";
     if(type=="matched") {
         thisId = "m"+newItem.id;
         thisBtn = document.createTextNode("+");
         thisBtnClass = "qBtn qBtn-add";
+        thisDivClass = "qDiv qDiv-match";
     } else if(type=="selected") {
         thisId = "s"+newItem.id;
         thisBtn = document.createTextNode("X");
@@ -780,7 +782,7 @@ function buildGeneralQuestionItem(newItem, type) {
        qDiv.appendChild(qDesc);
        qDiv.appendChild(qBtn);
        qDiv.appendChild(qAns);
-       qDiv.setAttribute("class", "qDiv");
+       qDiv.setAttribute("class", thisDivClass);
       qInfo.appendChild(qDiff);
       qInfo.appendChild(qTopic);
       qInfo.appendChild(qPts);

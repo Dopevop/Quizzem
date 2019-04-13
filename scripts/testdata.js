@@ -155,7 +155,7 @@ var a2 = {
     'comment'  : "I wasn't prepared for this test, go easy on me",
     'feedback' : [
         ["b1pNo colon after first line", "n2pCorrect function name",
-         "b6pDidn't pass testcase #1", "n6pDidn't pass testcase #2"],
+         "b6pDidn't pass testcase #1", "g6pPassed testcase #2"],
         [],
         ["g15pTest case 1 passed", "b15pTest case 2 failed"]
     ],

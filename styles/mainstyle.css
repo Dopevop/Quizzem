@@ -104,7 +104,7 @@ body>header nav a:hover {
     padding          : 0 5px;
     height           : 20px;
     line-height      : 20px;
-    font-size        : .8em;
+    font-size        : .6em;
     color            : black;
     background-color : whitesmoke;
     box-shadow       : 0px 1px 3px darkgrey;
@@ -137,6 +137,7 @@ body>main nav li {
     border-radius    : 8px;
     box-shadow       : 0px 1px 3px darkgrey;
     background-color : whitesmoke;
+    font-size        : .9em;
 }
 body>main nav li:hover {
     box-shadow       : 0px 1px 3px darkgrey;
@@ -406,6 +407,9 @@ input[type=text] {
     background    : whitesmoke;
     border-radius : 5px;
     box-shadow    : 0px 1px 2px #880000, 0px 1px 5px darkgrey;
+}
+.qDiv-match:hover {
+    background : snow;
 }
 .qInfo,
 .qCons { 
