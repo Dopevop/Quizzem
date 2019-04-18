@@ -177,8 +177,6 @@ function extractModifications() {
     let feedSeen = 0;
     console.log(thisA);
     for(let i=0; i<theseQ.length; i++) {
-        console.log("thisQ:", theseQ[i]);
-        console.log("thisR:", remarkInputs[i]);
         let changedFeed = false;
         let thisQID = theseQ[i].id;
         let newR = {
@@ -190,17 +188,14 @@ function extractModifications() {
         let curGrade = thisA.grades[i];
         for(let j=0; j<thisA.feedback[i].length; j++) {
             if(isHidden(altInputs[feedSeen])) {
-                console.log("skipping this one, it is neutral");
                 feedSeen += 1;
                 continue;
             }
             else if(altInputs[feedSeen].value === "") {
-                console.log("skipping this one, modification not made");
                 feedSeen += 1;
                 continue;
             }
             else {
-                console.log("processing this to make newF and newG");
                 changedFeed = true;
                 let type = (feedElems[feedSeen].classList.contains("qFeed-bad"))? "b" : "g";
                 let msg  = feedElems[feedSeen].childNodes[0].nodeValue;
@@ -210,11 +205,11 @@ function extractModifications() {
                 curGrade = (type==="b")? curGrade + (oldSub - newSub):
                                          curGrade - (oldSub - newSub);
                 let newF = {
-                    "tId"  : thisTID,
-                    "qId"  : thisQID,
-                    "newF" : newFeed,
+                    "tId"   : thisTID,
+                    "qId"   : thisQID,
+                    "newF"  : newFeed,
+                    "index" : j,
                 };
-                console.log("newF", newF);
                 newFeedback.push(newF);
                 feedSeen += 1;
             }
@@ -226,13 +221,8 @@ function extractModifications() {
                 "newG" : curGrade,
             }
             newGrades.push(newG);
-            console.log("newG", newG);
         }
     }
-    console.log("newRelease", newRelease);
-    console.log("newRemarks", newRemarks);
-    console.log("newFeedback", newFeedback);
-    console.log("newGrades", newGrades);
     return {
         "type" : "modA",
         "rel"  : newRelease,
