@@ -67,7 +67,6 @@ function handleReply(replyText, source) {
 		case 'addT':
 			var newTest = replyObj.test;
 			iLocalT.push(newTest);
-            console.log("iLocalT:", iLocalT);
 			break;
 		case 'getT':
             var localT = (source == "student")? sLocalT : iLocalT;
@@ -175,7 +174,6 @@ function extractModifications() {
     let newFeedback  = [];
     let newGrades    = [];
     let feedSeen = 0;
-    console.log(thisA);
     for(let i=0; i<theseQ.length; i++) {
         let changedFeed = false;
         let thisQID = theseQ[i].id;
@@ -329,14 +327,10 @@ function validateForm(type) {
             if(changedF) {
                 // Make sure any new alt values are integers
                 let nonEmptyF = altInputs.filter(f=>f.value!=="");
-                console.log("nonEmptyF", nonEmptyF);
                 let nonEmptyV = nonEmptyF.map(f=>f.value);
-                console.log("nonEmptyV", nonEmptyV);
                 let areVNums  = nonEmptyV.map(v=>Number.isInteger(Number(v)));
-                console.log("areVNums",areVNums);
                 let allInts   = areVNums.reduce((a,b)=>a&&b);
                 if(allInts) {
-                    console.log("All feed inputs are Integers, returning true");
                     return true;
                 } else {
                     alertUser("error", "All new feedback points must be integers!");
@@ -345,7 +339,6 @@ function validateForm(type) {
             }
             let changedRel = (getCheckedValue("modARel") === "1")? true : false;
             if(changedR || changedF || changedRel) {
-                console.log("Changes found, returning true");
                 return true;
             } else {
                 alertUser("error", "No changes to submit!");
@@ -368,7 +361,6 @@ function toggleSelected(listItemId) {
 	var id = listItemId.substring(1);
 	if(listItemId[0] == "t") { // add test with id to sSelectedT 
         sSelectedT.push(sLocalT.filter(t => t.id == id)[0]);
-        console.log(sSelectedT);
 		updateDisplays(["sMainSection", "sMainAside", "sHeadSection"]);
 	}
 	else if ( listItemId[0] == "m") { // add Q to iSelectedQ, remove from iMatchedQ
@@ -517,24 +509,20 @@ function getRelArr(displayId) {
         case "iMatchedList":
             // relArr = iMatchedQ;
             relArr = buildQuestionList(iMatchedQ, "matched");
-            console.log(relArr);
             break;
         case "iSelectedList":
             // relArr = iSelectedQ;
             relArr = buildQuestionList(iSelectedQ, "selected");
-            console.log(relArr);
             break;
         case "sTestList":
             // relArr = (sSelectedT.length === 1)? sSelectedT[0].ques :
             //          sLocalT.filter(t=>Number(t.rel)===1&&Number(t.sub)===0);
             relArr = (sSelectedT.length === 1)? buildQuestionList(sSelectedT[0].ques, "active") :
                      sLocalT.filter(t=>Number(t.rel)===1&&Number(t.sub)===0);
-            console.log(relArr);
             break;
         case "sAttemptList":
             relArr = (sSelectedA.length === 1)? buildQuestionList(sSelectedA[0], "review") :
                                                 sLocalA;
-            console.log(relArr);
             break;
         case "iAttemptList":
             relArr = (iSelectedA.length === 1)? buildQuestionList(iSelectedA[0], "review") :
@@ -1340,7 +1328,6 @@ function uniqItem(item, itemArr){
 /* Checks if the given diff is in the array of diffs
  * Loose comparison so e.g. 1 will match "1" */
 function inArr(key, arr){
-	//console.log("inArr");
 	for(var i=0; i<arr.length; i++)
 		if(arr[i] == key) 
 			return true;
@@ -1359,7 +1346,6 @@ function convertDiffFormat(diff) {
 
 /* Checks value of addRange and updates display */
 function updateDiff() {
-	//console.log("updateDiff");
 	addSpan.innerHTML = convertDiffFormat(addRange.value);
 }
 
@@ -1373,12 +1359,10 @@ function showElement(elemId) {
 
 /* Checks that the given element has a non-empty value */
 function nonEmpty(elemId) {
-	//console.log("nonEmpty");
 	return ( document.getElementById(elemId).value !== "" );
 }
 
 /* Empties an array by setting its length to 0 */
 function clearArray(arr) {
-	//console.log("clearArray");
 	arr.length = 0;
 }
