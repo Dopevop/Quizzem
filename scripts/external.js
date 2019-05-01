@@ -910,13 +910,10 @@ function buildGeneralQuestionItem(newItem, type) {
 }
 
 function updatePoints() {
-    if(validatePts(false)) {
-        let inputs = Array.from(document.getElementsByClassName("qInput"));
-        let pts = inputs.map(i => Number(i.value)).reduce((a,b) => a+b, 0 );
-        testPoints.innerHTML = pts;
-    } else {
-        testPoints.innerHTML = "N/A";
-    }
+    let inputs = Array.from(document.getElementsByClassName("qInput"));
+    let pts    = inputs.map(i=>Number(i.value)).filter(v=>Number.isFinite(v)).reduce((a,b)=>a+b,0);
+    testPoints.innerHTML = pts;
+    console.log("points updated");
 }
 
 function buildAttemptItem(newItem, num) {
