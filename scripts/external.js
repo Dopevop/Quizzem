@@ -289,7 +289,7 @@ function validateForm(type) {
 			break;
 		case "addT":
 			if(nonEmpty("testDesc")) {
-                if(validatePts()) {
+                if(validatePts(true)) {
                     fetch( type )
                     .then( (x) => {
                         console.log("Rcvd:", x);
@@ -392,17 +392,20 @@ function toggleSelected(listItemId) {
 	}
 }
 
-function validatePts() {
+/* Takes a boolean, alerts. If true, alertUser() will be called */
+function validatePts(alerts) {
     let pts = Array.from(document.getElementsByClassName("qInput"));
     const emptyPt = p => p.value === ""; 
     const nanPt   = p => isNaN(p.value);
     const anyTrue = (a,b) => a||b;
     if( pts.map(emptyPt).reduce(anyTrue) ) {
-        alertUser("error", "All points must be filled out!");
+        if(alerts)
+            alertUser("error", "All points must be filled out!");
         return false;
     } 
     else if( pts.map(nanPt).reduce(anyTrue) ) {
-        alertUser("error", "All points must be integers!");
+        if(alerts)
+            alertUser("error", "All points must be integers!");
         return false;
     }
     return true;
@@ -897,10 +900,23 @@ function buildGeneralQuestionItem(newItem, type) {
     }
     // Set event listeners
     if(type === "matched") qItem.addEventListener("click",  () => toggleSelected(thisId));
-    if(type === "selected") qBtn.addEventListener("click",  () => toggleSelected(thisId));
     if(type === "active")   qAns.addEventListener("keydown", e => insertTab(e));
+    if(type === "selected") {
+        qInput.addEventListener("keyup", () => updatePoints());
+        qBtn.addEventListener("click",   () => toggleSelected(thisId)); 
+    }
 
     return qItem;
+}
+
+function updatePoints() {
+    if(validatePts(false)) {
+        let inputs = Array.from(document.getElementsByClassName("qInput"));
+        let pts = inputs.map(i => Number(i.value)).reduce((a,b) => a+b, 0 );
+        testPoints.innerHTML = pts;
+    } else {
+        testPoints.innerHTML = "N/A";
+    }
 }
 
 function buildAttemptItem(newItem, num) {
