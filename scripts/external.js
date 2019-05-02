@@ -842,6 +842,7 @@ function buildGeneralQuestionItem(newItem, type) {
             qRight.appendChild(qAlt);
             if(type=="iReview" && thisType !== "n") {
                 qRight.setAttribute("class", "qRightAlt");
+                qAlt.addEventListener("keyup", () => updateSum());
             } else {
                 qRight.setAttribute("class", "qRight");
             }
@@ -937,6 +938,10 @@ function buildGeneralQuestionItem(newItem, type) {
     }
 
     return qItem;
+}
+
+function updateSum() {
+    console.log("Sum updated");
 }
 
 function updatePoints() {
