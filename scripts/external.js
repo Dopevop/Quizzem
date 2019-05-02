@@ -203,10 +203,11 @@ function extractModifications() {
                 curGrade = (type==="b")? curGrade + (oldSub - newSub):
                                          curGrade - (oldSub - newSub);
                 let newF = {
-                    "tId"   : thisTID,
-                    "qId"   : thisQID,
-                    "newF"  : newFeed,
-                    "index" : j,
+                    "tId"    : thisTID,
+                    "qId"    : thisQID,
+                    "newF"   : newFeed,
+                    "index"  : j,
+                    "qIndex" : i,
                 };
                 newFeedback.push(newF);
                 feedSeen += 1;
@@ -214,9 +215,10 @@ function extractModifications() {
         }
         if(changedFeed) {
             let newG = {
-                "tId"  : thisTID,
-                "qId"  : thisQID,
-                "newG" : curGrade,
+                "tId"    : thisTID,
+                "qId"    : thisQID,
+                "newG"   : curGrade,
+                "qIndex" : i,
             }
             newGrades.push(newG);
         }
@@ -941,7 +943,23 @@ function buildGeneralQuestionItem(newItem, type) {
 }
 
 function updateSum() {
-    console.log("Sum updated");
+    let sums   = document.getElementsByClassName("qSumGrade");
+    let msgs   = document.getElementsByClassName("qSumMsg");
+    let grades = iSelectedA[0].grades;
+    if(validateForm('modA')) {
+        let obj = extractModifications();
+        for(let i=0; i<obj.grades.length; i++) {
+            let thisQIndex = obj.grades[i].qIndex;
+            let thisNewG   = obj.grades[i].newG;
+            sums[thisQIndex].innerHTML = thisNewG+" /";
+            msgs[thisQIndex].innerHTML = "New Total Points: "
+        }
+    } else { 
+        for(let i=0; i<sums.length; i++) {
+            sums[i].innerHTML = grades[i] + " /";
+            msgs[i].innerHTML = "Total Points: "
+        }
+    }
 }
 
 function updatePoints() {
