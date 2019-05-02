@@ -702,58 +702,62 @@ function buildGeneralQuestionItem(newItem, type) {
     let thisBtnClass;
     let thisDivClass = "qDiv";
     if(type=="matched") {
-        thisId = "m"+newItem.id;
-        thisBtn = document.createTextNode("+");
+        thisId       = "m"+newItem.id;
+        thisBtn      = document.createTextNode("+");
         thisBtnClass = "qBtn qBtn-add";
         thisDivClass = "qDiv qDiv-match";
     } else if(type=="selected") {
-        thisId = "s"+newItem.id;
-        thisBtn = document.createTextNode("X");
+        thisId       = "s"+newItem.id;
+        thisBtn      = document.createTextNode("X");
         thisBtnClass = "qBtn qBtn-remove";
     } else {
-        thisId = "?"+newItem.id;
-        thisBtn = document.createTextNode("?");
+        thisId       = "?"+newItem.id;
+        thisBtn      = document.createTextNode("?");
         thisBtnClass = "qBtn";
     }
     let thisRemark = (type === "iReview")? document.createElement("TEXTAREA") :
                                            document.createTextNode(newItem.remark);
-    let thisDiff   = document.createTextNode(convertDiffFormat(newItem.diff));
-    let thisTopic  = document.createTextNode(newItem.topic);
-    let thisGrade  = document.createTextNode(newItem.grade+" /");
-    let thisMax    = document.createTextNode(newItem.max);
-    let thisPtsStr = document.createTextNode("Pts");
-    let thisFor    = document.createTextNode("For Loop");
-    let thisWhile  = document.createTextNode("While Loop");
-    let thisPrint  = document.createTextNode("Print Statement");
-    let thisDesc   = document.createTextNode(newItem.desc);
-    let thisNum    = document.createTextNode(newItem.num+".)");
-    let thisAns    = document.createTextNode(newItem.answer);
-    let thisConStr = document.createTextNode("Must use: ");
-    let thisCons   = newItem.cons;
-    let thisFeed   = newItem.feedback;
-    let qItem      = document.createElement("DIV");
-    let qDiv       = document.createElement("DIV");
-    let qInfo      = document.createElement("DIV");
-    let qDiff      = document.createElement("DIV");
-    let qTopic     = document.createElement("DIV");
-    let qPts       = document.createElement("DIV");
-    let qGrade     = document.createElement("SPAN");
-    let qMax       = document.createElement("SPAN");
-    let qPtsStr    = document.createElement("SPAN");
-    let qInput     = document.createElement("INPUT");
-    let qCons      = document.createElement("DIV");
-    let qFor       = document.createElement("DIV");
-    let qWhile     = document.createElement("DIV");
-    let qPrint     = document.createElement("DIV");
-    let qDesc      = document.createElement("DIV");
-    let qNum       = document.createElement("DIV");
-    let qAns       = (type=="iReview"||type=="sReview")? document.createElement("DIV"):
+    let thisDiff     = document.createTextNode(convertDiffFormat(newItem.diff));
+    let thisTopic    = document.createTextNode(newItem.topic);
+    let thisGrade    = document.createTextNode(newItem.grade+" /");
+    let thisMax      = document.createTextNode(newItem.max);
+    let thisPtsStr   = document.createTextNode("Pts");
+    let thisFor      = document.createTextNode("For Loop");
+    let thisWhile    = document.createTextNode("While Loop");
+    let thisPrint    = document.createTextNode("Print Statement");
+    let thisDesc     = document.createTextNode(newItem.desc);
+    let thisNum      = document.createTextNode(newItem.num+".)");
+    let thisAns      = document.createTextNode(newItem.answer);
+    let thisConStr   = document.createTextNode("Must use: ");
+    let thisCons     = newItem.cons;
+    let thisFeed     = newItem.feedback;
+    let thisSumMsg   = document.createTextNode("Total Points: ");
+    let thisSumGrade = document.createTextNode(newItem.grade+" /");
+    let thisSumMax   = document.createTextNode(newItem.max);
+    let thisSumPts   = document.createTextNode("Pts");
+    let qItem        = document.createElement("DIV");
+    let qDiv         = document.createElement("DIV");
+    let qInfo        = document.createElement("DIV");
+    let qDiff        = document.createElement("DIV");
+    let qTopic       = document.createElement("DIV");
+    let qPts         = document.createElement("DIV");
+    let qGrade       = document.createElement("SPAN");
+    let qMax         = document.createElement("SPAN");
+    let qPtsStr      = document.createElement("SPAN");
+    let qInput       = document.createElement("INPUT");
+    let qCons        = document.createElement("DIV");
+    let qFor         = document.createElement("DIV");
+    let qWhile       = document.createElement("DIV");
+    let qPrint       = document.createElement("DIV");
+    let qDesc        = document.createElement("DIV");
+    let qNum         = document.createElement("DIV");
+    let qAns         = (type=="iReview"||type=="sReview")? document.createElement("DIV"):
                                                          document.createElement("TEXTAREA");
-    let qList      = document.createElement("DIV");
-    let qLine      = document.createElement("DIV");
-    let qRight     = document.createElement("DIV");
-    let qRemark    = document.createElement("DIV");
-    let qBtn       = document.createElement("BUTTON");
+    let qList        = document.createElement("DIV");
+    let qLine        = document.createElement("DIV");
+    let qRight       = document.createElement("DIV");
+    let qRemark      = document.createElement("DIV");
+    let qBtn         = document.createElement("BUTTON");
       qItem.appendChild(qDiv);
       qItem.appendChild(qList);
       qItem.setAttribute("class", "qItem");
@@ -854,7 +858,33 @@ function buildGeneralQuestionItem(newItem, type) {
             if(type === "sReview") qAlt.style.display = "none"; // Type of question
             if(thisType === "n")   qSub.style.display = "none"; // Type of feedback
         }
+        // Add Summary line
+        let qLine     = document.createElement("DIV");
+        let qRight    = document.createElement("DIV");
+        let qSum      = document.createElement("DIV");
+        let qSumMsg   = document.createElement("DIV");
+        let qSumPts   = document.createElement("DIV");
+        let qSumGrade = document.createElement("SPAN");
+        let qSumMax   = document.createElement("SPAN");
+        qLine.appendChild(qRight);
+        qLine.setAttribute("class", "qLine");
+        qRight.appendChild(qSum);
+        qRight.setAttribute("class", "qRight");
+        qSum.appendChild(qSumMsg);
+        qSum.appendChild(qSumPts);
+        qSum.setAttribute("class", "qSum");
+        qSumMsg.appendChild(thisSumMsg);
+        qSumMsg.setAttribute("class", "qSumMsg");
+        qSumPts.appendChild(qSumGrade);
+        qSumPts.appendChild(qSumMax);
+        qSumPts.setAttribute("class", "qSumPts");
+        qSumGrade.appendChild(thisSumGrade);
+        qSumGrade.setAttribute("class", "qSumGrade");
+        qSumMax.appendChild(thisSumMax);
+        qSumMax.setAttribute("class", "qSumMax");
+        qList.appendChild(qLine);
     }
+    
     // Hide things that are not visible for given type
     switch(type) {
         case "matched":
@@ -928,22 +958,22 @@ function buildAttemptItem(newItem, num) {
                          (thisGrade <= (3*thisPts/4)) ? "midGradeSpan" : "highGradeSpan";
                      
 
-    var item      = document.createElement("LI");  // Build the elements
-    var aDiv      = document.createElement("DIV");
-    var qDiv      = document.createElement("DIV"); // that will go into
-    var qTop      = document.createElement("DIV"); // this question
-    var qTopLeft  = document.createElement("DIV");
-    var qTopMid   = document.createElement("DIV");
-    var qTopRight = document.createElement("DIV");
-    var qBot      = document.createElement("DIV");
-    var aAns      = document.createElement("DIV");
-    var aUnder    = document.createElement("DIV");
-    var aRemark   = document.createElement("DIV");
-    var qNum      = document.createTextNode(thisNum + ".)");
-    var qDesc     = document.createTextNode(thisDesc);
-    var qPtsSpan  = document.createElement("SPAN");
-    var qGrdSpan  = document.createElement("SPAN");
-    var qPoints   = document.createTextNode(" / " + thisPts + " Pts");
+    var item       = document.createElement("LI");  // Build the elements
+    var aDiv       = document.createElement("DIV");
+    var qDiv       = document.createElement("DIV"); // that will go into
+    var qTop       = document.createElement("DIV"); // this question
+    var qTopLeft   = document.createElement("DIV");
+    var qTopMid    = document.createElement("DIV");
+    var qTopRight  = document.createElement("DIV");
+    var qBot       = document.createElement("DIV");
+    var aAns       = document.createElement("DIV");
+    var aUnder     = document.createElement("DIV");
+    var aRemark    = document.createElement("DIV");
+    var qNum       = document.createTextNode(thisNum + ".)");
+    var qDesc      = document.createTextNode(thisDesc);
+    var qPtsSpan   = document.createElement("SPAN");
+    var qGradeSpan = document.createElement("SPAN");
+    var qPoints    = document.createTextNode(" / " + thisPts + " Pts");
 
          qDiv.setAttribute("class", "qDiv"); // Set attributes of
          qDiv.appendChild(qTop);             // and append children to
@@ -956,11 +986,11 @@ function buildAttemptItem(newItem, num) {
      qTopLeft.appendChild(qNum);
       qTopMid.setAttribute("class", "qTopMid");
       qTopMid.appendChild(qDesc);
-    qPtsSpan.appendChild(qGrdSpan);
+    qPtsSpan.appendChild(qGradeSpan);
     qPtsSpan.appendChild(qPoints);
     qPtsSpan.setAttribute("class", "ptsSpan");
-    qGrdSpan.setAttribute("class", gradeSpanClass);
-    qGrdSpan.appendChild(document.createTextNode(thisGrade));
+    qGradeSpan.setAttribute("class", gradeSpanClass);
+    qGradeSpan.appendChild(document.createTextNode(thisGrade));
     qTopRight.setAttribute("class", "qTopRight");
     qTopRight.appendChild(qPtsSpan);
          qBot.setAttribute("class", "qBot");

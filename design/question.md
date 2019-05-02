@@ -1,23 +1,23 @@
 # Element hierarchy for a question
-qItem─┬→ qDiv─┬→ qInfo─┬→ qDiff→ thisDiff
-      │       │        ├→ qTopic→ thisTopic
-      │       │        └→ qPts─┬→ qGrade→ thisGrade+" / "
-      │       │                ├→ qMax→ thisMax
-      │       │                ├→ qInput
-      │       │                └→ "Pts"
-      │       ├→ qCons─┬→ qFor→ "For Loop"
-      │       │        ├→ qWhile→ "While Loop"
-      │       │        └→ qPrint→ "Print Statement"
-      │       ├→ qDesc→ qNum→ thisNum+".)"
-      │       ├→ qBtn→ thisBtn
-      │       └→ qAns→ thisAns
-      └→ qList─┬→ qLine──→ qRemark→ thisRemark
-               ├→ qLine─┬→ qFeed─┬→ thisMsg
-               │        │        └→ qSub→ thisSub
-               │        └→ qAlt
-               └→ qLine──→ qSum─┬→ qSumMsg→ thisSumMsg
-                                └→ qSumPts─┬→ qSumGrade→ thisSumGrade
-                                           └→ qSumMax→ thisSumMax
+qItem─┬→ qDiv─┬→ qInfo┬→ qDiff──→ thisDiff
+      │       │       ├→ qTopic─→ thisTopic
+      │       │       └→ qPts─┬─→ qGrade→ thisGrade+" / "
+      │       │               ├─→ qMax→ thisMax
+      │       │               ├─→ qInput
+      │       │               └─→ "Pts"
+      │       ├→ qCons┬→ qFor───→ "For Loop"
+      │       │       ├→ qWhile─→ "While Loop"
+      │       │       └→ qPrint─→ "Print Statement"
+      │       ├→ qDesc─→ qNum───→ thisNum+".)"
+      │       ├→ qBtn──→ thisBtn
+      │       └→ qAns──→ thisAns
+      └→ qList┬→ qLine─→ qRemark→ thisRemark
+              ├→ qLine┬→ qFeed─┬→ thisMsg
+              │       │        └→ qSub────→ thisSub
+              │       └→ qAlt
+              └→ qLine─→ qSum─┬→ qSumMsg──→ thisSumMsg
+                              └→ qSumPts─┬→ qSumGrade→ thisGrade
+                                         └→ qSumMax→ thisMax
 
 ## Types of Questions and what shows for each
 |           | Matched | Selected | Active | sReview | iReview |
