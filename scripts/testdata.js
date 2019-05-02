@@ -68,7 +68,7 @@ var t1 = {
 	'rel'   : 1,
 	'sub'   : 0,
 	'ques'  : [q0, q1],
-    'pts': ["15", "30"]
+    'pts': ["120", "30"]
 };
 var t2 = {
 	'id'    : 1002,
@@ -136,13 +136,25 @@ var a1 = {
     'test'     : t1,
     'answers'  : ["Here's my answer for q0, it's not a very good one. Lets make it a bit longer with some more giberish writing about nothing. Alright that should be good.",
                   "def greet(greeting, name): print( greeting + \", \" + name )"],
-    'grades'   : [0, 18],
+    'grades'   : [21, 18],
     'comment'  : "I wasn't prepared for this test, go easy on me",
     'feedback' : [
-        ["b1pNo colon after first line", "b2pIncorrect function name",
-         "b6pDidn't pass inRange(4,1,7)=True", "b6pDidn't pass inRange(4,6,7)=false, Instead we got true, or perhaps something other than a boolean, IDK I'm not the grader!"],
-        ["g3pCorrect Name", "g3pColon at end of first line is right there where it should be which is greate so no points deducted from you for this one!", 
-         "g12pTest #1 passed!", "b12pTest #2 failed!"]
+        [
+            "g12pcolon [:] in user answer", 
+            "b12p expecting function: operation, it was not found!",
+            "b87puser program failed to execute."
+        ],
+        [
+            "b6pconstraint [for] was not found.",
+            "b6pconstraint [print] was not found.",
+            "g6pcolon [:] in user answer",
+            "g6pexpecting function: strMult, function found!",
+            "g24ppython called strMult(\"hello\",1), expected: hello, got user answer [hello]",
+            "g24ppython called strMult(\"up\", 4), expected: upupupup, got user answer [upupupup]",
+            "g24ppython called strMult(\"hey\", 3), expected: heyheyhey, got user answer [heyheyhey]",
+            "g24ppython called strMult(\"aba\", 2), expected: abaaba, got user answer [abaaba]",
+            "n0puser program succesfully executed.",
+        ]
     ],
     'remarks'  : ["This answer was just awful, see me after class.", 
                   "Good work on this one! See me after class ;)"],

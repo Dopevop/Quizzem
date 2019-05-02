@@ -537,10 +537,10 @@ input[type=text] {
     min-height : 100px;
 }
 .qFeed-bad {
-    background : #FF000088;
+    background : #EC7786;
 }
 .qFeed-good {
-    background : #00FF0088;
+    background : #8BFB96;
 }
 .qRight,
 .qRightAlt {
