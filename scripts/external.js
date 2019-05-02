@@ -948,6 +948,11 @@ function updateSum() {
     let sumGrades = document.getElementsByClassName("qSumGrade");
     let msgs      = document.getElementsByClassName("qSumMsg");
     let grades    = iSelectedA[0].grades;
+    for(let i=0; i<sums.length; i++) {
+        sumGrades[i].innerHTML = grades[i] + " /";
+        msgs[i].innerHTML = "Total Points: ";
+        sums[i].style.backgroundColor = "#E7EFFF";
+    }
     if(validateForm('modA')) {
         let obj = extractModifications();
         for(let i=0; i<obj.grades.length; i++) {
@@ -956,12 +961,6 @@ function updateSum() {
             sumGrades[thisQIndex].innerHTML = thisNewG + " /";
             msgs[thisQIndex].innerHTML = "New Total Points: ";
             sums[thisQIndex].style.backgroundColor = "#badcee";
-        }
-    } else { 
-        for(let i=0; i<sums.length; i++) {
-            sumGrades[i].innerHTML = grades[i] + " /";
-            msgs[i].innerHTML = "Total Points: ";
-            sums[i].style.backgroundColor = "#E7EFFF";
         }
     }
 }
