@@ -183,7 +183,7 @@ function extractModifications() {
             "newR" : remarkInputs[i].value,
         }
         if(newR.newR !== "") newRemarks.push(newR);
-        let curGrade = thisA.grades[i];
+        let curGrade = Number(thisA.grades[i]);
         for(let j=0; j<thisA.feedback[i].length; j++) {
             if(isHidden(altInputs[feedSeen])) {
                 feedSeen += 1;
@@ -197,11 +197,12 @@ function extractModifications() {
                 changedFeed = true;
                 let type = (feedElems[feedSeen].classList.contains("qFeed-bad"))? "b" : "g";
                 let msg  = feedElems[feedSeen].childNodes[0].nodeValue;
-                let newSub = altInputs[feedSeen].value;
+                let newSub = Number(altInputs[feedSeen].value);
                 let newFeed = type+newSub+"p"+msg;
                 let oldSub = Number(subInputs[feedSeen].innerHTML);
                 curGrade = (type==="b")? curGrade + (oldSub - newSub):
                                          curGrade - (oldSub - newSub);
+                console.log("curGrade", curGrade);
                 let newF = {
                     "tId"    : thisTID,
                     "qId"    : thisQID,
@@ -951,13 +952,13 @@ function updateSum() {
         for(let i=0; i<obj.grades.length; i++) {
             let thisQIndex = obj.grades[i].qIndex;
             let thisNewG   = obj.grades[i].newG;
-            sums[thisQIndex].innerHTML = thisNewG+" /";
-            msgs[thisQIndex].innerHTML = "New Total Points: "
+            sums[thisQIndex].innerHTML = thisNewG + " /";
+            msgs[thisQIndex].innerHTML = "New Total Points: ";
         }
     } else { 
         for(let i=0; i<sums.length; i++) {
             sums[i].innerHTML = grades[i] + " /";
-            msgs[i].innerHTML = "Total Points: "
+            msgs[i].innerHTML = "Total Points: ";
         }
     }
 }
