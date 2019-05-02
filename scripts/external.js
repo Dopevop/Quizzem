@@ -944,21 +944,24 @@ function buildGeneralQuestionItem(newItem, type) {
 }
 
 function updateSum() {
-    let sums   = document.getElementsByClassName("qSumGrade");
-    let msgs   = document.getElementsByClassName("qSumMsg");
-    let grades = iSelectedA[0].grades;
+    let sums      = document.getElementsByClassName("qSum");
+    let sumGrades = document.getElementsByClassName("qSumGrade");
+    let msgs      = document.getElementsByClassName("qSumMsg");
+    let grades    = iSelectedA[0].grades;
     if(validateForm('modA')) {
         let obj = extractModifications();
         for(let i=0; i<obj.grades.length; i++) {
             let thisQIndex = obj.grades[i].qIndex;
             let thisNewG   = obj.grades[i].newG;
-            sums[thisQIndex].innerHTML = thisNewG + " /";
+            sumGrades[thisQIndex].innerHTML = thisNewG + " /";
             msgs[thisQIndex].innerHTML = "New Total Points: ";
+            sums[thisQIndex].style.backgroundColor = "#badcee";
         }
     } else { 
         for(let i=0; i<sums.length; i++) {
-            sums[i].innerHTML = grades[i] + " /";
+            sumGrades[i].innerHTML = grades[i] + " /";
             msgs[i].innerHTML = "Total Points: ";
+            sums[i].style.backgroundColor = "#E7EFFF";
         }
     }
 }
