@@ -625,17 +625,30 @@ function updateSMainSection() {
 
 function updateIMainAside() {
     if(typeof iLocalQ !== 'undefined') {
+        // iLocalQ exists, user is on instructor/build.html
         if(iSelectedQ.length === 0) hideElement("testForm");
         else                        showElement("testForm");
     }
     else {
-        if(iSelectedA.length === 0) hideElement("modAForm");
-        else                        showElement("modAForm");
+        // iLocalQ doesn't exist, user is on instructor/review.html
+        if(iSelectedA.length === 0) { 
+            hideElement("modAForm"); 
+        }
+        else {
+            updateTestGrade();
+            showElement("modAForm"); 
+        }
     }
+}
+
+function updateTestGrade() {
+    console.log("testGrade updated");
+    testGrade.innerHTML = "50 / 100";
 }
 
 function updateIMainSection() {
     if(typeof iLocalA !== 'undefined') {
+        // iLocalA exists, user is on instructor/review.html
         clearInnerHTML("iAttemptList"); 
         addItemsToDisplay("iAttemptList");
         if(iLocalA.length === 0) {
@@ -645,6 +658,7 @@ function updateIMainSection() {
         }
     }
     else {
+        // iLocalA doesn't exist, user is on instructor/build.html
         clearInnerHTML("iMatchedList");
         clearInnerHTML("iSelectedList");
         addItemsToDisplay("iMatchedList");
