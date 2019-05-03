@@ -44,12 +44,14 @@
       <!-- This will be displayed when an attempt is clicked -->
       <form id="modAForm" style="display:none;"> 
         <fieldset>
-          <legend>Update Graded Test</legend>
-          Final Grade: <span id="testGrade">Who Knows?</span>
+          <legend>Update Test</legend>
+          Test Score: <span id="testGrade">Who Knows?</span>
+          <span id="testGradeHint" class="new-hint">New</span>
           <div id="modARel">
-            Grades Released :
-            <label><input type="radio" name="release" value="1">Yes</label>
-            <label><input type="radio" name="release" value="0" checked>No</label>
+            Grades Released:
+            <label><input id="modARelYes" type="radio" name="release" value="1">Yes</label>
+            <label><input id="modARelNo" type="radio" name="release" value="0" checked>No</label>
+            <span id="modARelHint" class="new-hint">New</span>
           </div>
           <button id="modASub" type="button">Save Changes</button>
           <p class="hint">Use inputs below a question to modify grades or add comments.</p>
@@ -79,6 +81,7 @@
           .catch(x=>console.log(x))
       }
     });
+    modARel.addEventListener("click", ()=>updateModPreview());
 	</script>
 </body>
 </html>

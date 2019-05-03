@@ -386,13 +386,20 @@ input[type=text] {
     font-family : "ubuntu mono", monospace;
 }
 
-.hint {
+.hint,
+.new-hint {
     margin        : 5px 0;
     padding       : 3px 5px;
     font-size     : .9em;
     border-radius : 3px;
     background: #badcee;
     box-shadow: 0 1px 2px #800, 0 1px 3px darkgrey;
+}
+
+.new-hint {
+    font-size: 0.7em;
+    padding: 0px 4px;;
+    margin: 0px 4px;
 }
 
 .qItem   {

@@ -637,16 +637,13 @@ function updateIMainAside() {
             hideElement("modAForm"); 
         }
         else {
-            updateTestGrade();
+            updateModADisplay();
+            updateModPreview();
             showElement("modAForm"); 
         }
     }
 }
 
-function updateTestGrade() {
-    console.log("testGrade updated");
-    testGrade.innerHTML = "50 / 100";
-}
 
 function updateIMainSection() {
     if(typeof iLocalA !== 'undefined') {
@@ -861,7 +858,7 @@ function buildGeneralQuestionItem(newItem, type) {
             qRight.appendChild(qAlt);
             if(type=="iReview" && thisType !== "n") {
                 qRight.setAttribute("class", "qRightAlt");
-                qAlt.addEventListener("keyup", () => updateSum());
+                qAlt.addEventListener("keyup", () => updateModPreview());
             } else {
                 qRight.setAttribute("class", "qRight");
             }
@@ -959,26 +956,53 @@ function buildGeneralQuestionItem(newItem, type) {
     return qItem;
 }
 
-function updateSum() {
+function updateModPreview() {
     let sums      = document.getElementsByClassName("qSum");
     let sumGrades = document.getElementsByClassName("qSumGrade");
     let msgs      = document.getElementsByClassName("qSumMsg");
     let grades    = iSelectedA[0].grades;
+    let pts       = iSelectedA[0].test.pts;
+    let testGrd   = 0;
+    let testMax   = 0;
+    let relStatus = iSelectedA[0].rel;
     for(let i=0; i<sums.length; i++) {
         sumGrades[i].innerHTML = grades[i] + " /";
         msgs[i].innerHTML = "Total Points: ";
         sums[i].style.backgroundColor = "#E7EFFF";
+        testGrd += Number(grades[i]);
+        testMax += Number(pts[i]);
     }
+    testGradeHint.style.display = "none";
+    modARelHint.style.display   = "none";
     if(validateForm('modA', false)) {
         let obj = extractModifications();
         for(let i=0; i<obj.grades.length; i++) {
             let thisQIndex = obj.grades[i].qIndex;
             let thisNewG   = obj.grades[i].newG;
-            sumGrades[thisQIndex].innerHTML = thisNewG + " /";
-            msgs[thisQIndex].innerHTML = "New Total Points: ";
+            let thisOldG   = grades[thisQIndex];
+            sumGrades[thisQIndex].innerHTML        = thisNewG + " /";
+            msgs[thisQIndex].innerHTML             = "New Total Points: ";
             sums[thisQIndex].style.backgroundColor = "#badcee";
+            testGradeHint.style.display = "inline";
+            testGrd += (thisNewG - thisOldG);
         }
     }
+    testGrade.innerHTML = testGrd + " / " + testMax;
+    if(Number(relStatus) !== Number(getCheckedValue("modARel"))) {
+        modARelHint.style.display = "inline";
+    }
+}
+
+function updateModADisplay() {
+    let modAStatus = iSelectedA[0].rel;
+    if(modAStatus === 1) {
+        modARelYes.checked = true;
+        modARelNo.checked  = false;
+    } else {
+        modARelYes.checked = false;
+        modARelNo.checked  = true;
+    }
+    
 }
 
 function updatePoints() {
