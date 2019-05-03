@@ -534,8 +534,9 @@ input[type=text] {
                        0px 1px 3px darkgrey;
 }
 .qTextBox {
-    width : 100%;
+    width      : 100%;
     min-height : 100px;
+    resize     : vertical;
 }
 .qFeed-bad {
     background : #EC7786;
