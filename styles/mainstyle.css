@@ -572,7 +572,7 @@ input[type=text] {
 }
 .qSub,
 .qSumPts {
-    min-width  : 30px;
+    min-width  : 40px;
     background : ghostwhite;
     align-self : flex-start;
 }
