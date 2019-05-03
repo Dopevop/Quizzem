@@ -856,7 +856,7 @@ function buildGeneralQuestionItem(newItem, type) {
         for(let i=0; i<thisFeed.length; i++) {
             let thisType  = thisFeed[i][0];                  
             let pos       = thisFeed[i].indexOf("p");         
-            let sign = (thisType === "b")? "-": "+";
+            let sign = (thisType === "b")? "-": "";
             let thisSub   = document.createTextNode(sign + thisFeed[i].substring(1,pos));
             let thisMsg   = document.createTextNode(thisFeed[i].substring(pos+1));
             let thisClass = (thisType === "g")? "qFeed qFeed-good" : 
