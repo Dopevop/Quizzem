@@ -882,7 +882,7 @@ function buildGeneralQuestionItem(newItem, type) {
             qSub.appendChild(thisSub);
             qSub.setAttribute("class", "qSub");
             qAlt.setAttribute("class", "qAlt");
-            qAlt.setAttribute("maxlength", 3);
+            qAlt.setAttribute("maxlength", 4);
             if(thisType==="n") qAlt.style.display = "none";
             qList.appendChild(qLine);
             // Hide elements of this Feedback line based on type
