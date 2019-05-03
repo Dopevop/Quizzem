@@ -1002,13 +1002,14 @@ function updateModPreview() {
         }
     }
     testGrade.innerHTML = testGrd + " / " + testMax;
+    console.log("relStatus", relStatus, "checkedVal", getCheckedValue("modARel"));
     if(Number(relStatus) !== Number(getCheckedValue("modARel"))) {
         modARelHint.style.display = "inline";
     }
 }
 
 function updateModADisplay() {
-    let modAStatus = iSelectedA[0].rel;
+    let modAStatus = Number(iSelectedA[0].rel);
     if(modAStatus === 1) {
         modARelYes.checked = true;
         modARelNo.checked  = false;
