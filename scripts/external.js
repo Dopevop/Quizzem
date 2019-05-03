@@ -325,8 +325,8 @@ function validateForm(type, alerts) {
             let subInputs    = Array.from(document.getElementsByClassName("qSub"));
             let altInputs    = Array.from(document.getElementsByClassName("qAlt"));
             let feedElems    = Array.from(document.getElementsByClassName("qFeed"));
-            let changedR = remarkInputs.map(r=>(r.value!=="")?true:false).reduce((a,b)=>a||b);
-            let changedF = altInputs.map(f=>(f.value!=="")?true:false).reduce((a,b)=>a||b);
+            let changedR = remarkInputs.map(r=>(r.value!=="")?true:false).reduce((a,b)=>a||b,false);
+            let changedF = altInputs.map(f=>(f.value!=="")?true:false).reduce((a,b)=>a||b,false);
             if(changedF) {
                 // Make sure any new alt values are integers
                 let nonEmptyF = altInputs.filter(f=>f.value!=="");
