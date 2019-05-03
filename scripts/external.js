@@ -200,8 +200,7 @@ function extractModifications() {
                 let newSub = Number(altInputs[feedSeen].value);
                 let newFeed = type+newSub+"p"+msg;
                 let oldSub = Number(subInputs[feedSeen].innerHTML);
-                curGrade = (type==="b")? curGrade + (oldSub - newSub):
-                                         curGrade - (oldSub - newSub);
+                curGrade = curGrade - (oldSub - newSub);
                 console.log("curGrade", curGrade);
                 let newF = {
                     "tId"    : thisTID,
