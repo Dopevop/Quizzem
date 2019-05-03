@@ -384,7 +384,7 @@ function toggleSelected(listItemId) {
         if(typeof sLocalA !== 'undefined') {
             let clickedA = sLocalA.filter(a => a.test.id == id)[0];
             sSelectedA.push(clickedA);
-            updateDisplays(["sMainSection", "sHeadSection"]);
+            updateDisplays(["sMainSection", "sMainAside", "sHeadSection"]);
         }
         else {
             let clickedA = iLocalA.filter(a => a.test.id == id)[0];
@@ -611,16 +611,30 @@ function updateSHeadSection() {
 }
 
 function updateSMainAside() {
-    if(sSelectedT.length === 1)
-        showElement("finAttemptForm");
+    if(typeof sSelectedT !== 'undefined') {
+        // sSelctedT exists, user is on student/tests.html
+        if(sSelectedT.length === 1)
+            showElement("finAttemptForm");
+    } else {
+        // sSelctedT doesn't exists, user is on student/grades.html
+        if(sSelectedA.length === 0) {
+            hideElement("testSummary");
+        }
+        else {
+            updateTestSummary();
+            showElement("testSummary");
+        }
+    }
 }
 
 function updateSMainSection() {
     if(typeof sSelectedT !== 'undefined') {
-        clearInnerHTML("sTestList"); // On student/test.html
+        // sSelectedT exists, user is on student/tests.html
+        clearInnerHTML("sTestList"); 
         addItemsToDisplay("sTestList");
     } else {
-        clearInnerHTML("sAttemptList"); // On student/grades.html
+        // sSelectedT does not exist, user is on student/grades.html
+        clearInnerHTML("sAttemptList"); 
         addItemsToDisplay("sAttemptList");
     }
 }
@@ -842,7 +856,8 @@ function buildGeneralQuestionItem(newItem, type) {
         for(let i=0; i<thisFeed.length; i++) {
             let thisType  = thisFeed[i][0];                  
             let pos       = thisFeed[i].indexOf("p");         
-            let thisSub   = document.createTextNode(thisFeed[i].substring(1,pos));
+            let sign = (thisType === "b")? "-": "+";
+            let thisSub   = document.createTextNode(sign + thisFeed[i].substring(1,pos));
             let thisMsg   = document.createTextNode(thisFeed[i].substring(pos+1));
             let thisClass = (thisType === "g")? "qFeed qFeed-good" : 
                             (thisType === "b")? "qFeed qFeed-bad"  :
@@ -1002,7 +1017,18 @@ function updateModADisplay() {
         modARelYes.checked = false;
         modARelNo.checked  = true;
     }
-    
+}
+
+function updateTestSummary() {
+    let grades  = sSelectedA[0].grades;
+    let pts     = sSelectedA[0].test.pts;
+    let testGrd = 0;
+    let testMax = 0;
+    for(let i=0; i<grades.length; i++) {
+        testGrd += Number(grades[i]);
+        testMax += Number(pts[i]);
+    }
+    testGrade.innerHTML = testGrd + " / " + testMax;
 }
 
 function updatePoints() {
