@@ -263,7 +263,7 @@ function displaySearchResults() {
 }
 
 /* Checks that all fields are correct in form being submitted */
-function validateForm(type) {
+function validateForm(type, alerts) {
 	switch(type) {
 		case "addQ":
 			if(nonEmpty("addDesc") && nonEmpty("addTopic")) {
@@ -336,7 +336,8 @@ function validateForm(type) {
                 if(allInts) {
                     return true;
                 } else {
-                    alertUser("error", "All new feedback points must be integers!");
+                    if(alerts)
+                        alertUser("error", "All new feedback points must be integers!");
                     return false;
                 }
             }
@@ -344,7 +345,8 @@ function validateForm(type) {
             if(changedR || changedF || changedRel) {
                 return true;
             } else {
-                alertUser("error", "No changes to submit!");
+                if(alerts)
+                    alertUser("error", "No changes to submit!");
                 return false;
             }
             
@@ -967,7 +969,7 @@ function updateSum() {
         msgs[i].innerHTML = "Total Points: ";
         sums[i].style.backgroundColor = "#E7EFFF";
     }
-    if(validateForm('modA')) {
+    if(validateForm('modA', false)) {
         let obj = extractModifications();
         for(let i=0; i<obj.grades.length; i++) {
             let thisQIndex = obj.grades[i].qIndex;
