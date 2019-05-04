@@ -72,13 +72,12 @@
       handleReply(x, "instructor")
       })
     .catch(() => alertUser("error", "Could not download graded tests!"))
-
-    modASub.addEventListener("click", ()=>console.log("modASub Clicked"));
     modASub.addEventListener("click", ()=> {
       if(validateForm("modA", true)) {
         fetch('modA')
           .then(x=>console.log(x))
-          .catch(x=>console.log(x))
+          .then(()=>alertUser("success", "Changes submitted!"))
+          .catch(()=>alertUser("error", "Could not save changes!"))
       }
     });
     modARel.addEventListener("click", ()=>updateModPreview());
