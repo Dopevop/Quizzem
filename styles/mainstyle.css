@@ -58,9 +58,10 @@ body>header{
     box-shadow       : 0px 1px 2px #880000, 0px 1px 5px darkgrey;
 }
 body>header main {
-    position : relative;
-    width    : 950px;
-    margin   : auto;
+    position  : relative;
+    min-width : 950px;
+    max-width : 1475px;
+    margin    : auto;
 }
 body>header nav {
     position         : absolute;
@@ -70,10 +71,11 @@ body>header nav {
     width            : 120px;
 }
 body>header section {
-    position : absolute;
-    left     : 120px;
-    width    : 530px;
-    margin   : 0px;
+    position  : absolute;
+    left      : 120px;
+    width     : calc(1475px - 420px);
+    min-width : 530px;
+    margin    : 0px;
 }
 body>header aside {
     position : absolute;
@@ -118,6 +120,7 @@ body>header nav a:hover {
 body>main {
     position : relative;
     top      : 40px;
+    max-width: 1475px;
 }
 body>main nav {
     width  : 120px;
@@ -157,10 +160,12 @@ body>main nav li a {
     background-color : #BADCEE;
 }
 body>main section {
-    position : relative;
-    padding  : 0px 5px;
-    width    : 530px;
-    overflow : hidden;
+    position  : relative;
+    padding   : 0px 5px;
+    min-width : 530px;
+    max-width : 1050px;
+    width     : calc(100vw - 420px);
+    overflow  : hidden;
 }
 body>main section p { /* Styles the welcome page messages */
     background : ghostwhite;
@@ -270,10 +275,8 @@ input[type=range]:focus::-webkit-slider-runnable-track {
                  0px 1px 3px darkgrey;
 }
 .clearfix {
-    width      : 950px;
+    min-width  : 950px;
     margin     : auto;
-    box-shadow : 0px 0px 5px gainsboro;
-    outline    : 1px solid gainsboro;
 }
 .clearfix::after {
 	content : "";
@@ -307,24 +310,22 @@ section li {
     margin        : 20px auto;
     border-radius : 5px;
 }
+#iBuildLists {
+    display: flex;
+    flex-wrap: wrap;
+}
 #iSelectedList,
 #iMatchedList {
     overflow      : auto;
-    max-height    : 46.5vh;
+    max-height    : calc(100vh - 55px);
     width         : 505px;
     margin        : 6px;
     border-radius : 5px;
-}
-#iMatchedList {
-    position : absolute;
-    bottom   : 0px;
+    /* box-shadow    : 0px 1px 2px #888, 0px 1px 5px darkgrey; */
+    box-shadow    : 0px 1px 2px #800, 0px 1px 5px darkgrey;
 }
 #iSelectedList {
-    box-shadow       : 0px 1px 2px #880000, 0px 1px 5px darkgrey;
     background-color : #BADCEE;
-}
-#iMatchedList {
-    box-shadow : 0px 1px 2px #888, 0px 1px 5px darkgrey;
 }
 .available {
     width            : 95%;
