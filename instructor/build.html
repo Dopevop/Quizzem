@@ -32,22 +32,26 @@
         <li style="display:none;">Edit</li>
       </ul>
     </nav>
-      <!-- <p id="iBuildInfo"> -->
-      <!--   To build a test, begin by creating a new question, or searching for existing questions using the fields on the right. -->
-      <!-- </p> -->
-      <!-- <p id="iSelectedInfo" style="display:none;"> -->
-      <!--   Select questions from the list below to add to your new test. -->
-      <!-- </p> -->
-      <!-- <p id="iMatchedInfo" style="display:none;"> -->
-      <!--   Create and search for more questions, or make a new test with the selected questions by using the forms on the right. -->
-      <!-- </p> -->
 
     <section id="iMainSection" class="box">
       <div id="iBuildLists">
-        <ul id="iSelectedList"> 
-        </ul>
-        <ul id="iMatchedList">
-        </ul>
+        <p id="iBuildInfo">
+          To build a test, begin by creating a new question, or searching for existing questions using the fields on the right.
+        </p>
+        <div id="iSelected">
+          <p id="iSelectedInfo" style="display:none;">
+            Select questions from the list to add to your new test.
+          </p>
+          <ul id="iSelectedList"> 
+          </ul>
+        </div>
+        <div id="iMatched">
+          <p id="iMatchedInfo" style="display:none;">
+            Create and search for more questions, or make a new test with the selected questions by using the forms on the right.
+          </p>
+          <ul id="iMatchedList">
+          </ul>
+        </div>
       </div>
     </section>
 
