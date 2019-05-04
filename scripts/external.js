@@ -163,7 +163,7 @@ function extractModifications() {
     let feedElems    = Array.from(document.getElementsByClassName("qFeed"));
     let thisA        = iSelectedA[0];
     let thisT        = thisA.test;
-    let thisTID      = thisT.id;
+    let thisTId      = thisT.id;
     let thisRel      = thisA.rel;
     let theseQ       = thisT.ques;
     let theseR       = thisA.remarks;
@@ -176,10 +176,10 @@ function extractModifications() {
     let feedSeen = 0;
     for(let i=0; i<theseQ.length; i++) {
         let changedFeed = false;
-        let thisQID = theseQ[i].id;
+        let thisQId = theseQ[i].id;
         let newR = {
-            "tId"  : thisTID,
-            "qId"  : thisQID,
+            "tId"  : thisTId,
+            "qId"  : thisQId,
             "newR" : remarkInputs[i].value,
         }
         if(newR.newR !== "") newRemarks.push(newR);
@@ -203,8 +203,8 @@ function extractModifications() {
                 curGrade = curGrade - (oldSub - newSub);
                 console.log("curGrade", curGrade);
                 let newF = {
-                    "tId"    : thisTID,
-                    "qId"    : thisQID,
+                    "tId"    : thisTId,
+                    "qId"    : thisQId,
                     "newF"   : newFeed,
                     "index"  : j,
                     "qIndex" : i,
@@ -215,8 +215,8 @@ function extractModifications() {
         }
         if(changedFeed) {
             let newG = {
-                "tId"    : thisTID,
-                "qId"    : thisQID,
+                "tId"    : thisTId,
+                "qId"    : thisQId,
                 "newG"   : curGrade,
                 "qIndex" : i,
             }
@@ -224,11 +224,12 @@ function extractModifications() {
         }
     }
     return {
-        "type" : "modA",
-        "rel"  : newRelease,
-        "remarks" : newRemarks,
+        "type"     : "modA",
+        "rel"      : newRelease,
+        "tId"      : thisTId,
+        "remarks"  : newRemarks,
         "feedback" : newFeedback,
-        "grades" : newGrades,
+        "grades"   : newGrades,
     }
 }
 
@@ -340,7 +341,8 @@ function validateForm(type, alerts) {
                     return false;
                 }
             }
-            let changedRel = (getCheckedValue("modARel") === "1")? true : false;
+            let changedRel = (Number(getCheckedValue("modARel")) !== iSelectedA[0].rel)? true :
+                                                                                         false;
             if(changedR || changedF || changedRel) {
                 return true;
             } else {
@@ -853,8 +855,7 @@ function buildGeneralQuestionItem(newItem, type) {
         for(let i=0; i<thisFeed.length; i++) {
             let thisType  = thisFeed[i][0];                  
             let pos       = thisFeed[i].indexOf("p");         
-            let sign = (thisType === "b")? "-": "";
-            let thisSub   = document.createTextNode(sign + thisFeed[i].substring(1,pos));
+            let thisSub   = document.createTextNode(thisFeed[i].substring(1,pos));
             let thisMsg   = document.createTextNode(thisFeed[i].substring(pos+1));
             let thisClass = (thisType === "g")? "qFeed qFeed-good" : 
                             (thisType === "b")? "qFeed qFeed-bad"  :
