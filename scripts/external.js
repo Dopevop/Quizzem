@@ -514,22 +514,20 @@ function getRelArr(displayId) {
 	var relArr;
     switch(displayId) {
         case "iMatchedList":
-            // relArr = iMatchedQ;
             relArr = buildQuestionList(iMatchedQ, "matched");
             break;
         case "iSelectedList":
-            // relArr = iSelectedQ;
             relArr = buildQuestionList(iSelectedQ, "selected");
             break;
         case "sTestList":
-            // relArr = (sSelectedT.length === 1)? sSelectedT[0].ques :
-            //          sLocalT.filter(t=>Number(t.rel)===1&&Number(t.sub)===0);
-            relArr = (sSelectedT.length === 1)? buildQuestionList(sSelectedT[0].ques, "active") :
-                     sLocalT.filter(t=>Number(t.rel)===1&&Number(t.sub)===0);
+            relArr = (sSelectedT.length === 1)?
+                buildQuestionList(sSelectedT[0].ques, "active") :
+                sLocalT.filter(t=>Number(t.rel)===1&&Number(t.sub)===0);
             break;
         case "sAttemptList":
-            relArr = (sSelectedA.length === 1)? buildQuestionList(sSelectedA[0], "review") :
-                                                sLocalA;
+            relArr = (sSelectedA.length === 1)? 
+                buildQuestionList(sSelectedA[0], "review") :
+                sLocalA.filter(a=>Number(a.rel)===1);
             break;
         case "iAttemptList":
             relArr = (iSelectedA.length === 1)? buildQuestionList(iSelectedA[0], "review") :
