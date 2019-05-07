@@ -1,3 +1,4 @@
+/* A pool of testcase example placeholder to pull from */
 let p1 = [
     "func()=ans",
     "myMethod( )=myAnswer",
@@ -22,18 +23,18 @@ let p1 = [
 let p2 = [];
 let p  = p1;
 let q  = p2;
-
+/* Disables a button */
 function disableButton(btnId) {
     return new Promise((resolve) => {
         document.getElementById(btnId).disabled = true;
         resolve();
     });
 }
-
+/* Enables a button */
 function enableButton(btnId) {
     document.getElementById(btnId).disabled = false;
 }
-
+/* Sends the requests to the server */
 const fetch = (type) => new Promise((resolve,reject) => {
     let url     = "https://web.njit.edu/~djo23/CS490/curlObj.php";
     let xhr     = new XMLHttpRequest();
@@ -45,7 +46,7 @@ const fetch = (type) => new Promise((resolve,reject) => {
     xhr.open('post', url, true);
     xhr.send(jsonStr);
 });
-
+/* Handles the reply from the server */
 function handleReply(replyText, source) {
 	var replyObj = JSON.parse(replyText);
 	switch(replyObj.type) {
@@ -57,11 +58,6 @@ function handleReply(replyText, source) {
 		case 'getQ':
 			var DBQ = replyObj.ques;       // Extract all Qs
             iLocalQ = DBQ;
-            // for(var i=0; i<DBQ.length; i++) {
-            //     if(uniqItem(DBQ[i], iLocalQ)) {
-            //         iLocalQ.push(DBQ[i]);
-            //     }
-            // }
             updateDisplays(["iMainSection"]);
 			break;
 		case 'addT':
@@ -92,13 +88,10 @@ function handleReply(replyText, source) {
                 iLocalA = DBA;
                 updateDisplays(["iMainSection"]);
             }
-            
             break;
 	}
 }
-
-/* Creates the JSON obj that will encapsulate the request to the server
- * */
+/* Creates the JSON obj that will encapsulate the request to the server */
 function buildPostBody(type, source) {
 	var jsonObj;
 	switch(type) {
@@ -114,7 +107,7 @@ function buildPostBody(type, source) {
 			break;
 		case 'getQ':
 			jsonObj = {
-				'type'  : 'getQ',   // Build SearchQ req
+				'type'  : 'getQ',      // Build SearchQ req
 				'topic' : '',          // Don't filter by topic
 				'diffs' : [1,2,3,4,5], // Don't filter by diff
 				'keys'  : [],          // Don't filter by keyword
@@ -131,7 +124,7 @@ function buildPostBody(type, source) {
 			break;
 		case 'getT':
 			jsonObj = {
-				'type' : 'getT',                         // Send a GetTests req
+				'type' : 'getT',                             // Send a GetTests req
 				'rels' : (source == 'student')? [1] : [0,1], // Only released tests for student
 			}
 			break;
@@ -155,7 +148,7 @@ function buildPostBody(type, source) {
 	}
 	return JSON.stringify(jsonObj);
 }
-
+/* Builds an object that contains any changes made to an array */
 function extractModifications() {
     let remarkInputs = Array.from(document.getElementsByClassName("qTextBox"));
     let subInputs    = Array.from(document.getElementsByClassName("qSub"));
@@ -232,7 +225,6 @@ function extractModifications() {
         "grades"   : newGrades,
     }
 }
-
 /* Searches through local questions returning matches
  * Topic   : A topic to search by, "" matches all topics
  * Diffs[] : An array of difficulties to filter by
@@ -244,7 +236,6 @@ function localSearch(topic, diffs, keys) {
         keys.map(k=>q.desc.toLowerCase().match(new RegExp(k))).reduce((a,b)=>a&&b, true);
 	return iLocalQ.filter(sameTopic).filter(sameDiff).filter(containsKeys);
 }
-
 /* Called when searchSubmit button is clicked
  * Updates the iMatchedQ array with Q's matching new search criteria
  * Displays the iMatchedQ in the matches section */
@@ -253,7 +244,6 @@ function displaySearchResults() {
 	var diffs = getCheckedValues("searchDiffs").map(d=>Number(d));
 	if(diffs.length === 0)
 		diffs = [1,2,3,4,5];
-
 	var keys  = getNonEmptyInputs("searchKeys").map(k=>k.toLowerCase());
 	var matches  = localSearch(topic, diffs, keys);
 	iMatchedQ.length = 0;
@@ -261,7 +251,6 @@ function displaySearchResults() {
 	iMatchedQ.sort( (a,b) => a.diff - b.diff );
 	updateDisplays(["iMainSection"]);
 }
-
 /* Checks that all fields are correct in form being submitted */
 function validateForm(type, alerts) {
 	switch(type) {
@@ -350,17 +339,15 @@ function validateForm(type, alerts) {
                     alertUser("error", "No changes to submit!");
                 return false;
             }
-            
             break;
 		default:
 			console.log("Invalid type to validate");
 	}
 }
-
+/* Determines if an element is hidden */
 function isHidden(el) {
     return (el.offsetParent === null)
 }
-
 /* Toggles whether the clicked on question is in iSelectedQ 
  * listItemId: The id of the List Item that the question appears in */
 function toggleSelected(listItemId) {
@@ -397,7 +384,6 @@ function toggleSelected(listItemId) {
 		console.log("in toggleSelected, "+listItemId[0]+" was not 't', 'm', or 's'");
 	}
 }
-
 /* Takes a boolean, alerts. If true, alertUser() will be called */
 function validatePts(alerts) {
     let pts = Array.from(document.getElementsByClassName("qInput"));
@@ -416,7 +402,7 @@ function validatePts(alerts) {
     }
     return true;
 }
-
+/* Displays a non-intrusive message to the user */
 function alertUser(type, msg) {
     hideElement("errorDiv");
     hideElement("successDiv");
@@ -425,7 +411,6 @@ function alertUser(type, msg) {
     timeout(100).then(()  => showElement(id));
     timeout(5000).then(() => hideElement(id));
 }
-
 /* Makes sure there are at least two non-empty tests
  * Makes sure all tests are in the form of func([a][,b]...)=answer */
 function validateTests(tests) {
@@ -444,7 +429,6 @@ function validateTests(tests) {
     }
 	return true;
 }
-
 /* Resets all of the inputs inside of the specified element.
  * Removes additionally added text boxes like those for test cases*/
 function clearForm(formId) {
@@ -486,32 +470,29 @@ function clearForm(formId) {
 		}
 	}
 }
-
+/* Empties the matched question array */
 function clearMatches() {
 	iMatchedQ.length = 0;
     updateDisplays(["iMainSection"]);
 }
-
+/* Deletes the innerHTML of the given element */
 function clearInnerHTML(displayId) {
     document.getElementById(displayId).innerHTML = "";
 }
-
 /* A display has an id of the form: [i|s][Head|Main][Nav|Section|Aside] */
 /* and specifies one of the webpage layout areas                        */
 function updateDisplays(displayIdArr) {
 	for(var i = 0; i<displayIdArr.length; i++)
         updateDisplay(displayIdArr[i]);
 } 
-
-
+/* Adds an array of items to a display */
 function addItemsToDisplay(thisId) {
     var relArr = getRelArr(thisId);
     for(var j=0; j<relArr.length; j++) {
         addItemToDisplay(relArr[j], thisId, j);
     }
 }
-
-/* Determines which array (iSelectedQ or iMatchedQ) is associated with a display */
+/* Determines which array of elements should be used to populate a display area*/
 function getRelArr(displayId) {
 	var relArr;
     switch(displayId) {
@@ -541,8 +522,7 @@ function getRelArr(displayId) {
 	}
 	return relArr;
 }
-
-// this returns an array of objects that can be turned into display items
+/* Returns an array of objects that can be turned into display items */
 function buildQuestionList(obj, type) {
     let list = [];
     let limit = (type == "review")? obj.answers.length : obj.length;
@@ -566,7 +546,7 @@ function buildQuestionList(obj, type) {
     }
     return list;
 }
-
+/* Update's the given area */
 function updateDisplay(displayId) {
     switch(displayId) {
         case "iHeadSection":
@@ -591,13 +571,13 @@ function updateDisplay(displayId) {
             break;
     }
 }
-
+/* Updates instructor's <header><section></section></header> */
 function updateIHeadSection() {
     if(iSelectedA.length === 1) {
         document.getElementById("iHeadSummary").innerHTML = iSelectedA[0].test.desc;
     }
 }
-
+/* Updates student's <header><section></section></header> */
 function updateSHeadSection() { 
     if(typeof sSelectedT !== 'undefined') {
         if(sSelectedT.length === 1) 
@@ -608,7 +588,7 @@ function updateSHeadSection() {
             document.getElementById("sHeadSummary").innerHTML = sSelectedA[0].test.desc;
     }
 }
-
+/* Updates student's <main><aside></aside></main> */
 function updateSMainAside() {
     if(typeof sSelectedT !== 'undefined') {
         // sSelctedT exists, user is on student/tests.html
@@ -625,7 +605,7 @@ function updateSMainAside() {
         }
     }
 }
-
+/* Updates student's <main><section></section></main> */
 function updateSMainSection() {
     if(typeof sSelectedT !== 'undefined') {
         // sSelectedT exists, user is on student/tests.html
@@ -637,7 +617,7 @@ function updateSMainSection() {
         addItemsToDisplay("sAttemptList");
     }
 }
-
+/* Updates instructor's <main><aside></aside></main> */
 function updateIMainAside() {
     if(typeof iLocalQ !== 'undefined') {
         // iLocalQ exists, user is on instructor/build.html
@@ -656,8 +636,7 @@ function updateIMainAside() {
         }
     }
 }
-
-
+/* Updates instructor's <main><section></section></main> */
 function updateIMainSection() {
     if(typeof iLocalA !== 'undefined') {
         // iLocalA exists, user is on instructor/review.html
@@ -697,8 +676,7 @@ function updateIMainSection() {
         }
     }
 }
-
-/* Addes a toggle-able item to the display */
+/* Adds a toggle-able item to the display, or just a regular question item */
 function addItemToDisplay(newItem, displayId, num) {
     var item;
     switch(displayId) {
@@ -725,7 +703,7 @@ function addItemToDisplay(newItem, displayId, num) {
     }
 	document.getElementById(displayId).appendChild(item);
 }
-
+/* Constructs all instances of a question appropriately for where it appears */
 function buildGeneralQuestionItem(newItem, type) {
     let thisId;
     let thisBtnClass;
@@ -850,7 +828,6 @@ function buildGeneralQuestionItem(newItem, type) {
             thisRemark.placeholder = "Current Comment: \""+newItem.remark+"\"";
         }
     }
-
     if(type === "sReview" || type === "iReview") {
         for(let i=0; i<thisFeed.length; i++) {
             let thisType  = thisFeed[i][0];                  
@@ -888,7 +865,6 @@ function buildGeneralQuestionItem(newItem, type) {
             if(type === "sReview") qAlt.style.display = "none"; // Type of question
             if(thisType === "n")   qSub.style.display = "none"; // Type of feedback
         }
-        // Add Summary line
         let qLine     = document.createElement("DIV");
         let qRight    = document.createElement("DIV");
         let qSum      = document.createElement("DIV");
@@ -914,8 +890,6 @@ function buildGeneralQuestionItem(newItem, type) {
         qSumMax.setAttribute("class", "qSumMax");
         qList.appendChild(qLine);
     }
-    
-    // Hide things that are not visible for given type
     switch(type) {
         case "matched":
             qNum.style.display    = "none";
@@ -943,14 +917,11 @@ function buildGeneralQuestionItem(newItem, type) {
         case "matched":
             qBtn.style.display = "block";
     }
-    // Hide constraints if not applied
     if(thisCons.length === 0)       qCons.style.display  = "none";
     if(!thisCons.includes("for"))   qFor.style.display   = "none";
     if(!thisCons.includes("while")) qWhile.style.display = "none";
     if(!thisCons.includes("print")) qPrint.style.display = "none";
-    // Hide remark if empty 
     if(thisRemark.nodeValue === "") qRemark.style.display = "none";
-    // Make textareas editable/resizeable only for "active" questions
     if(type === "active") {
         qAns.contentEditable = "true";
         qAns.style.resize = "vertical";
@@ -958,17 +929,15 @@ function buildGeneralQuestionItem(newItem, type) {
         qAns.contentEditable = "false";
         qAns.style.resize = "none";
     }
-    // Set event listeners
     if(type === "matched") qItem.addEventListener("click",  () => toggleSelected(thisId));
     if(type === "active")   qAns.addEventListener("keydown", e => insertTab(e));
     if(type === "selected") {
         qInput.addEventListener("keyup", () => updatePoints());
         qBtn.addEventListener("click",   () => toggleSelected(thisId)); 
     }
-
     return qItem;
 }
-
+/* Displays the changes to an attempt as they're made by instructor */
 function updateModPreview() {
     let sums      = document.getElementsByClassName("qSum");
     let sumGrades = document.getElementsByClassName("qSumGrade");
@@ -1006,7 +975,7 @@ function updateModPreview() {
         modARelHint.style.display = "inline";
     }
 }
-
+/* Initializes release status of an attempt to the actual release status */
 function updateModADisplay() {
     let modAStatus = Number(iSelectedA[0].rel);
     if(modAStatus === 1) {
@@ -1017,7 +986,7 @@ function updateModADisplay() {
         modARelNo.checked  = true;
     }
 }
-
+/* Shows the total test score for the student */
 function updateTestSummary() {
     let grades  = sSelectedA[0].grades;
     let pts     = sSelectedA[0].test.pts;
@@ -1029,92 +998,15 @@ function updateTestSummary() {
     }
     testGrade.innerHTML = testGrd + " / " + testMax;
 }
-
+/* Will dynamically display the total test points as instructor is giving them points */
 function updatePoints() {
     let inputs = Array.from(document.getElementsByClassName("qInput"));
     let pts    = inputs.map(i=>Number(i.value)).filter(v=>Number.isFinite(v)).reduce((a,b)=>a+b,0);
     testPoints.innerHTML = pts;
     console.log("points updated");
 }
-
-function buildAttemptItem(newItem, num) {
-    var thisNum        = num + 1;
-    var thisAns        = newItem.answer;
-    var thisDesc       = newItem.desc;
-    var thisFeed       = newItem.feedback; // an array of auto-generated feedback strings
-    var thisGrade      = newItem.grade;
-    var thisPts        = newItem.max;
-    var thisRemark     = newItem.remark;
-    var gradeSpanClass = (thisGrade <= (thisPts/2))   ? "lowGradeSpan" :
-                         (thisGrade <= (3*thisPts/4)) ? "midGradeSpan" : "highGradeSpan";
-                     
-
-    var item       = document.createElement("LI");  // Build the elements
-    var aDiv       = document.createElement("DIV");
-    var qDiv       = document.createElement("DIV"); // that will go into
-    var qTop       = document.createElement("DIV"); // this question
-    var qTopLeft   = document.createElement("DIV");
-    var qTopMid    = document.createElement("DIV");
-    var qTopRight  = document.createElement("DIV");
-    var qBot       = document.createElement("DIV");
-    var aAns       = document.createElement("DIV");
-    var aUnder     = document.createElement("DIV");
-    var aRemark    = document.createElement("DIV");
-    var qNum       = document.createTextNode(thisNum + ".)");
-    var qDesc      = document.createTextNode(thisDesc);
-    var qPtsSpan   = document.createElement("SPAN");
-    var qGradeSpan = document.createElement("SPAN");
-    var qPoints    = document.createTextNode(" / " + thisPts + " Pts");
-
-         qDiv.setAttribute("class", "qDiv"); // Set attributes of
-         qDiv.appendChild(qTop);             // and append children to
-         qDiv.appendChild(qBot);             // the elements
-         qTop.setAttribute("class", "qTop"); 
-         qTop.appendChild(qTopLeft);
-         qTop.appendChild(qTopMid);
-         qTop.appendChild(qTopRight);
-     qTopLeft.setAttribute("class", "qTopLeft");
-     qTopLeft.appendChild(qNum);
-      qTopMid.setAttribute("class", "qTopMid");
-      qTopMid.appendChild(qDesc);
-    qPtsSpan.appendChild(qGradeSpan);
-    qPtsSpan.appendChild(qPoints);
-    qPtsSpan.setAttribute("class", "ptsSpan");
-    qGradeSpan.setAttribute("class", gradeSpanClass);
-    qGradeSpan.appendChild(document.createTextNode(thisGrade));
-    qTopRight.setAttribute("class", "qTopRight");
-    qTopRight.appendChild(qPtsSpan);
-         qBot.setAttribute("class", "qBot");
-         qBot.appendChild(aAns);
-         aAns.appendChild(document.createTextNode(thisAns));
-         aAns.setAttribute("class", "aAns");
-         aAns.setAttribute("contenteditable", "false");
-         aDiv.appendChild(qDiv);
-         aDiv.appendChild(aUnder);
-    if(thisRemark !== "") {
-      aRemark.appendChild(document.createTextNode(thisRemark));
-      aRemark.setAttribute("class", "remark");
-       aUnder.appendChild(aRemark);
-    }
-    for(let i=0; i<thisFeed.length; i++) {
-        let thisType = thisFeed[i][0];
-        let thisMsg  = thisFeed[i].substring(1);
-        let thisClass = (thisType === "g")? "feedback feedback-good" : 
-                        (thisType === "b")? "feedback feedback-bad" :
-                                            "feedback";
-        let newFeedDiv = document.createElement("DIV");
-        newFeedDiv.setAttribute("class", thisClass);
-        newFeedDiv.appendChild(document.createTextNode(thisMsg));
-        aUnder.appendChild(newFeedDiv);
-    }
-
-         item.appendChild(aDiv);
-
-    return item;
-}
-
+/* Builds the HTML element that displays an attempt summary */
 function buildAttemptSummaryItem(newItem, num) {
-    // Gather the information from newItem that will be displayed to user
     let testName   = newItem.test.desc;
     let maxPts     = newItem.test.pts.map(a => Number(a)).reduce((a,b) => a + b, 0);
     let graded     = typeof newItem.grades !== 'undefined';
@@ -1123,8 +1015,6 @@ function buildAttemptSummaryItem(newItem, num) {
     let statusText = (!graded)? "Not Graded" : (reviewed)? "Reviewed by Instructor" : "Auto-Graded";
     let itemId     = "a"+newItem.test.id;
     let itemClass  = "attempt";
-    
-    // Construct the elements that the information will be displayed in
     let item  = document.createElement("LI");
     let aDiv  = document.createElement("DIV");
     let aTop  = document.createElement("DIV");
@@ -1132,8 +1022,6 @@ function buildAttemptSummaryItem(newItem, num) {
     let aDesc = document.createTextNode(testName);
     let aPts  = document.createTextNode("Grade: " + grade + " / " + maxPts);
     let aStat = document.createTextNode("Status: " + statusText);
-
-    // Define the attributes, eventListeners, children of the elements
     aDiv.setAttribute ("class", "aDiv" );
     aTop.setAttribute ("class", "aTop" );
     aBot.setAttribute ("class", "aBot" );
@@ -1143,99 +1031,13 @@ function buildAttemptSummaryItem(newItem, num) {
     aBot.appendChild(aPts);
     aBot.appendChild(document.createElement("BR"));
     aBot.appendChild(aStat);
-    
-    // Return the item
     item.setAttribute ("id", itemId);
     item.setAttribute ("class", "available");
     item.appendChild(aDiv);
     item.addEventListener("click", () => toggleSelected(itemId));
     return item;
 }
-
-function buildMatchedQuestionItem(newItem, num) {
-    var thisDesc  = newItem.desc;
-    var thisDiff  = convertDiffFormat(newItem.diff);
-    var thisTopic = newItem.topic;
-    var thisId    = "m" + newItem.id;
-    var thisClass = "matched";
-
-    var item   = document.createElement("LI");
-    var mTop   = document.createElement("DIV");
-    var mBot   = document.createElement("DIV");
-    var mDesc  = document.createTextNode(thisDesc);
-    var mDiff  = document.createTextNode("Difficulty: " + thisDiff);
-    var mTopic = document.createTextNode("Topic: " + thisTopic);
-
-    item.setAttribute("id", thisId);
-    item.setAttribute("class", thisClass);
-    item.addEventListener("click", function() { toggleSelected( thisId ) });
-    item.appendChild(mTop);
-    item.appendChild(mBot);
-    mTop.setAttribute("class", "mTop");
-    mTop.appendChild(mDesc);
-    mBot.setAttribute("class", "mBot");
-    mBot.appendChild(mDiff);
-    mBot.appendChild(document.createElement("BR"));
-    mBot.appendChild(mTopic);
-    return item;
-}
-
-function buildSelectedQuestionItem(newItem, num) {
-    var thisDesc  = newItem.desc;                   // Variables specific
-    var thisNum   = newItem.num;                    // to this quetion
-    // var thisNum   = num + 1;                     // to this quetion
-    var thisId    = "s" + newItem.id;
-    var thisDiff  = convertDiffFormat(newItem.diff);
-    var thisTopic = newItem.topic;
-
-    var item      = document.createElement("LI");  // Build the elements
-    var qDiv      = document.createElement("DIV"); // that will go into
-    var qTop      = document.createElement("DIV"); // this question
-    var qTopLeft  = document.createElement("DIV");
-    var qTopMid   = document.createElement("DIV");
-    var qTopRight = document.createElement("DIV");
-    var qBot      = document.createElement("DIV");
-    var qBtn      = document.createElement("BUTTON");
-    var qBtnText  = document.createTextNode("X");
-    var qNum      = document.createTextNode(thisNum + ".)");
-    var qDesc     = document.createTextNode(thisDesc);
-    var qPtsInput = document.createElement("INPUT");
-    var qPtsText  = document.createTextNode(" Pts");
-    var qDiff     = document.createTextNode("Difficulty: " + thisDiff);
-    var qTopic    = document.createTextNode("Topic: " + thisTopic);
-
-         qDiv.setAttribute("class", "qDiv active"); // Set attributes of
-         qDiv.setAttribute("id", thisId);           // and append children to
-         qDiv.appendChild(qTop);                    // the elements
-         qDiv.appendChild(qBot);
-         qDiv.appendChild(qBtn);
-         qTop.setAttribute("class", "qTop");
-         qTop.appendChild(qTopLeft);
-         qTop.appendChild(qTopMid);
-         qTop.appendChild(qTopRight);
-     qTopLeft.setAttribute("class", "qTopLeft");
-     qTopLeft.appendChild(qNum);
-      qTopMid.setAttribute("class", "qTopMid");
-      qTopMid.appendChild(qDesc);
-    qTopRight.setAttribute("class", "qTopRight");
-    qTopRight.appendChild(qPtsInput);
-    qTopRight.appendChild(qPtsText);
-         qBtn.setAttribute("class", "qBtn");
-         qBtn.addEventListener("click", () => { toggleSelected(thisId); });
-         qBtn.appendChild(qBtnText);
-    qPtsInput.setAttribute("class", "qPts");
-    qPtsInput.setAttribute("maxlength", "3");
-    qPtsInput.setAttribute("size", "1");
-    qPtsInput.setAttribute("tabindex", thisNum);
-         qBot.setAttribute("class", "mBot");
-         qBot.appendChild(qDiff);
-         qBot.appendChild(document.createElement("BR"));
-         qBot.appendChild(qTopic);
-         item.appendChild(qDiv);
-
-    return item;
-}
-
+/* Builds the HTML element that displays a test summary */
 function buildTestSummaryItem(newItem, num) {
     var thisDesc  = newItem.desc;        // Get the variables
     var thisQues  = newItem.ques;        // specific to this test
@@ -1280,7 +1082,6 @@ function buildTestSummaryItem(newItem, num) {
     var tNumQ   = document.createTextNode(thisNum + queStr);
     var tTopics = document.createTextNode("Topics: " + topicStr);
     var tDiffs  = document.createTextNode("Difficulties: " + diffStr);
-
     tTop.setAttribute("class", "tTop");
     tTop.appendChild(tDesc);
     tBot.setAttribute("class", "tBot");
@@ -1298,48 +1099,6 @@ function buildTestSummaryItem(newItem, num) {
     item.appendChild(tBot);
     return item;
 }
-
-function buildQuestionItem(newItem, num) {
-    thisDesc = newItem.desc;      // Variables specific
-    thisNum  = num + 1;              // to this quetion
-    thisMax  = newItem.max; //
-    // thisMax  = sSelectedT[0].pts[num]; //
-
-    var item      = document.createElement("LI");  // Build the elements
-    var qDiv      = document.createElement("DIV"); // that will go into
-    var qTop      = document.createElement("DIV"); // this question
-    var qTopLeft  = document.createElement("DIV");
-    var qTopMid   = document.createElement("DIV");
-    var qTopRight = document.createElement("DIV");
-    var qBot      = document.createElement("DIV");
-    var qAns      = document.createElement("TEXTAREA");
-    var qNum      = document.createTextNode(thisNum + ".)");
-    var qDesc     = document.createTextNode(thisDesc);
-    var qPoints   = document.createTextNode(thisMax + " Pts");
-    
-         qDiv.setAttribute("class", "qDiv"); // Set attributes of
-         qDiv.appendChild(qTop);             // and append children to
-         qDiv.appendChild(qBot);             // the elements
-         qTop.setAttribute("class", "qTop"); 
-         qTop.appendChild(qTopLeft);
-         qTop.appendChild(qTopMid);
-         qTop.appendChild(qTopRight);
-     qTopLeft.setAttribute("class", "qTopLeft");
-     qTopLeft.appendChild(qNum);
-      qTopMid.setAttribute("class", "qTopMid");
-      qTopMid.appendChild(qDesc);
-    qTopRight.setAttribute("class", "qTopRight");
-    qTopRight.appendChild(qPoints);
-         qBot.setAttribute("class", "qBot");
-         qBot.appendChild(qAns);
-         qAns.setAttribute("class", "qAns");
-         qAns.addEventListener("keydown", (e) => { insertTab(e) });
-         qAns.setAttribute("contenteditable", "true");
-         item.appendChild(qDiv);
-
-    return item;
-}
-
 /* Add another input text box to the top of the specified element.
  * Works for elements that contain a label, a button, and then a list of inputs 
  * elemId: The id of the element you want to add the input box to */
@@ -1355,7 +1114,8 @@ function addInput(elemId) {
         textInput.setAttribute("class", "testcases");
     }
 }
-
+/* Will randomly pick a new test pattern to be a placeholder for testcase inputs
+ * Always returns a new one unless the pool of tests runs out  */
 function getRandomTestPattern() {
     if(p.length === 0) {
         q = p;
@@ -1366,7 +1126,6 @@ function getRandomTestPattern() {
     q.push(newPat);
     return newPat;
 }
-
 /* Resets an input div to contain a label, a button for adding more inputs,
  * and a single text input.
  * label: The label of the input fields (e.g. Keywords, or Test Cases)
@@ -1389,33 +1148,30 @@ function resetModal(label, elemId, func) {
 	if(elemId === "addTests")
 		addInput(elemId);
 }
-
+/* Allows student to tab in their answer */
 function insertTab(e) {
     if (e.keyCode === 9) {
         document.execCommand('insertHTML', false, '    ');
         e.preventDefault();
     }
 }
-
-// Just for testing promises
+/* Creates a delay for aesthetic purposes, and testing purposes */
 function timeout(delay) {
     return new Promise((resolve,reject) => {
         setTimeout(resolve, delay);
     });
 }
-
+/* Returns the student answers for a test */
 function getStudentAnswers() {
     let inputs = Array.from(document.getElementsByClassName("qAns"));
     return inputs.map( i=>i.value );
 }
-
 /* Returns all non-empty input values in an array 
  * Takes the Id of a div element */
 function getNonEmptyInputs(divId) {
 	var elems = Array.from(document.getElementById(divId).children);
     return elems.filter(i=>i.tagName==="INPUT"&&i.value!=="").map(i=>i.value);
 }
-
 /* Returns the value of the first checked input element contained by the given element 
  * This assumes radio input types inside a div of their own */
 function getCheckedValue(divId) {
@@ -1425,7 +1181,6 @@ function getCheckedValue(divId) {
             return elems[i].value;
     }
 }
-
 /* Returns an array of the checked input values inside of given element 
  * This assumes checkbox input types inside a div of their own */
 function getCheckedValues(divId) {
@@ -1433,7 +1188,6 @@ function getCheckedValues(divId) {
     let checked = elems.filter(e=>e.checked).map(e=>e.value);
 	return checked;
 }
-
 /* Removes question with qId from the array qArr */
 function removeItemFromArray(id, A) {
 	for(var i=0; i<A.length; i++){
@@ -1444,7 +1198,6 @@ function removeItemFromArray(id, A) {
 	}
 	return A;
 }
-
 /* Checks the given item's Id against all Ids in localQ
  * Returns true if given item's Id is not found */
 function uniqItem(item, itemArr){
@@ -1458,7 +1211,6 @@ function uniqItem(item, itemArr){
 	}
 	return uniq;
 }
-
 /* Checks if the given diff is in the array of diffs
  * Loose comparison so e.g. 1 will match "1" */
 function inArr(key, arr){
@@ -1467,7 +1219,6 @@ function inArr(key, arr){
 			return true;
 	return false;
 }
-
 /* Given a number 1-5, it will return string version of that difficulty
  * Given a string Very Easy, Easy, Medium, Hard, Very Hard return corresponding 1-5
  * Given anything else, returns -1 */
@@ -1477,26 +1228,19 @@ function convertDiffFormat(diff) {
 				   "Very Easy":"1", "Easy":"2", "Medium":"3", "Hard":"4", "Very Hard":"5", };
 	return swapper[diff];
 }
-
 /* Checks value of addRange and updates display */
 function updateDiff() {
 	addSpan.innerHTML = convertDiffFormat(addRange.value);
 }
-
+/* Makes the element hidden */
 function hideElement(elemId) {
     document.getElementById(elemId).style.display = "none";
 }
-
+/* Makes the element visible */
 function showElement(elemId) {
     document.getElementById(elemId).style.display = "block";
 }
-
 /* Checks that the given element has a non-empty value */
 function nonEmpty(elemId) {
 	return ( document.getElementById(elemId).value !== "" );
-}
-
-/* Empties an array by setting its length to 0 */
-function clearArray(arr) {
-	arr.length = 0;
 }
