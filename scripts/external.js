@@ -611,8 +611,18 @@ function updateSMainSection() {
         // sSelectedT exists, user is on student/tests.html
         clearInnerHTML("sTestList"); 
         addItemsToDisplay("sTestList");
+        if(sLocalT.length === 0) {
+            document.getElementById("sNoTestsInfo").style.display = "block";
+        } else {
+            document.getElementById("sNoTestsInfo").style.display = "none";
+        }
     } else {
         // sSelectedT does not exist, user is on student/grades.html
+        if(sLocalA.length === 0) {
+            document.getElementById("sNoGradesInfo").style.display = "block";
+        } else {
+            document.getElementById("sNoGradesInfo").style.display = "none";
+        }
         clearInnerHTML("sAttemptList"); 
         addItemsToDisplay("sAttemptList");
     }
