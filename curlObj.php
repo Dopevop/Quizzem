@@ -1,4 +1,7 @@
 <?php
+/* Devon O'Connor */
+/* May 7th, 2019  */
+/* curlObj.php    */
 $url		= "https://web.njit.edu/~wbv4/Middle/midlogin.php";
 $contents	= file_get_contents('php://input');
 $myCurl   	= curl_init(); 

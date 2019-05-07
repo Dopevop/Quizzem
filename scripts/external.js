@@ -1,3 +1,6 @@
+// Devon O'Connor
+// May 7th, 2019
+// scripts/external.js
 /* A pool of testcase example placeholder to pull from */
 let p1 = [
     "func()=ans",

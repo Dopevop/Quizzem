@@ -1,3 +1,6 @@
+/* Devon O'Connor */
+/* May 7th, 2019 */
+/* style/mainstyle.css */
 * {
 	box-sizing  : border-box;
 	margin      : 0px;
@@ -6,11 +9,10 @@
 	float    : left;
 	height   : calc(100vh - 40px);
 	overflow : auto;
-
 }
 #testForm, 
 #finAttemptForm {
-    display: none;
+    display : none;
 }
 .alert {
     font-family   : monospace;
@@ -44,7 +46,7 @@ body {
     background : aliceblue;
     overflow   : hidden;
 }
-body>header{
+body>header {
     position         : absolute;
     z-index          : 1;
     height           : 40px;
@@ -118,9 +120,9 @@ body>header nav a:hover {
     box-shadow       : 0px 1px 2px #880000, 0px 1px 5px darkgrey;
 }
 body>main {
-    position : relative;
-    top      : 40px;
-    max-width: 1475px;
+    position  : relative;
+    top       : 40px;
+    max-width : 1475px;
 }
 body>main nav {
     width  : 120px;
@@ -167,7 +169,7 @@ body>main section {
     width     : calc(100vw - 420px);
     overflow  : hidden;
 }
-body>main section p { /* Styles the welcome page messages */
+body>main section p { 
     background : ghostwhite;
     text-align : left;
     width      : 95%;
@@ -274,8 +276,8 @@ input[type=range]:focus::-webkit-slider-runnable-track {
                  0px 1px 3px darkgrey;
 }
 .clearfix {
-    min-width  : 950px;
-    margin     : auto;
+    min-width : 950px;
+    margin    : auto;
 }
 .clearfix::after {
 	content : "";
@@ -310,8 +312,8 @@ section li {
     border-radius : 5px;
 }
 #iBuildLists {
-    display: flex;
-    flex-wrap: wrap;
+    display   : flex;
+    flex-wrap : wrap;
 }
 #iSelected,
 #iMatched {
@@ -320,7 +322,6 @@ section li {
     width         : 505px;
     margin        : 6px;
     border-radius : 5px;
-    /* box-shadow    : 0px 1px 2px #888, 0px 1px 5px darkgrey; */
     box-shadow    : 0px 1px 2px #800, 0px 1px 5px darkgrey;
 }
 #iSelected {
@@ -385,23 +386,20 @@ input[type=text] {
     padding     : 2px 5px;
     font-family : "ubuntu mono", monospace;
 }
-
 .hint,
 .new-hint {
     margin        : 5px 0;
     padding       : 3px 5px;
     font-size     : .9em;
     border-radius : 3px;
-    background: #badcee;
-    box-shadow: 0 1px 2px #800, 0 1px 3px darkgrey;
+    background    : #badcee;
+    box-shadow    : 0 1px 2px #800, 0 1px 3px darkgrey;
 }
-
 .new-hint {
-    font-size: 0.7em;
-    padding: 0px 4px;;
-    margin: 0px 4px;
+    font-size : 0.7em;
+    padding   : 0px 4px;
+    margin    : 0px 4px;
 }
-
 .qItem   {
     margin    : 15px auto;
     position  : relative;
@@ -467,7 +465,6 @@ input[type=text] {
     height        : 15px;
     line-height   : 15px;
     box-shadow    : 0px 1px 2px #880000, 0px 1px 2px darkgrey;
-
 }
 .qDesc {
     padding : 10px 5px;
@@ -481,10 +478,6 @@ input[type=text] {
     bottom   : 0px;
     right    : 0px;
 }
-/* .qBtn:hover { */
-/*     background-color : white; */
-/*     box-shadow       : 0px 1px 3px darkgrey; */
-/* } */
 .qBtn-add { 
     color    : #0A0;
 }
@@ -583,5 +576,5 @@ input[type=text] {
 }
 .qSumPts {
     box-shadow : 0px 0px 3px lightgrey inset;
-    padding : 0px 2px;
+    padding    : 0px 2px;
 }

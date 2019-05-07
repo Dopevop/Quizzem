@@ -1,3 +1,6 @@
+// Devon O'Connor
+// May 7th, 2019
+// scripts/login.js
 document.getElementById("btn").addEventListener("click", postForm);
 document.getElementById("clr").addEventListener("click", clearResult);
 document.getElementById("usrInput").addEventListener("keyup", function(e) { 
