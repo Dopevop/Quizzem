@@ -68,7 +68,10 @@
     modASub.addEventListener("click", ()=> {
       if(validateForm("modA", true)) {
         fetch('modA')
-          .then(x=>console.log(x))
+          .then(x=> {
+            console.log("Rcvd:", x);
+            handleReply(x);
+          })
           .then(()=>alertUser("success", "Changes submitted!"))
           .catch(()=>alertUser("error", "Could not save changes!"))
       }

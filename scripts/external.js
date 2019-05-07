@@ -73,10 +73,26 @@ function handleReply(replyText, source) {
                     localT.push(DBT[i]);
                 }
             }
+            let availT = localT.filter(t=>Number(t.sub)===0);
+            console.log(availT);
+            if(availT.length === 0) {
+                console.log("No availT");
+                sNoTestsInfo.style.display = "block";
+                sDownloadInfo.style.display = "none";
+            } else {
+                sNoTestsInfo.style.display = "none";
+                sDownloadInfo.style.display = "none";
+                console.log("Some availT");
+            }
             updateDisplays(["sMainSection"]);
 			break;
         case 'addA':
-            // Do nothing currently
+            let test = replyObj.attempt.test;
+            test.sub = 1
+            removeItemFromArray(test.id, sLocalT);
+            sLocalT.push(test);
+            sSelectedT.length = 0;
+            updateDisplays(["sMainSection", "sMainAside"]);
             break;
         case 'getA':
             let DBA = replyObj.attempts;
@@ -88,6 +104,11 @@ function handleReply(replyText, source) {
                 iLocalA = DBA;
                 updateDisplays(["iMainSection"]);
             }
+            break;
+        case 'modA':
+            iSelectedA.length = 0;
+            iSelectedA.push(replyObj.attempt);
+            updateDisplays(["iMainSection", "iMainAside"]);
             break;
 	}
 }
@@ -194,7 +215,6 @@ function extractModifications() {
                 let newFeed = type+newSub+"p"+msg;
                 let oldSub = Number(subInputs[feedSeen].innerHTML);
                 curGrade = curGrade - (oldSub - newSub);
-                console.log("curGrade", curGrade);
                 let newF = {
                     "tId"    : thisTId,
                     "qId"    : thisQId,
@@ -594,6 +614,8 @@ function updateSMainAside() {
         // sSelctedT exists, user is on student/tests.html
         if(sSelectedT.length === 1)
             showElement("finAttemptForm");
+        else
+            hideElement("finAttemptForm");
     } else {
         // sSelctedT doesn't exists, user is on student/grades.html
         if(sSelectedA.length === 0) {
@@ -611,17 +633,15 @@ function updateSMainSection() {
         // sSelectedT exists, user is on student/tests.html
         clearInnerHTML("sTestList"); 
         addItemsToDisplay("sTestList");
-        if(sLocalT.length === 0) {
-            document.getElementById("sNoTestsInfo").style.display = "block";
-        } else {
-            document.getElementById("sNoTestsInfo").style.display = "none";
+        if(sLocalT.length !== 0 && sLocalT.filter(t=>Number(t.sub) === 0).length === 0) {
+            sNoTestsInfo.style.display = "block";
         }
     } else {
         // sSelectedT does not exist, user is on student/grades.html
         if(sLocalA.length === 0) {
-            document.getElementById("sNoGradesInfo").style.display = "block";
+            sNoGradesInfo.style.display = "block";
         } else {
-            document.getElementById("sNoGradesInfo").style.display = "none";
+            sNoGradesInfo.style.display = "none";
         }
         clearInnerHTML("sAttemptList"); 
         addItemsToDisplay("sAttemptList");
@@ -980,7 +1000,6 @@ function updateModPreview() {
         }
     }
     testGrade.innerHTML = testGrd + " / " + testMax;
-    console.log("relStatus", relStatus, "checkedVal", getCheckedValue("modARel"));
     if(Number(relStatus) !== Number(getCheckedValue("modARel"))) {
         modARelHint.style.display = "inline";
     }
@@ -1013,7 +1032,6 @@ function updatePoints() {
     let inputs = Array.from(document.getElementsByClassName("qInput"));
     let pts    = inputs.map(i=>Number(i.value)).filter(v=>Number.isFinite(v)).reduce((a,b)=>a+b,0);
     testPoints.innerHTML = pts;
-    console.log("points updated");
 }
 /* Builds the HTML element that displays an attempt summary */
 function buildAttemptSummaryItem(newItem, num) {
