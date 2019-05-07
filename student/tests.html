@@ -24,19 +24,16 @@
     </main>
   </header>
   <main class="clearfix">
-
     <nav id="sMainNav" class=box>
       <ul id="navList">
         <li class="currTab"><a href='tests.html'>Tests</a></li>
         <li><a href='grades.html'>Grades</a></li>
       </ul>
     </nav>
-
     <section id="sMainSection" class="box">
       <ul id="sTestList">
       </ul>
     </section>
-    
     <aside id="sMainAside" id="quizBuilder" class="box">
       <form id="finAttemptForm">
         <fieldset>
@@ -47,14 +44,11 @@
         </fieldset>
       </form>
     </aside>
-
   </main>
   <script src="../scripts/external.js"></script>
-  <script src="../scripts/testdata.js"></script>
   <script>
-    var sLocalT  = [t0, t1, t2, t3, t4, t5]; // Always holds all known tests
+    var sLocalT    = []; // Always holds all known tests
     var sSelectedT = []; // Should only ever have at most one test inside of it
-    console.log(sLocalT, sSelectedT);
     updateDisplays(["sMainSection"]);
     fetch('getT')
     .then( x => { // As soon as page is accessed, download all tests

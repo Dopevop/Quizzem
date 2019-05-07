@@ -24,7 +24,6 @@
     </main>
   </header>
   <main class="clearfix">
-
     <nav id="iMainNav" class=box>
       <ul id="navList">
         <li class="currTab"><a href='build.html'>Build</a></li>
@@ -32,11 +31,11 @@
         <li style="display:none;">Edit</li>
       </ul>
     </nav>
-
     <section id="iMainSection" class="box">
       <div id="iBuildLists">
         <p id="iBuildInfo">
-          To build a test, begin by creating a new question, or searching for existing questions using the fields on the right.
+          To build a test, begin by creating a new question, or searching for existing questions
+          using the fields on the right.
         </p>
         <div id="iSelected">
           <p id="iSelectedInfo" style="display:none;">
@@ -47,14 +46,14 @@
         </div>
         <div id="iMatched">
           <p id="iMatchedInfo" style="display:none;">
-            Create and search for more questions, or make a new test with the selected questions by using the forms on the right.
+            Create and search for more questions, or make a new test with the selected questions
+            by using the forms on the right.
           </p>
           <ul id="iMatchedList">
           </ul>
         </div>
       </div>
     </section>
-
     <aside id="iMainAside" class="box">
       <form id="testForm">
         <fieldset>
@@ -71,7 +70,6 @@
           <button id="testSub" type="button">Submit</button> 
         </fieldset>
       </form>
-
       <form id="addForm">
         <fieldset>
           <legend>Create Question:</legend>
@@ -102,7 +100,6 @@
           <button id="addSub"   type="button">Submit</button> 
         </fieldset>
       </form>	
-
       <form id="searchForm">
         <fieldset>
           <legend>Search for Questions</legend>
@@ -121,21 +118,18 @@
           <button id="searchReset" type="reset">Clear</button> 
         </fieldset>
       </form>
-
     </aside>
   </main>
 	<script type="text/javascript" src="../scripts/external.js"></script>
-	<script type="text/javascript" src="../scripts/testdata.js"></script>
 	<script>
 		var iMatchedQ  = [];
 		var iSelectedQ = [];
-		var iLocalQ  = [q0, q1, q2, q3, q4, q5, q6];
-    var iLocalT  = [];
+		var iLocalQ    = [];
+    var iLocalT    = [];
     fetch('getQ').then( x => {
       console.log(x);
       handleReply(x);
-    } );
-		
+    });
     addForm.addEventListener("mousemove", () => { updateDiff()            } );
     addRange.addEventListener("mouseup" , () => { updateDiff()            } );
     addRange.addEventListener("keyup"   , () => { updateDiff()            } );
@@ -154,7 +148,6 @@
         .then(() => validateForm("addT"))
       } 
     );
-
 		/* Initializes the modular elements */
 		resetModal("Test Cases", "addTests"  , 'addInput("addTests")');
 		resetModal("Keywords"  , "searchKeys", 'addInput("searchKeys")');

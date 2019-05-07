@@ -24,7 +24,6 @@
     </main>
   </header>
   <main class="clearfix">
-
     <nav id="iMainNav" class=box>
       <ul id="navList">
         <li><a href='build.html'>Build</a></li>
@@ -32,15 +31,11 @@
         <li style="display:none;">Edit</li>
       </ul>
     </nav>
-
     <section id="iMainSection" class="box">
-      <p  id="iReviewInfo" style="display:none;">Use the form to the right to search for graded tests to review</p>
       <p id="iNoTestsInfo" style="text-align:center">There are no graded tests to be reviewed</p>
       <ul id="iAttemptList"> </ul>
     </section>
-
     <aside id="iMainAside" class="box">
-
       <!-- This will be displayed when an attempt is clicked -->
       <form id="modAForm" style="display:none;"> 
         <fieldset>
@@ -57,14 +52,12 @@
           <p class="hint">Use inputs below a question to modify grades or add comments.</p>
         </fieldset>
       </form>
-
     </aside>
   </main>
 	<script type="text/javascript" src="../scripts/external.js"></script>
-	<script type="text/javascript" src="../scripts/testdata.js"></script>
 	<script>
-    var iLocalA  = [a0, a1, a2]; // Always holds all known attempts
-    var iSelectedA = [];                       // Should only ever have at most one attempt 
+    var iLocalA    = []; // Always holds all known attempts
+    var iSelectedA = [];                       // Should only ever have at most one attempt
     updateDisplays(["iMainSection"]);
     fetch('getA') // As soon as page is accessed, download all attempts
     .then( x => { 

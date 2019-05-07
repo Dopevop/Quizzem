@@ -9,7 +9,7 @@ let p1 = [
     "mult( 45 , 3 )=135",
     "plus(1,2,3,4,5)=15",
     "concat( 'boo' , 'yah' )=booyah",
-    "greet( \"Bob\" , \"Hi\" )=Hi, Bob",
+    "greet( \"Bob\" , \"Hi\" )=Hi,Bob",
     "mysteryFunc()=b",
     "echo('gross')=gross",
     "hijk(5)=lmnop",
@@ -20,8 +20,8 @@ let p1 = [
     "next(\"q\", 3)=rst",
 ];
 let p2 = [];
-let p = p1;
-let q = p2;
+let p  = p1;
+let q  = p2;
 
 function disableButton(btnId) {
     return new Promise((resolve) => {

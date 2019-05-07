@@ -24,19 +24,16 @@
     </main>
   </header>
   <main class="clearfix">
-
     <nav id="sMainNav" class=box>
       <ul id="navList">
         <li><a href='tests.html'>Tests</a></li>
         <li class="currTab"><a href=grades.html>Grades</a></li>
       </ul>
     </nav>
-
     <section id="sMainSection" class="box">
       <ul id="sAttemptList">
       </ul>
     </section>
-    
     <aside id="sMainAside" id="quizBuilder" class="box">
       <!-- This will be displayed when an attempt is clicked -->
       <form id="testSummary" style="display:none;"> 
@@ -46,13 +43,11 @@
         </fieldset>
       </form>
     </aside>
-
   </main>
   <script src="../scripts/external.js"></script>
-  <script src="../scripts/testdata.js"></script>
   <script>
-    var sLocalA  = [a0, a1, a2]; // Always holds all known attempts
-    var sSelectedA = [];                       // Should only ever have at most one attempt 
+    var sLocalA    = []; // Always holds all known attempts
+    var sSelectedA = []; // Should only ever have at most one attempt
     updateDisplays(["sMainSection"]);
     fetch('getA') // As soon as page is accessed, download all attempts
     .catch(() => alertUser("error", "Could not download graded tests!"))
